@@ -1,0 +1,18 @@
+<!-- Form: Edit activity --> 
+<%= error_messages_for 'activity' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit activity</legend>
+        
+        <%= start_form_tag :action => 'update', :id => @activity %>
+        <%= render :partial => 'activities_form' %>
+        <div><%= submit_tag 'Save' %></div>
+        <%= end_form_tag %>
+    </fieldset>
+</div>
+<p>
+    <%= link_to 'Show', :action => 'show', :id => @activity %>  | 
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+</p>
+
+<!-- End of form -->

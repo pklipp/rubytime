@@ -1,0 +1,143 @@
+ <chart>
+
+          <axis_category size="14" alpha="0" bold="true" orientation="horizontal" color="000000" font="arial" skip="0"/>
+          <axis_ticks value_ticks="true" minor_color="222222" minor_count="1" major_thickness="2" major_color="000000" position="outside" category_ticks="true" minor_thickness="1"/>
+          <axis_value steps="6" prefix="" size="10" alpha="50" max="120" bold="true" separator="" decimals="0" min="0" color="ffffff" font="arial" show_min="true" suffix=""/>
+          <chart_data>
+            <row>
+              <null/>
+              <string>0</string>
+              <string>1</string>
+
+              <string>2</string>
+              <string>3</string>
+              <string>4</string>
+              <string>5</string>
+              <string>6</string>
+              <string>7</string>
+
+              <string>8</string>
+              <string>9</string>
+              <string>10</string>
+              <string>11</string>
+              <string>12</string>
+              <string>13</string>
+
+              <string>14</string>
+              <string>15</string>
+              <string>16</string>
+              <string>17</string>
+              <string>18</string>
+              <string>19</string>
+
+              <string>20</string>
+              <string>21</string>
+              <string>22</string>
+              <string>23</string>
+              <string>24</string>
+              <string>25</string>
+
+              <string>26</string>
+              <string>27</string>
+              <string>28</string>
+              <string>29</string>
+              <string>30</string>
+            </row>
+
+            <row>
+              <string>Region A</string>
+              <number>10</number>
+              <number>12</number>
+              <number>14</number>
+              <number>16</number>
+
+              <number>18</number>
+              <number>20</number>
+              <number>22</number>
+              <number>24</number>
+              <number>26</number>
+              <number>28</number>
+
+              <number>30</number>
+              <number>32</number>
+              <number>34</number>
+              <number>36</number>
+              <number>38</number>
+              <number>40</number>
+
+              <number>42</number>
+              <number>44</number>
+              <number>46</number>
+              <number>48</number>
+              <number>50</number>
+              <number>52</number>
+
+              <number>54</number>
+              <number>56</number>
+              <number>58</number>
+              <number>60</number>
+              <number>62</number>
+              <number>64</number>
+
+              <number>66</number>
+              <number>68</number>
+              <number>70</number>
+            </row>
+            <row>
+              <string>Region B</string>
+              <number>5</number>
+
+              <number>7</number>
+              <number>9</number>
+              <number>11</number>
+              <number>13</number>
+              <number>15</number>
+              <number>17</number>
+
+              <number>19</number>
+              <number>21</number>
+              <number>23</number>
+              <number>25</number>
+              <number>27</number>
+              <number>29</number>
+
+              <number>31</number>
+              <number>33</number>
+              <number>35</number>
+              <number>37</number>
+              <number>39</number>
+              <number>41</number>
+
+              <number>43</number>
+              <number>45</number>
+              <number>47</number>
+              <number>49</number>
+              <number>51</number>
+              <number>53</number>
+
+              <number>55</number>
+              <number>57</number>
+              <number>59</number>
+              <number>61</number>
+              <number>63</number>
+              <number>65</number>
+
+            </row>
+          </chart_data>
+          <chart_grid_h alpha="10" thickness="1" type="solid" color="000000"/>
+          <chart_grid_v alpha="10" thickness="1" type="solid" color="000000"/>
+          <chart_pref fill_shape="false" point_shape="none" line_thickness="2"/>
+          <chart_rect x="40" positive_alpha="30" y="25" height="200" positive_color="000000" negative_color="ff0000" negative_alpha="10" width="335"/>
+          <chart_type>Line</chart_type>
+          <chart_value size="12" alpha="75" color="ffffff" position="cursor"/>
+
+          <draw>
+            <text alpha="15" rotation="-90" size="50" x="-10" y="348" bold="true" color="ffffff" height="150" h_align="center" font="arial" width="300" v_align="top"/>
+          </draw>
+          <legend_rect x="-100" y="-100" margin="10" height="10" width="10"/>
+          <series_color>
+            <color>77bb11</color>
+            <color>cc5511</color>
+          </series_color>
+
+        </chart>

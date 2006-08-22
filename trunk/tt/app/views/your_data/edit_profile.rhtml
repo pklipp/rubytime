@@ -1,0 +1,28 @@
+<!-- Form: Edit profile -->
+<%= error_messages_for 'user' %>
+
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit your profile</legend>
+        
+        <p class="p_new">
+        <%= link_to 'Change password', :action => 'edit_password', :id => @current_user %>
+        </p>
+        <hr/>
+        <%= start_form_tag :action => 'update_profile', :id => @current_user %>
+        <div class="inputs">
+	        <label for="current_user_name">Login: </label><b><%= @current_user.login %></b>
+        </div>
+        <div class="inputs">
+	        <label for="current_user_name">Name</label><br/>
+	        <%= text_field 'user', 'name'  %>
+        </div>
+        <div class="inputs">
+	        <label for="current_user_email">e-mail</label>
+	        <br/><%= text_field 'user', 'email'  %>
+        </div>
+        <%= submit_tag 'Save' %>
+        <%= end_form_tag %>
+   </fieldset>   
+</div>
+<!-- End of form -->

@@ -1,0 +1,26 @@
+<!-- List of details of chosen activity -->
+<div class="fieldsets">
+<fieldset>
+    <legend>Activity</legend>
+       <p>
+	       <strong>Comments: </strong>
+	       <%=@activity.comments %>
+       </p>
+
+       <p>
+	       <strong>Date: </strong>
+	       <%=@activity.date %>
+       </p>
+
+       <p>
+	       <strong>Hours: </strong>
+	       <%=h hour_format @activity.minutes %>
+       </p>
+       
+       <p class="	p_edit_back">
+       <%= link_to 'Edit', :action => 'edit', :id => @activity %> |
+       <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+       </p>
+</fieldset>
+</div>
+<!-- End of list -->

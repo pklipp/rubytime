@@ -1,0 +1,90 @@
+
+<!-- Graph -->
+<div class="fieldsets">
+    <fieldset style="width: 640px">
+        <legend>Graph</legend>
+<% if !params[:search].nil? %>
+    <% if !params[:search][:role_id].blank? 
+        tmp = Role.find(:first,:conditions => ["id = ?",params[:search][:role_id]],:select => "name, short_name" )%>
+        <p>Role: <b><%= tmp.name + "(" + tmp.short_name + ")" %></b></p>
+    <% end
+    if !params[:search][:project_id].blank? 
+        tmp = Project.find(:first,:conditions => ["id = ?",params[:search][:project_id]],:select => "name" )%>
+        <p>Project: <b><%= tmp.name %></b></p>
+    <% end
+    if !params[:search][:user_id].blank?
+        tmp = User.find(:first,:conditions => ["id = ?",params[:search][:user_id]],:select => "name" )%>
+        <p>User: <b><%= tmp.name %></b></p>
+    <% end
+    if !params[:search]['date_from(1i)'].blank? 
+        date_from = params[:search]["date_from(1i)"].to_i.to_s \
+              + "-" + params[:search]["date_from(2i)"].to_i.to_s \
+              + "-" + params[:search]["date_from(3i)"].to_i.to_s %>
+        <p>From date: <b><%= date_from %></b></p>
+    <% end
+    if !params[:search]['date_to(1i)'].blank?
+        date_to = params[:search]["date_to(1i)"].to_i.to_s \
+              + "-" + params[:search]["date_to(2i)"].to_i.to_s \
+              + "-" + params[:search]["date_to(3i)"].to_i.to_s %>
+        <p>To date: <b><%= date_to %></b></p>
+    <% end
+    if (params[:search]['date_to(1i)'].blank? and params[:search]['date_from(1i)'].blank?)
+        if session[:year] %>
+            <p>For year: <b><%= session[:year] %></b></p>
+      <%end
+        if session[:month] %>
+            <p>For month: <b><%= Date::MONTHNAMES[session[:month].to_i] %></b></p>
+      <%end
+    end
+ end %>
+<p id="graph">
+<object type="application/x-shockwave-flash" 
+        data="/charts.swf?library_path=../charts_library&amp;xml_source=/activities/graph_xml" 
+        width="600" height="420">
+<param name="movie" value="/charts.swf?library_path=../charts_library&amp;xml_source=/activities/graph_xml" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#32541f" />
+Please install flash plug-in for your browser
+</object>
+</p>
+
+<!-- End fo graph -->
+
+
+<!-- Showing statistics -->
+<% if @activities.length>0 %>
+<table class="standard" >
+  <thead style="text-align: center">
+    <tr>
+        <th>Date(end of the week)</th>
+        <th>			Week of year</th>        
+        <th>			Role		</th>
+        <th>			No of minutes		</th>
+        <th>Hours		</th>
+    </tr>
+  </thead>
+  <tbody>
+       <% 
+       scale=1/10
+       previousYearWeek = ""
+       for activity_sum in @activities 
+       %>
+            <tr>
+                <td style="text-align: center"><%= activity_sum.maxdate %></td>
+                <td style="text-align: center"><%= activity_sum.week %></td>
+                <td style="text-align: center"><%= (activity_sum.role.short_name).upcase %></td>
+                <td style="text-align: right"><%= activity_sum.minutes %></td>
+                <td style="text-align: right"><%= hour_format(activity_sum.minutes) %></td>
+            </tr>
+       <% previousYearWeek = activity_sum.year.to_s + activity_sum.week.to_s;
+       end %>
+  </tbody>
+</table>
+<%end%>
+</fieldset>
+<!-- End of graph -->
+
+<% if !params[:search].nil? %>
+<p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+<% end %>
+</div>

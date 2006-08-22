@@ -1,0 +1,28 @@
+<!-- List of details of chosen role -->
+
+<div class="fieldsets">
+<fieldset>
+    <legend>Role:</legend>
+ 
+    <p>
+        <b>Name:</b> <%=h @role.name %>
+    </p>
+    
+    <p>
+        <b>Short name:</b> <%=h @role.short_name.upcase %>
+    </p>   
+    
+    <p>
+        <b>Is admin:</b> <% if @role.is_admin==true %>YES<%else%>NO<% end %>
+    </p>   
+ 
+    <p class="	p_edit_back">
+    <%= link_to 'Show activities', :controller => 'activities', 
+       :action => 'graph', 'search[role_id]' => @role.id %> |
+    <%= link_to 'Edit', :action => 'edit', :id => @role %> |
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+    </p>
+</fieldset>
+</div>
+
+<!-- End of list -->

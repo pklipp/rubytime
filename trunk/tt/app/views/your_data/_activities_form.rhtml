@@ -1,0 +1,21 @@
+<!-- Partial form: Enter activity -->
+<div class="inputs">Project:<br/>
+    <select name="activity[project_id]" id="activity_project_id">
+		  <%= options_for_select({ "choose" => "" }) %>
+		  <%= options_for_select(Project.find(:all, :conditions => ["is_inactive = ?",false]).collect {|p| [ p.name, p.id ] },@selected['project_id'] ) %>
+	   </select>
+</div>
+<div class="inputs">
+    <label for="activity_comments">Comments:</label><br/>
+    <%= text_area 'activity', 'comments', :cols => 50, :rows => 6 %>
+</div>
+<div class="inputs">
+    <label for="activity_date">Date:</label><br/>
+    <%= date_select 'activity', 'date' , :start_year => Time.now.year %>
+</div>
+<div class="inputs">
+    <label for="activity_minutes">Hours:</label><br/>
+    <%= text_field 'activity', 'minutes', :size =>6, :value => hour_format(@activity.minutes)  %>
+</div>
+<!-- End of partial form -->
+

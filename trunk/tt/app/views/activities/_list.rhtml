@@ -1,0 +1,61 @@
+<!-- List of activieties  -->
+        <table class="standard">
+        <tr>
+            <th> Project</th>
+            <th> Person</th>
+            <th> Date </th>
+            <th> Hours </th>
+        </tr>
+
+        <% minutes_sum=0 	 
+        for activity in @activities  
+        minutes_sum+=activity.minutes %>
+        <tr>
+            <td>					<%= link_to activity.project.name, :controller => 'projects', :action => 'show', :id => activity.project %></td>
+            <td>					<%= link_to activity.user.login, :controller => 'users', :action => 'show', :id => activity.user %>				
+                (<%= activity.user.role.short_name %>)</td>
+            <td style="text-align: center"><%= h activity.date %></td>
+            <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
+            <td><%= link_to "Show", :action => "show", :id => activity %>				</td>
+        </tr>
+        <% end %>
+        
+        <tr>
+            <td>&nbsp;		</td>
+            <td>&nbsp;		</td>
+            <th style="align: right">			Sum:		</th>
+            <th>			<%= hour_format(minutes_sum) %>		</th>
+        </tr>
+        </table>
+        <% if !params[:search].nil? %>
+        <% search = {} 
+           if !params[:search][:role_id].blank?
+            search["search[role_id]"] = params[:search][:role_id]
+           end
+           if !params[:search][:project_id].blank?
+            search["search[project_id]"] = params[:search][:project_id]
+           end
+           if !params[:search][:user_id].blank?
+            search["search[user_id]"] = params[:search][:user_id]
+           end
+           if !params[:search][:date_from].blank?
+            search["search[date_from]"] = params[:search][:date_from]
+           end
+           if !params[:search][:date_to].blank?
+            search["search[date_to]"] = params[:search][:date_to]
+           end
+        %>
+        <%= link_to 'Previous page', ({ 
+                :action => 'list', 
+                :page => @activity_pages.current.previous }).merge(search) \
+                if @activity_pages.current.previous %>
+        <%= link_to 'Next page', ({
+                :action => 'list',
+                :page => @activity_pages.current.next}).merge(search) \
+                if @activity_pages.current.next %>    
+        <% else %>
+        <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
+        <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
+        <% end %>
+<!-- End of list -->
+
