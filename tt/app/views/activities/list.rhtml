@@ -1,0 +1,79 @@
+<div class="fieldsets">
+
+<!-- List of activities -->
+<%if !@activities.blank? %>    
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        Activities List
+        <% else %>
+        Activities List - search result
+        <% end %>
+        </legend>
+        <%= render :partial => "list" %>
+        <%#= activitiesList(@activities) %>
+    </fieldset>
+<%else%>
+<p id="errorNotice">No activities found</p>
+<%end%>
+<!-- End of list --> 
+
+<br/><br/>
+
+<!-- Form: Filter activities by date -->
+    <fieldset>
+        <legend>Filter by date</legend>
+        <%= calendar %>
+    </fieldset>   
+<!-- End of form -->
+ 
+<br/><br/>
+   
+<!-- Form: search -->
+
+<%= start_form_tag :action => 'search', :id => @activity %>
+        <fieldset>
+        <legend>		Search	</legend>
+        <p>
+        <label>From:</label>
+        <%= date_select 'search', 'date_from', :include_blank => true  %>
+        </p>
+        <p>
+        <label>To:</label>
+        <%= date_select 'search', 'date_to', :include_blank => true  %>
+        </p>
+        
+        <p>
+        <label>Project:</label>
+        <select name="search[project_id]" id="search_project_id">
+        <%= options_for_select({ "choose" => "" }) %>
+        <%= options_for_select(Project.find_all.collect {|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
+        </select>
+        </p>
+        
+        <p>
+        <label>Role:</label>
+        <select name="search[role_id]" id="search_role_id">
+        <%= options_for_select({ "choose" => "" }) %>
+        <%= options_for_select(Role.find_all.collect {|r| [ r.name, r.id ] }, @selected['role_id'].to_i ) %>
+        </select>
+        </p>
+        
+        <p>
+        <label for="search_user_id">User:</label>
+        <select name="search[user_id]" id="search_user_id">
+        <%= options_for_select({ "choose" => "" }) %>
+        <%= options_for_select(User.find_all.collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
+        </select>
+        		</p>		
+        <p><%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %></p>		
+        </fieldset>
+        <%= end_form_tag %>
+    
+<!-- End of form -->
+
+<br/><br/> 
+  
+<p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+      
+</div>   

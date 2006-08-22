@@ -1,0 +1,16 @@
+<!-- List of details of chosen activity -->
+<div class="fieldsets">
+<fieldset>
+    <legend>	Your activity</legend>
+    <% for column in Activity.content_columns %>
+    <p>
+    <b><%= column.human_name %>:</b> <%=h @activity.send(column.name) %>
+    </p>
+    <% end %>
+
+    <p class="	p_edit_back">
+    <%= link_to 'Edit', :action => 'edit_activity', :id => @activity %> |
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+    </p>
+</fieldset>
+<!-- End of list -->

@@ -1,0 +1,11 @@
+<!-- Partial form: Add/Edit client-->
+<div class="inputs">
+    <label for="client_name">Name:</label>
+    <%= text_field 'client', 'name', :size => 66, :maxlength => 50  %>
+</div>
+<div class="inputs">
+    <label for="client_description">Description:</label>
+    <%= text_area 'client', 'description', :cols => 50, :rows => 15  %>
+</div>
+<!-- End of partial form-->
+

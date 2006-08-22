@@ -1,0 +1,16 @@
+<!-- Form: Add client -->
+<%= error_messages_for 'client' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>New client</legend>
+
+        <%= start_form_tag :action => 'create' %>
+        <%= render_partial 'form' %>
+        <p><%= submit_tag "Create" %></p>
+        <%= end_form_tag %>
+    
+</fieldset>
+</div>
+<p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+<!-- End of form -->
+
