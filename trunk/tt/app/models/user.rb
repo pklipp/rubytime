@@ -49,9 +49,13 @@ class User < ActiveRecord::Base
     tmp = find(:first,
          :conditions => 
          ["login = ? ", login])     
-    tmp_password = User.hashed_pass(password, tmp.salt)
-    find(:first,
-         :conditions => ["login = ? and password = ?", login, tmp_password])
+    if !tmp.nil?
+      tmp_password = User.hashed_pass(password, tmp.salt)
+      find(:first,
+           :conditions => ["login = ? and password = ?", login, tmp_password])
+    else
+      nil
+    end
   end  
   
   # Logs user by "login" method
