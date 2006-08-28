@@ -11,4 +11,8 @@ class UserTest < Test::Unit::TestCase
   def test_truth
     assert_kind_of User,  @user
   end
+
+  def test_invalid_login
+    assert_equal nil, User.login("", "")
+  end
 end
