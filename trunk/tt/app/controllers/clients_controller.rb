@@ -26,7 +26,7 @@ class ClientsController < ApplicationController
   before_filter :authorize
   layout "main"
 
-  # Default action.
+  # Default action, render list action
   def index
     list
     render :action => 'list'
@@ -54,12 +54,12 @@ class ClientsController < ApplicationController
     end
   end
 
-  # Client constructor.
+  # Action to show new user form
   def new
     @client = Client.new
   end
 
-  # Creates new user.
+  # Creates new client. Fills its details with data sent from html form
   def create
     @client = Client.new(params[:client])
     if @client.save
