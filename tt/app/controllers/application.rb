@@ -54,6 +54,7 @@ class ApplicationController < ActionController::Base
     redirect_to @request.env['HTTP_REFERER'] and return
   end
   
+  # Sets calendar options tu nils
   def unset_calendar 
     @session[:year]=nil
     @session[:month]=nil  

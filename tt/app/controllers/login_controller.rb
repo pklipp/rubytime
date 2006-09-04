@@ -25,7 +25,7 @@
 class LoginController < ApplicationController
   layout "main"
   
-  # Logs user if login and password are correct. 
+  # Sign-in user if login and password are correct. Sets session[:user_id] to proper ID from database.
   def login
     if request.get?
       session[:user_id] = nil
