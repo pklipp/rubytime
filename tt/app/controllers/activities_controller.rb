@@ -311,7 +311,6 @@ class ActivitiesController < ApplicationController
     @activities = Activity.find_by_sql @query
     @grouped_roles  = Activity.find_by_sql @query2 
     @weeks = Activity.find_by_sql(@query3)
-    puts @query2
     @xm = Builder::XmlMarkup.new(:indent=>2, :margin=>4)
       @xm.chart {
         @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up' )
