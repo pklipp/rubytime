@@ -54,6 +54,7 @@ class RolesController < ApplicationController
 
   # Creates new role.
   def create
+    params[:role][:short_name] = params[:role][:short_name].upcase
     @role = Role.new(params[:role])
     if @role.save
       flash[:notice] = 'Role has been successfully created'

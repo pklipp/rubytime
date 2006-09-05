@@ -1,5 +1,32 @@
 <div class="fieldsets">
 
+<!-- Form: Filter activities by date -->
+	<fieldset>
+	<legend>Filter by date</legend>
+    <%= calendar %>
+	</fieldset>
+<!-- End of form -->
+
+<br/><br/>
+
+<!-- Form: serach activities -->
+
+<%= start_form_tag :action => 'search', :id => @activity %>
+    <fieldset>
+        <legend>		Search	</legend>
+        <label for="search">Project:</label>
+        <select name="search" id="search">
+        <%= options_for_select({ "--all--" => "" }) %>
+        <%= options_for_select(Project.find_all.collect {|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
+        </select>
+        &nbsp;&nbsp;<%= submit_tag 'Search' %>
+        &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
+    </fieldset>
+<%= end_form_tag %>
+<!-- End of form -->
+
+<br/><br/>
+
 <!-- List of activieties of logged user -->
 <% if !@activities.blank? %>
     <fieldset>
@@ -40,14 +67,10 @@
         </tr>
         </table>
         
-        <%= link_to 'Previous page', {:action => 'activities_list',
-                                      :page => @activity_pages.current.previous,
-                                      :search => params[:search]} \
-                                      if @activity_pages.current.previous %>
-        <%= link_to 'Next page', {:action => 'activities_list',
-                                  :page => @activity_pages.current.next,
-                                  :search => params[:search]} \
-                                  if @activity_pages.current.next %>    
+        <% unless @activity_pages.nil? %>
+            <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
+            <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
+        <% end %> 
     </fieldset>
     
     <% else %>
@@ -55,33 +78,9 @@
     <% end %>
 <!-- End of list -->
 
-<br/><br/>
 
-<!-- Form: Filter activities by date -->
-				    <fieldset>
-				    <legend>Filter by date</legend>
-    <%= calendar %>
-			    </fieldset>
-<!-- End of form -->
 
-<br/><br/>
 
-<!-- Form: serach activities -->
-
-<%= start_form_tag :action => 'search', :id => @activity %>
-    <fieldset>
-        <legend>		Search	</legend>
-        <label for="search">Project:</label>
-        <select name="search" id="search">
-        <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select({ "--all--" => "" }) %>
-        <%= options_for_select(Project.find_all.collect {|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
-        </select>
-        &nbsp;&nbsp;<%= submit_tag 'Search' %>
-        &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
-    </fieldset>
-<%= end_form_tag %>
-<!-- End of form -->
 
 <p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
 

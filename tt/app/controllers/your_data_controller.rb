@@ -66,9 +66,14 @@ class YourDataController < ApplicationController
     if (session[:month])
       conditions_string+= " AND MONTH(date)='" + session[:month] + "'"
     end
-    @activity_pages, @activities = paginate :activity, 
-                                            :per_page => 10,
-                                            :conditions => conditions_string
+   
+     if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
+        @activity_pages, @activities = paginate :activity, 
+                                                :per_page => 10,
+                                                :conditions => conditions_string
+     else
+        @activities = Activity.find(:all, :conditions => conditions_string)
+     end   
                                
   end
   

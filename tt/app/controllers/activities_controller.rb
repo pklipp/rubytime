@@ -81,6 +81,7 @@ class ActivitiesController < ApplicationController
       if (!params[:search]['date_to(1i)'].blank?)
         conditions_string+= " AND date <= '" + date_to + "'"
       end
+
     end 
 
      if (params[:search].nil? or (params[:search]['date_from(1i)'].blank? and !params[:search]['date_t1i)'].blank?))
@@ -89,12 +90,18 @@ class ActivitiesController < ApplicationController
        end
        if (session[:month])
          conditions_string += " AND MONTH(date)='" + session[:month] + "' "
-       end
+       end  
      end
      
-      @activity_pages, @activities = paginate :activity, 
-                                              :per_page => 10,
-                                              :conditions => conditions_string
+     if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
+        @activity_pages, @activities = paginate :activity, 
+                                                :per_page => 10,
+                                                :conditions => conditions_string
+     else
+        @activities = Activity.find(:all, :conditions => conditions_string)
+     end                                           
+
+
   end
   
   # Lists current user's activities
