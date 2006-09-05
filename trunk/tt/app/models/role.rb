@@ -1,5 +1,5 @@
 # ************************************************************************
-# Time Tracker
+# Ruby Time
 # Copyright (c) 2006 Lunar Logic Polska sp. z o.o.
 # 
 # This code is licensed under the MIT license.
