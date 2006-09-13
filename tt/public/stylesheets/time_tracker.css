@@ -139,59 +139,58 @@ div.progressBar div.background {
 #top-menu {
    color: inherit;
 	   background-color: #fb0;
-	   margin: 0px 0px 0px;
-	   padding: 3px;
+	   margin: 0px;
+	   padding: 0px;
 	   border-color: #79a;
 	   border-top-width: 0px;
 	   border-left-width: 0px;
 	   border-right-width: 0px;
 	   border-bottom: 1px solid #000;
-	   height: 22px; 
+	   height: 18px; 
 }
 
 #top-menu ul {
-	   margin-top: 1px;
-	   margin-bottom: 1px;
-	   margin-left: 190px;
-	   padding-left: 1px;
+	   margin: 0px 5px 0px 220px;
+	   padding: 0px;
 	   white-space: nowrap;
 }
 
-#top-menu li {
+#top-menu ul li {
 	   display: inline;
 	   list-style-type: none;
 	   margin: 0px;
-	   padding: 1px;
+	   padding: 0px;
 	   line-height: 18px;
 }
 
-#top-menu a {
+#top-menu ul li a {
 	   padding: 2px 15px;
 	   font-weight: bold;
 }
 
-#top-menu a:link,#top-menu a:visited {
+#top-menu ul li a:link,#top-menu a:visited {
 	   color: #fff;
 	   background-color: #fb0;
 	   text-decoration: none;
 }
 
-#top-menu a:hover {
-	   color: #666;
-	   background-color: #aca;
-	   text-decoration: none;
+#top-menu ul li a:hover {
+	   color: #000;
+	   background-color: inherit;
+	   text-decoration: underline;
 }
 
-#top-menu a.active {
-	   color: #fff;
-	   background-color: #32541f;
-	   text-decoration: none;
+#top-menu ul li a.active {
+	   color: #000;
+	   text-decoration: none; 
+	   background-color: inherit;
+	   border-bottom: 3px solid #32541f;
 }
 
-/* styled fo submenu */
+/* styles for submenu */
 #sub-menu {
-   min-height: 100%;
-   height: 100%;
+	min-height: 100%;
+   	height: 100%;
 	   margin:0px;
 	   background-color: #32541f;
 	   float: left;

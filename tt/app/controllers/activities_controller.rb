@@ -292,7 +292,7 @@ class ActivitiesController < ApplicationController
        end
     end
     
-    @query = "SELECT "\
+    query = "SELECT "\
             + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
             + "FROM activities ac " \
             + "LEFT JOIN users us ON (ac.user_id=us.id) " \
@@ -302,25 +302,38 @@ class ActivitiesController < ApplicationController
             + " GROUP BY YEAR(date), WEEK(date), role_id " \
             + " ORDER BY YEAR(date), WEEK(date), role_id " 
 
-    @query2 = "SELECT  SUM(minutes) minutes,  role_id, ro.short_name FROM activities ac "\
+    query2 = "SELECT  SUM(minutes) minutes,  role_id, ro.short_name FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE " \
             + conditions_string \
             + " GROUP BY  role_id  ORDER BY role_id "
             
-    @query3 = "SELECT  MAX(WEEK(date)) maxweek, MIN(WEEK(date)) minweek FROM activities ac "\
+    query3 = "SELECT min( year( date ) ) minyear, max( year( date ) ) maxyear "\
+            + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
-            + conditions_string
+            + conditions_string         
+               
+    query4 = "SELECT year( date ) year, min( week( date ) ) minweek, max( week( date ) ) maxweek, count(*) as no_of_years "\
+            + "FROM activities ac "\
+            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
+            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
+            + "WHERE "\
+            + conditions_string \
+            + " GROUP BY year"\
+            + " ORDER BY year"
     
-    @activities = Activity.find_by_sql @query
-    @grouped_roles  = Activity.find_by_sql @query2 
-    @weeks = Activity.find_by_sql(@query3)
+    @activities = Activity.find_by_sql(query)
+    @grouped_roles  = Activity.find_by_sql(query2) 
+    @weeks = Activity.find_by_sql(query4)
+    @years = Activity.find_by_sql(query3)
+
     @xm = Builder::XmlMarkup.new(:indent=>2, :margin=>4)
       @xm.chart {
-        @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up' )
+        skip_level = (@activities.length/10) - 2
+        @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up', "skip" => skip_level )
         @xm.axis_ticks("value_ticks"=>'true', "category_ticks"=>"true", "major_thickness"=>"2", "minor_thickness"=>"1", "minor_count"=>"1", "major_color"=>"000000", "minor_color"=>"222222", "position"=>"outside")
         @xm.axis_value("font"=>'arial', "bold"=>'true', "size"=>'10', "color"=>"ffffff", "alpha"=>'75', "steps"=>'10', "suffix" => ' min' , "show_min"=>'true', "separator" => '', "orientation" => 'diagonal_up')
         @xm.chart_border("top_thickness" => '0', "bottom_thickness" => '1', "left_thickness" => '2', "right_thickness" => '0', "color" => '000000')
@@ -328,24 +341,33 @@ class ActivitiesController < ApplicationController
         @xm.chart_data(){
           @xm.row {
             @xm.null()
-            (@weeks[0].minweek).upto(@weeks[0].maxweek) do |i|  
-              @xm.string("week: " + i)
+            for week in @weeks
+              (week.minweek.to_i).upto(week.maxweek.to_i) do |i|
+                @xm.string("Year:" + week.year.to_s + ",Week:" + i.to_s)  
+              end
             end
           }
-          duration = @weeks[0].maxweek.to_i - @weeks[0].minweek.to_i
           for roles in @grouped_roles           
-              t=Array.new(duration+1,0)
-              for act in @activities
+            t = Array.new
+            duration = 0
+            for week in @weeks
+              duration = week.maxweek.to_i - week.minweek.to_i
+              t<< Array.new(duration+1,0)
+            end
+
+            for act in @activities
                 if act.role_id==roles.role_id
-                  t[act.week.to_i - @weeks[0].minweek.to_i] = act.minutes.to_i
+                  minyear_id = act.year.to_i - @years[0].minyear.to_i
+                  t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
                 end
-              end
-              
+            end
               @xm.row {
                 label = roles.role.short_name.to_s
                 @xm.string(label)
                 for i in t
-                  @xm.number(i.to_s)
+                  for j in i
+                    @xm.number(j.to_s)
+                  end
                 end
               }
           end 
@@ -378,7 +400,7 @@ class ActivitiesController < ApplicationController
         @xm.chart_grid_h("alpha"=>'30', "color"=>'000000', "thickness"=>'1', "type"=>"solid") 
         @xm.chart_grid_v("alpha"=>'20', "color"=>'000000', "thickness"=>'1', "type"=>"dashed") 
         @xm.chart_pref("line_thickness"=>"2", "point_shape"=>"none", "fill_shape"=>'false') 
-        @xm.chart_rect("x"=>'60', "y"=>'45', "width"=>'520', "height"=>'320', "positive_color"=>'000000', "positive_alpha"=>'20', "negative_color"=>'ff0000', "negative_alpha"=>'10')
+        @xm.chart_rect("x"=>'60', "y"=>'45', "width"=>'520', "height"=>'340', "positive_color"=>'000000', "positive_alpha"=>'20', "negative_color"=>'ff0000', "negative_alpha"=>'10')
         @xm.chart_type("Line")
         @xm.chart_value("position"=>'cursor', "size"=>'12', "color"=>'ffffff', "alpha"=>'75')
         @xm.chart_transition("type" => 'scale', "delay" => '0', "duration" => '1', "order" => 'series')
