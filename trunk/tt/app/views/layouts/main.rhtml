@@ -49,9 +49,8 @@
           <p>
              <% if @current_user!=nil %>
              Welcome: <br/><b>
-                 <%= link_to (@current_user.name.capitalize,:controller => "users", 
-                 :action => "show", 
-                 :id => @current_user.id)  %>
+                 <%= link_to(@current_user.name.capitalize,:controller => "your_data", 
+                 :action => "edit_profile") %>
                  </b>
                  <% end %>     
           </p>
@@ -59,16 +58,16 @@
 
              <% if (@current_user!=nil && !@current_user.is_inactive) %>
              <ul>
-                 <li><%= link_to ("Your profile" ,:controller => "your_data", 
+                 <li><%= link_to("Your profile" ,:controller => "your_data", 
                  :action => "edit_profile") %></li>
-                 <li><%= link_to ("Enter activity" ,:controller => "your_data", 
+                 <li><%= link_to("Enter activity" ,:controller => "your_data", 
                  :action => "new_activity") %></li>
              </ul>
              <% end %>
 
           
           <p>
-                 <%= link_to ("Logout" ,:controller => "login", 
+                 <%= link_to("Logout" ,:controller => "login", 
                  :action => "login") if session[:user_id] %>
           </p>
     <!-- validator icons
