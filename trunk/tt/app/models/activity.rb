@@ -26,6 +26,7 @@ class Activity < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   belongs_to :role
+  belongs_to :invoices
   
   # validators
   validates_presence_of :comments, :minutes, :project_id

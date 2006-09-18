@@ -26,9 +26,10 @@
 
 class Client < ActiveRecord::Base
   has_many :projects
+  has_many :invoices
 
   # validators
   validates_presence_of :name, :description
   validates_uniqueness_of :name
-  
+
 end

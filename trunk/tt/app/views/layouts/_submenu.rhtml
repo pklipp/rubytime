@@ -27,7 +27,14 @@
                             {:controller => "activities", :action => "list"}, 
                             :class=> ( params[:controller]=="activities" ?  "active" : ""))  %>
         </li>  
-        <%end 
+        <%end
+        if @current_user.has_permisions_to("activities", "list") %>
+        <li>  
+        <%= link_to("Invoices",
+                            {:controller => "invoices", :action => "list"}, 
+                            :class=> ( params[:controller]=="invoices" ?  "active" : ""))  %>
+        </li>  
+        <%end  
         if @current_user.has_permisions_to("users", "list") %>
         <li>  
         <%= link_to("Users",

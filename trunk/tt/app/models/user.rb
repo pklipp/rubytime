@@ -76,7 +76,7 @@ class User < ActiveRecord::Base
         true 
       else
         case controller # those controllers are not allowed by default
-          when "users", "roles", "activities", "clients", "projects"
+          when "users", "roles", "activities", "clients", "projects", "invoices"
             false
           else
             true
