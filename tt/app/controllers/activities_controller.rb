@@ -50,7 +50,7 @@ class ActivitiesController < ApplicationController
   #Lists all current projects or specified by search conditions
   def list 
     @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => '' }
-    
+    @checked = [true,false,false] 
     conditions_string =" 1 ";
     
     if (!params[:search].nil?)
@@ -80,6 +80,16 @@ class ActivitiesController < ApplicationController
       end
       if (!params[:search]['date_to(1i)'].blank?)
         conditions_string+= " AND date <= '" + date_to + "'"
+      end
+
+      if(params[:search][:is_invoiced].to_i>0)
+        @checked = [false,false,false]
+        @checked[params[:is_invoiced].to_i]=true
+        if params[:search][:is_invoiced].to_i==1
+          conditions_string+= " AND invoice_id IS NOT NULL "
+        elsif params[:search][:is_invoiced].to_i==2
+          conditions_string+= " AND invoice_id IS NOT NULL "
+        end
       end
 
     end 
@@ -283,13 +293,15 @@ class ActivitiesController < ApplicationController
       end
     end
     
-    if (params[:search]['date_from(1i)'].blank? and params[:search]['date_to(1i)'].blank?)
+    unless params[:search].nil?
+      if (params[:search]['date_from(1i)'].blank? and params[:search]['date_to(1i)'].blank?)
        if (session[:year])
          conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
        end
        if (session[:month])
          conditions_string += " AND MONTH(date)='" + session[:month] + "' "
        end
+      end
     end
     
     query = "SELECT "\

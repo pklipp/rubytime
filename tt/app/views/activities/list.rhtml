@@ -3,7 +3,7 @@
 <!-- Form: Filter activities by date -->
     <fieldset>
         <legend>Filter by date</legend>
-        <%= calendar %>
+        <%= render :partial => '/activities/calendar' %>
     </fieldset>   
 <!-- End of form -->
  
@@ -16,6 +16,11 @@
         <legend>		Search	</legend>
 
         <table><tbody>
+        <tr><td colspan="2">
+        <%= radio_button_tag("search[is_invoiced]","0",@checked[0],{:id => 'search_is_invoiced_0'}) %>all
+        <%= radio_button_tag("search[is_invoiced]","1",@checked[1],{:id => 'search_is_invoiced_1'}) %>uninvoiced
+        <%= radio_button_tag("search[is_invoiced]","2",@checked[2],{:id => 'search_is_invoiced_2'}) %>invoiced
+        </td></tr>
         <tr><td><label>From:</label></td>
         <td><%= date_select 'search', 'date_from', :include_blank => true  %></td></tr>
         

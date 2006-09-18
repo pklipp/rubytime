@@ -5,6 +5,8 @@
             <th> Person</th>
             <th> Date </th>
             <th> Hours </th>
+            <td>&nbsp;		</td>
+            <!-- <th> Add to<br />invoice </th> -->
         </tr>
 
         <% minutes_sum=0 	 
@@ -16,8 +18,9 @@
                 (<%= activity.user.role.short_name.upcase %>)</td>
             <td style="text-align: center"><%= h activity.date %></td>
             <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
-            <td><%= link_to "Show", :action => "show", :id => activity %>				</td>
-        </tr>
+            <td><%= link_to "Show", :action => "show", :id => activity %></td>
+            <!-- <td style="text-align:center"><input type="checkbox" name="id[]" value="<%=activity.id%>" /></td> -->
+            </tr>
         <% end %>
         
         <tr>
@@ -25,6 +28,8 @@
             <td>&nbsp;		</td>
             <th style="text-align: right">			Sum:		</th>
             <th>			<%= hour_format(minutes_sum) %>		</th>
+            <td>&nbsp;		</td>
+            <!--<td style="text-align:center"><input type="checkbox"  onclick="" />All</td>-->
         </tr>
         </table>
         <% unless @activity_pages.nil? %>

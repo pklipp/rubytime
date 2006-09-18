@@ -48,8 +48,10 @@ class YourDataController < ApplicationController
   end
   
   # Shows list of current user's activities
-  def activities_list  
-    @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => ''} 
+  def activities_list
+    puts params.inspect  
+    @selected = { 'project_id' => ''}
+    @checked = [true,false,false] 
     conditions_string =" 1"; 
     # filter activities to current_user
     conditions_string +=" AND user_id='" + @current_user.id.to_s + "'"    
@@ -57,6 +59,15 @@ class YourDataController < ApplicationController
     if (!params[:search].blank?)  
         conditions_string+= " AND project_id='" + params[:search]+ "'"
         @selected['project_id'] = params[:search]
+    end
+    if(!params[:is_invoiced].blank? and params[:is_invoiced].to_i>0)
+      @checked = [false,false,false]
+      @checked[params[:is_invoiced].to_i]=true
+      if params[:is_invoiced].to_i==1
+      conditions_string+= " AND invoice_id IS NULL "
+      elsif params[:is_invoiced].to_i==2
+      conditions_string+= " AND invoice_id IS NOT NULL "
+      end
     end
     # filter by year set in session 
     if (session[:year]) 
@@ -216,6 +227,10 @@ class YourDataController < ApplicationController
         @selected['project_id'] = params[:search]
     end
     
+#    if(!params[:is_invoiced].blank? and params[:is_invoiced]!='2')
+#      conditions_string+= " AND is_invoiced =" + params[:is_invoiced]
+#    end
+    
     if (session[:year])
       conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
     end
@@ -247,6 +262,12 @@ class YourDataController < ApplicationController
         @selected['project_id'] = params[:search]
     end
     
+#    if(!params[:is_invoiced].blank? and params[:is_invoiced]!='2')
+#      conditions_string+= " AND is_invoiced =" + params[:is_invoiced]
+#    end
+    
+    puts  conditions_string
+    
     if (session[:year])
       conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
     end
@@ -254,7 +275,7 @@ class YourDataController < ApplicationController
       conditions_string += " AND MONTH(date)='" + session[:month] + "' "
     end
     
-    @query = "SELECT "\
+    query = "SELECT "\
             + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
             + "FROM activities ac " \
             + "LEFT JOIN users us ON (ac.user_id=us.id) " \
@@ -264,18 +285,44 @@ class YourDataController < ApplicationController
             + " GROUP BY YEAR(date), WEEK(date), role_id " \
             + " ORDER BY YEAR(date), WEEK(date), role_id " 
             
-    @query3 = "SELECT  MAX(WEEK(date)) maxweek, MIN(WEEK(date)) minweek FROM activities ac "\
+    query3 = "SELECT min( year( date ) ) minyear, max( year( date ) ) maxyear "\
+            + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
-            + conditions_string
+            + conditions_string         
+               
+    query4 = "SELECT year( date ) year, min( week( date ) ) minweek, max( week( date ) ) maxweek, count(*) as no_of_years "\
+            + "FROM activities ac "\
+            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
+            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
+            + "WHERE "\
+            + conditions_string \
+            + " GROUP BY year"\
+            + " ORDER BY year"
     
-    @activities = Activity.find_by_sql @query
-    @weeks = Activity.find_by_sql(@query3)
+    @activities = Activity.find_by_sql(query)
+    @weeks = Activity.find_by_sql(query4)
+    @years = Activity.find_by_sql(query3)
+
+            t = Array.new
+            duration = 0
+            for week in @weeks
+              duration = week.maxweek.to_i - week.minweek.to_i
+              t<< Array.new(duration+1,0)
+            end
+            
+            skip_level=(t.flatten.length/10)-3
+            skip_level=0 if skip_level<0
+            
+            for act in @activities
+                  minyear_id = act.year.to_i - @years[0].minyear.to_i
+                  t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
+            end
 
     @xm = Builder::XmlMarkup.new(:indent=>2, :margin=>4)
       @xm.chart {
-        @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up' )
+        @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up', "skip" => skip_level )
         @xm.axis_ticks("value_ticks"=>'true', "category_ticks"=>"true", "major_thickness"=>"2", "minor_thickness"=>"1", "minor_count"=>"1", "major_color"=>"000000", "minor_color"=>"222222", "position"=>"outside")
         @xm.axis_value("font"=>'arial', "bold"=>'true', "size"=>'10', "color"=>"ffffff", "alpha"=>'75', "steps"=>'10', "suffix" => ' min' , "show_min"=>'true', "separator" => '', "orientation" => 'diagonal_up')
         @xm.chart_border("top_thickness" => '0', "bottom_thickness" => '1', "left_thickness" => '2', "right_thickness" => '0', "color" => '000000')
@@ -283,22 +330,21 @@ class YourDataController < ApplicationController
         @xm.chart_data(){
           @xm.row {
             @xm.null()
-            (@weeks[0].minweek).upto(@weeks[0].maxweek) do |i|  
-              @xm.string("week: " + i)
+            for week in @weeks
+              (week.minweek.to_i).upto(week.maxweek.to_i) do |i|
+                @xm.string("Year:" + week.year.to_s + ",Week:" + i.to_s)  
+              end
             end
           }
-          duration = @weeks[0].maxweek.to_i - @weeks[0].minweek.to_i
           
-          t=Array.new(duration+1,0)
-          for act in @activities
-              t[act.week.to_i - @weeks[0].minweek.to_i] = act.minutes.to_i
-          end
-              
+     
           @xm.row {
             @xm.string("Your activities")
-              for i in t
-                @xm.number(i.to_s)
-              end
+                for i in t
+                  for j in i
+                    @xm.number(j.to_s)
+                  end
+                end
           }
         }
         elsif @activities.length==1

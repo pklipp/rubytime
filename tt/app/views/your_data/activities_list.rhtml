@@ -3,7 +3,7 @@
 <!-- Form: Filter activities by date -->
 	<fieldset>
 	<legend>Filter by date</legend>
-    <%= calendar %>
+    <%= render :partial => '/activities/calendar' %>
 	</fieldset>
 <!-- End of form -->
 
@@ -13,7 +13,13 @@
 
 <%= start_form_tag :action => 'search', :id => @activity %>
     <fieldset>
-        <legend>		Search	</legend>
+        <legend>Search</legend>
+        <p>
+        <%= radio_button_tag("is_invoiced","0",@checked[0],{:id => 'is_invoiced_0'}) %>all
+        <%= radio_button_tag("is_invoiced","1",@checked[1],{:id => 'is_invoiced_1'}) %>uninvoiced
+        <%= radio_button_tag("is_invoiced","2",@checked[2],{:id => 'is_invoiced_2'}) %>invoiced
+        </p>
+        <p>
         <label for="search">Project:</label>
         <select name="search" id="search">
         <%= options_for_select({ "--all--" => "" }) %>
@@ -21,6 +27,7 @@
         </select>
         &nbsp;&nbsp;<%= submit_tag 'Search' %>
         &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
+        </p>
     </fieldset>
 <%= end_form_tag %>
 <!-- End of form -->
@@ -57,7 +64,11 @@
             <td style="text-align:right">					<%= hour_format(activity.minutes) %>				</td>
             <td><%= h truncate(activity.comments,20)%></td>
             <td><%= link_to "Show", :action => "show_activity", :id => activity %>				</td>
-            <td><%= link_to "Edit", :action => "edit_activity", :id => activity %>				</td>
+            <td>
+            <%# unless activity.is_invoiced -%>
+            <%#= link_to "Edit", :action => "edit_activity", :id => activity %>
+            <%# end %>
+            </td>
         </tr>
         <% end %>
         <tr>

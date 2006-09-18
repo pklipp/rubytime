@@ -79,7 +79,7 @@ class RolesController < ApplicationController
     begin
       @role = Role.find(params[:id])
     rescue
-      flash[:notice] = "No such urole"
+      flash[:notice] = "No such role"
       redirect_to :action => :index
     else
       if @role.update_attributes(params[:role])
