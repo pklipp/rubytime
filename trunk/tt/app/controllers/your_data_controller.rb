@@ -49,7 +49,6 @@ class YourDataController < ApplicationController
   
   # Shows list of current user's activities
   def activities_list
-    puts params.inspect  
     @selected = { 'project_id' => ''}
     @checked = [true,false,false] 
     conditions_string =" 1"; 
@@ -266,8 +265,7 @@ class YourDataController < ApplicationController
 #      conditions_string+= " AND is_invoiced =" + params[:is_invoiced]
 #    end
     
-    puts  conditions_string
-    
+  
     if (session[:year])
       conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
     end
