@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
           @test="OK !!!" + params[:controller] + params[:action]
         else # user is not allowed to view the page. Show proper info
           @test="NO "
-          render :partial => "users/no_permisions", :layout => "main" and return false
+          render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
         end
       end
     end

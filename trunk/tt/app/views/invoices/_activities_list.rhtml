@@ -13,7 +13,8 @@
         /* ]]> */
         </script>
 
-        <%= start_form_tag :controller => 'invoices', :action => 'add_activities' %>
+        <%= start_form_tag :controller => 'invoices', :action => 'remove_activities' %>
+        <%= hidden_field_tag("invoice_id", @invoice.id) %>
         <table class="standard" id="activities_list">
        
         <tr>
@@ -22,7 +23,7 @@
             <th> Date </th>
             <th> Hours </th>
             <td>&nbsp;</td>
-             <td>&nbsp;</td>
+            <td>&nbsp;</td>
         </tr>
 
         <% minutes_sum=0 	 
@@ -36,7 +37,7 @@
             <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
             <td><%= link_to "Show", :action => "show", :id => activity %></td>
             <td style="text-align:center">
-            <%= check_box_tag("id[]", activity.id, false, :id => nil) if(!params[:search].nil? and activity.invoice_id.nil?) %>
+            <%= check_box_tag("id[]", activity.id, false, :id => nil) %>
             </td>
             </tr>
         <% end %>
@@ -45,39 +46,22 @@
             <td colspan="2"></td>
             <th style="text-align: right">Sum:</th>
             <th><%= hour_format(minutes_sum) %></th>
-            <td style="text-align:right"><%= "all" unless params[:search].nil? %></td>
+            <td style="text-align:right"></td>
             <td style="text-align:center">
-            <%= check_box_tag("select_all", 1, false, {:id => nil, :onclick=>"selectAll(this)"}) unless params[:search].nil? %>
             </td>
         </tr>
         
-        <% unless params[:search].nil? -%>
         <tr>
-            <% if !@invoices.empty? -%>
-            <td colspan="4">Add to invoice:
-            <select name="invoice_id" id="invoice_id" style="width:160px">
-	        <%= options_for_select(@invoices.collect {|i| [ i.name, i.id ] } ) %>
-            </select>
+            <td colspan="6" style="text-align:right">
+            Remove from invoice:
+            &nbsp;&nbsp; 
+            <%= check_box_tag("select_all", 1, false, {:id => nil, :onclick=>"selectAll(this)"}) %>
+            select all
+            &nbsp;&nbsp;
+            <%= submit_tag("Remove", {:onclick => "confirm('Are you sure?')"}) %>
             </td>
-            <td colspan="2" style="text-align:center">
-            <%= submit_tag "Add" %>
-            </td>
-            <% elsif params[:search][:project_id].blank? -%>
-            <td colspan="6" style="font-size:smaller;color:red;background-color:inherit">No project specified!</td>
-            <% elsif params[:search][:is_invoiced]=="2" -%>
-            <td colspan="6" style="font-size:smaller;color:red;background-color:inherit">Only invoiced activities found!</td>
-            <% else -%>
-            <td colspan="6" style="font-size:smaller;color:red;background-color:inherit">No active invoices found for this client!          
-            </td>
-            <% end -%>
         </tr>
-        <tr><td colspan="6"><%= link_to_remote "Export to CSV", :url => {:controller => 'activities', :action => 'report'} %></td></tr>
-        <% end -%>
         </table>
         <%= end_form_tag %> 
-        <% unless @activity_pages.nil? %>
-            <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
-            <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
-        <% end %>
 <!-- End of list -->
 

@@ -80,16 +80,22 @@ class YourDataController < ApplicationController
      if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
         @activity_pages, @activities = paginate :activity, 
                                                 :per_page => 10,
-                                                :conditions => conditions_string
+                                                :conditions => conditions_string,
+                                                :order => "date DESC"
      else
-        @activities = Activity.find(:all, :conditions => conditions_string)
+        @activities = Activity.find(:all, :conditions => conditions_string, :order => "date DESC")
      end   
                                
   end
   
   # Shows chosen activity.
   def show_activity 
+    begin
     @activity = Activity.find(params[:id])
+    rescue
+    flash[:notice] = "No such activity"
+    redirect_to :action => :index
+    end
   end
   
   # Fill form for new activity.
@@ -110,12 +116,7 @@ class YourDataController < ApplicationController
     @activity = Activity.new(params[:activity])
     @activity.user = User.find(session[:user_id]) # current user 
     @projects = Project.find_all
-    
-    @selected = {'project_id' => ''}
-    if (@activity.project)
-      @selected['project_id']=@activity.project.id.to_i
-    end
-    
+       
     if @activity.save
       flash[:notice] = 'Activity has been successfully created'
       redirect_to :action => 'activities_list'
@@ -126,37 +127,32 @@ class YourDataController < ApplicationController
   
   # Fill form with activity's details to update
   def edit_activity 
-    if @activity = Activity.find(:first, :conditions => [ "user_id = ? AND id= ?", @current_user.id, params[:id] ]) 
-      @selected = {'project_id' => ''}
-      if (@activity.project)
-        @selected['project_id']=@activity.project.id.to_i
-      end
-    else
-      render :partial => "users/no_permisions", :layout => "main" and return false      
+    @activity = Activity.find(params[:id]) 
+    if @activity.user_id!=@current_user.id or @activity.invoice_id
+      render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false     
     end
   end
   
   # Updates activity's details. Data is validated before. 
   def update_activity 
     @activity = Activity.find(params[:id])
+    if @activity.invoice_id
     @projects = Project.find_all
-    
-    @selected = {'project_id' => ''}
-    if (@activity.project)
-      @selected['project_id']=@activity.project.id.to_i
-    end
     # hours format to minutes
     if (params[:activity]['minutes'].index(':'))
       parts=params[:activity]['minutes'].split(/:/)
       params[:activity]['minutes']=parts[0].to_f + (parts[1].to_f / 60).to_f
     end
     params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
-
     if @activity.update_attributes(params[:activity])
       flash[:notice] = 'Activity has been successfully updated'
       redirect_to :action => 'activities_list', :id => @activity
     else
+      flash[:notice] = 'Errors with updating activities'
       render :action => 'edit_activity'
+    end
+    else
+      render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false     
     end
   end
   

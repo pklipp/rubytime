@@ -30,23 +30,23 @@
         <tr><td><label for="search_project_id">Project:</label></td>
         <td><select name="search[project_id]" id="search_project_id" style="width:200px">
         <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select(Project.find_all.collect {|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
+        <%= options_for_select(Project.find(:all,:order=>"name").collect{|p| [p.name + " - " + p.client.name, p.id ] }, @selected['project_id'].to_i) %>
         </select></td></tr>
         
         <tr><td><label for="search_role_id">Role:</label></td>
         <td><select name="search[role_id]" id="search_role_id" style="width:200px">
         <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select(Role.find_all.collect {|r| [ r.name, r.id ] }, @selected['role_id'].to_i ) %>
+        <%= options_for_select(Role.find(:all,:order=>"name").collect {|r| [ r.name, r.id ] }, @selected['role_id'].to_i ) %>
         </select></td></tr>
         
         <tr><td><label for="search_user_id">User:</label></td>
         <td><select name="search[user_id]" id="search_user_id" style="width:200px">
         <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select(User.find_all.collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
+        <%= options_for_select(User.find(:all,:order=>"name").collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
         </select></td></tr>
  		
         <tr><td colspan="2" style="text-align:center">
-        <%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
+        <%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %>&nbsp;&nbsp;<%= submit_tag 'Export to CSV' %>
         </td></tr>
         </tbody></table>
         </fieldset>
@@ -67,7 +67,6 @@
         <% end %>
         </legend>
         <%= render :partial => "list" %>
-        <%#= activitiesList(@activities) %>
     </fieldset>
 <%else%>
 <p id="errorNotice">No activities found</p>

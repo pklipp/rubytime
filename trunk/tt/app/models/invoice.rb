@@ -6,5 +6,5 @@ class Invoice < ActiveRecord::Base
   
   validates_presence_of :client_id, :name
   validates_uniqueness_of :name
-
+  
 end

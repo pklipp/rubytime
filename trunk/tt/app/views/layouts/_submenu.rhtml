@@ -4,7 +4,7 @@
     <ul>
         <li>  
         <%= link_to("Your data",{:controller => "your_data"},
-                          :class=> ( (params[:controller]=="your_data" and (params[:action]=="activities_list" or params[:action]=="index" )) ?  "active" : "") ) %>
+                          :class=> ( (params[:controller]=="your_data" ) ?  "active" : "") ) %>
         </li> 
         
         <% if @current_user.has_permisions_to("clients", "list") %>
