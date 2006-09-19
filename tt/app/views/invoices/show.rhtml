@@ -9,18 +9,19 @@
 <% if @invoice.is_issued -%>
 <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
 <% end -%>
-<p><b>Created by:</b><%= link_to @invoice.user.login, :controller => 'users', :action => 'show', :id => @invoice.user_id %></p>
+<p><b>Created by: </b><%= link_to @invoice.user.login, :controller => 'users', :action => 'show', :id => @invoice.user_id %></p>
 
 <% unless @invoice.is_issued %>
-<%= link_to_remote('Issue', :url => {:controller => 'invoices', :action => 'issue', :id => @invoice}, :confirm => "Issuing an invoice causes that activities will not be editable and is irretrievable. Are you sure?" ) %> |
+<%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => @invoice.id}, :confirm => "Issuing an invoice causes that activities will not be editable and is irretrievable. Are you sure?" ) %> |
 <% end %>
 <%= link_to 'Edit', :action => 'edit', :id => @invoice %> |
+<a href="#" onclick="window.open('/invoices/print/<%=@invoice.id%>','Print an invoice',600,400)" >Print</a> |
 <%= link_to 'Back', :action => 'list' %>
 </fieldset>
 <br /><br />
 <fieldset>
 <legend>Activities on this invoice</legend>
 <% @activities = @invoice.activities -%>
-<%= render :partial => '/activities/list' %>
+<%= render :partial => '/invoices/activities_list' %>
 </fieldset>
 </div>

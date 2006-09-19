@@ -43,7 +43,7 @@
 <%if ((params[:action]=="edit" || params[:action]=="update") && User.find(:all, :conditions => ["is_inactive = ?", false]).length>1)%>
 <!-- Allowed only for edit user form when there is more than one active user -->
 <div class="inputs">
-   <%= check_box 'user', 'is_inactive'%>&nbsp;
+   <%= check_box 'user', 'is_inactive', :disabled => (@user.id==@current_user.id ? true : false) %>&nbsp;
 	   <label>is inactive</label>
 </div>
 <%end%>

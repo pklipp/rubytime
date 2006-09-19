@@ -9,9 +9,9 @@
     <% end %>
 
     <p class="	p_edit_back">
-       <%# unless @activity.is_invoiced -%>
-       <%#= link_to 'Edit', :action => 'editt_activity', :id => @activity %> |
-       <%# end %>
+       <% unless @activity.invoice_id -%>
+       <%= link_to 'Edit', :action => 'edit_activity', :id => @activity %> |
+       <% end -%>
     <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
     </p>
 </fieldset>

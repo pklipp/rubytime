@@ -15,11 +15,6 @@
     <fieldset>
         <legend>Search</legend>
         <p>
-        <%= radio_button_tag("is_invoiced","0",@checked[0],{:id => 'is_invoiced_0'}) %>all
-        <%= radio_button_tag("is_invoiced","1",@checked[1],{:id => 'is_invoiced_1'}) %>uninvoiced
-        <%= radio_button_tag("is_invoiced","2",@checked[2],{:id => 'is_invoiced_2'}) %>invoiced
-        </p>
-        <p>
         <label for="search">Project:</label>
         <select name="search" id="search">
         <%= options_for_select({ "--all--" => "" }) %>

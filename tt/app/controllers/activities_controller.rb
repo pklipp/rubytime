@@ -39,6 +39,9 @@ class ActivitiesController < ApplicationController
     if params[:commit]=="Search"
       list
       render :action => 'list'
+    elsif params[:commit]=="Export to CSV"
+      list
+      report
     elsif params[:commit]=="Generate graph"
       graph
       render :action => 'graph'
@@ -71,6 +74,7 @@ class ActivitiesController < ApplicationController
         @selected['user_id'] = params[:search][:user_id]
       end
       if (!params[:search][:project_id].blank?)
+        client_id = Project.find_by_id(params[:search][:project_id]).client_id
         conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
         @selected['project_id'] = params[:search][:project_id]
       end
@@ -108,6 +112,7 @@ class ActivitiesController < ApplicationController
                                                 :per_page => 10,
                                                 :conditions => conditions_string
      else
+        @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", client_id])
         @activities = Activity.find(:all, :conditions => conditions_string)
      end                                           
 
@@ -427,6 +432,24 @@ class ActivitiesController < ApplicationController
           @xm.color("D100D1")  
         }
       }
+  end
+  
+  def report
+    report = StringIO.new
+    minutes = 0 
+    CSV::Writer.generate(report, ',') do |csv|
+      csv << ["Name", "Login", "Role", "Date", "Minutes"]
+      @activities.each do |activity|
+        minutes += activity.minutes
+        csv << [activity.project.name, activity.user.login, activity.date, activity.minutes]
+      end
+      csv << ["","","","Sum", minutes]
+    end
+
+    report.rewind
+    send_data(report.read,
+      :type => 'text/csv; charset=utf-8; header=present',
+      :filename => 'report.csv')
   end
 
 end

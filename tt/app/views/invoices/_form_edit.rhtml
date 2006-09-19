@@ -6,7 +6,7 @@
 <p><label for="invoice_name">Name</label><br/>
 <%= text_field 'invoice', 'name'  %></p>
 <p><label for="invoice_client_id">Client</label><br/>
-<%= select("invoice", "client_id", Client.find_all.collect {|c| [ c.name, c.id ] }, { :include_blank => true }) %></p>
+<%= select("invoice", "client_id", Client.find_all.collect {|c| [ c.name, c.id ] }, { :include_blank => true }, {:disabled => (@invoice.activities.empty? ? false : true)}) %></p>
 
 <p><%= check_box('invoice', 'is_issued', :disabled => (@invoice.activities.empty? ? true : false)) %><label for="invoice_is_issued">Issued</label></p>
 

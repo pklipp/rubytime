@@ -32,7 +32,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="author" content="Lunar Logic Polska" />
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-  <link rel="shortcut icon" href="/images/favicon.ico" type="image/ico" />
   <%= stylesheet_link_tag 'time_tracker' %>
   <%= javascript_include_tag "prototype", "effects" %>
   <%= javascript_include_tag "mx" %>
@@ -45,6 +44,7 @@
         <div id="top-menu">
           <%= render :partial => 'layouts/submenu' 		%>
     </div>
+
     <div id="sub-menu">
           <p>
              <% if @current_user!=nil %>
@@ -65,29 +65,23 @@
              </ul>
              <% end %>
 
-          
+          <p>
+          <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">
+          Help</a>
+          </p>
           <p>
                  <%= link_to("Logout" ,:controller => "login", 
                  :action => "login") if session[:user_id] %>
           </p>
-    <!-- validator icons
-    <div id="w3icons">
-    <a href="http://validator.w3.org/check?uri=referer">
-    <img style="border: 0px" src="/images/w3cValidation.xhtml.gif" alt="Validate XHTML"/>
-    </a>
-    <a href="http://jigsaw.w3.org/css-validator/validator?uri=_insert_link_to_css">
-    <img style="border: 0px" src="/images/w3cValidation.CSS.gif" alt="Validate CSS"/>
-    </a>
-    </div> 
-    -->   
+
     </div>
-    <!-- src="/images/w3cValidation.CSS.gif"/> -->
+
     <div id="content">
     <% if flash[:notice]%>
           <p class="flashNotice"><%= flash[:notice] %></p>
     <%end%>
-
     <%= @content_for_layout %>
     </div>	
+
 </body>
 </html>
