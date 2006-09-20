@@ -35,9 +35,9 @@
                 (<%= activity.user.role.short_name.upcase %>)</td>
             <td style="text-align: center"><%= h activity.date %></td>
             <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
-            <td><%= link_to "Show", :action => "show", :id => activity %></td>
+            <td><%= link_to "Show", :controller => 'activities', :action => "show", :id => activity %></td>
             <td style="text-align:center">
-            <%= check_box_tag("id[]", activity.id, false, :id => nil) %>
+            <%= check_box_tag("id[]", activity.id, false, :id => nil) unless @invoice.is_issued%>
             </td>
             </tr>
         <% end %>
@@ -50,7 +50,7 @@
             <td style="text-align:center">
             </td>
         </tr>
-        
+        <% unless @invoice.is_issued -%>
         <tr>
             <td colspan="6" style="text-align:right">
             Remove from invoice:
@@ -61,6 +61,7 @@
             <%= submit_tag("Remove", {:onclick => "confirm('Are you sure?')"}) %>
             </td>
         </tr>
+        <% end -%>
         </table>
         <%= end_form_tag %> 
 <!-- End of list -->
