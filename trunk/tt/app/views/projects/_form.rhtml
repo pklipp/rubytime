@@ -1,7 +1,7 @@
 <!-- Partial form: Add/Edit project -->
 <div class="inputs">
 	   <label for="project_name">Name:</label><br/>
-	   <%= text_field 'project', 'name', "size" => 66, "maxlength" => 50  %>
+	   <%= text_field 'project', 'name', :size => 66, :maxlength => 30  %>
 </div>
 <div class="inputs">
   <label>Client:</label><br/>
@@ -13,7 +13,7 @@
 </div>
 <div class="inputs">
 	   <label for="project_description">Description:</label><br/>
-	   <%= text_area 'project', 'description', "cols" => 50, "rows" => 15 %>
+	   <%= text_area 'project', 'description', :cols => 50, :rows => 15 %>
 </div>
 
 <%if (params[:action]=="edit" || params[:action]=="update") %>

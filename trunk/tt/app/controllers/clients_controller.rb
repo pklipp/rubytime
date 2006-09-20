@@ -48,6 +48,7 @@ class ClientsController < ApplicationController
   def show
     begin
       @client = Client.find(params[:id])
+      @projects = @client.projects
     rescue
       flash[:notice] = "No such client"
       redirect_to :action => :index

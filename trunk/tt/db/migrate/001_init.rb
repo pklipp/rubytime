@@ -11,8 +11,8 @@ CREATE TABLE `activities` (
   `comments` text NOT NULL,
   `date` date NOT NULL default '0000-00-00',
   `minutes` int(11) NOT NULL default '0',
-  `project_id` int(11) NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
+  `project_id` int(11) NOT NULL default '1',
+  `user_id` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM ;
 
@@ -42,7 +42,7 @@ CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL default '',
   `description` text NOT NULL,
-  `client_id` int(11) NOT NULL default '0',
+  `client_id` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM PACK_KEYS=0 ;
 
@@ -81,7 +81,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL default '',
   `email` varchar(255) NOT NULL default '',
   `login_key` varchar(32) NOT NULL default '',
-  `role_id` int(11) NOT NULL default '0',
+  `role_id` int(11) NOT NULL default '2',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM ;
 
@@ -89,7 +89,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO `users` VALUES (1, 'admin', 'admin', 'Admin', 'admin@llp.pl', 'uwetyoiuytowiug3h9874tyiquerytoi', 1);      
+INSERT INTO `users` VALUES (1, 'admin', 'admin', 'Admin', 'admin@admin.llp', 'uwetyoiuytowiug3h9874tyiquerytoi', 1);      
 --    
     END
     sql_code.split(';').each do |stmt|

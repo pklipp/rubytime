@@ -53,7 +53,8 @@ class ActivitiesController < ApplicationController
   #Lists all current projects or specified by search conditions
   def list 
     @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => '' }
-    @checked = [true,false,false] 
+    @checked = Array.new(3,false)
+    @checked[0] = true
     conditions_string =" 1 ";
     
     if (!params[:search].nil?)
@@ -74,7 +75,7 @@ class ActivitiesController < ApplicationController
         @selected['user_id'] = params[:search][:user_id]
       end
       if (!params[:search][:project_id].blank?)
-        client_id = Project.find_by_id(params[:search][:project_id]).client_id
+        @client_id = Project.find_by_id(params[:search][:project_id]).client_id
         conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
         @selected['project_id'] = params[:search][:project_id]
       end
@@ -87,13 +88,13 @@ class ActivitiesController < ApplicationController
       end
 
       if(params[:search][:is_invoiced].to_i>0)
-        @checked = [false,false,false]
-        @checked[params[:is_invoiced].to_i]=true
+        @checked.fill(false)
+        @checked[params[:search][:is_invoiced].to_i]=true
         if params[:search][:is_invoiced].to_i==1
-          conditions_string+= " AND invoice_id IS NOT NULL "
+          conditions_string+= " AND invoice_id IS  NULL "
         elsif params[:search][:is_invoiced].to_i==2
           conditions_string+= " AND invoice_id IS NOT NULL "
-        end
+        end        
       end
 
     end 
@@ -112,7 +113,7 @@ class ActivitiesController < ApplicationController
                                                 :per_page => 10,
                                                 :conditions => conditions_string
      else
-        @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", client_id])
+        @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id])
         @activities = Activity.find(:all, :conditions => conditions_string)
      end                                           
 
@@ -443,7 +444,7 @@ class ActivitiesController < ApplicationController
         minutes += activity.minutes
         csv << [activity.project.name, activity.user.login, activity.date, activity.minutes]
       end
-      csv << ["","","","Sum", minutes]
+      csv << ["Sum", minutes]
     end
 
     report.rewind

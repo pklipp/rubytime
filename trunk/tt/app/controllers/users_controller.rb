@@ -47,19 +47,11 @@ class UsersController < ApplicationController
   # User constructor.
   def new
     @user = User.new
-    @selected = {'role_id' => ''}
-    if (@user.role)
-      @selected['role_id']=@user.role.id.to_i
-    end
   end
  
   # Creates new user.
   def create
     @user = User.new(params[:user])  
-    @selected = {'role_id' => ''}
-    if (@user.role)
-      @selected['role_id']=@user.role.id.to_i
-    end  
     if(@user.valid?)
       new_salt = User.create_new_salt
       @user.salt = new_salt
@@ -110,11 +102,6 @@ class UsersController < ApplicationController
     rescue
       flash[:notice] = "No such user"
       redirect_to :action => :index
-    else
-      @selected = {'role_id' => ''}
-      if (@user.role)
-        @selected['role_id']=@user.role.id.to_i
-      end
     end
   end
   
@@ -174,9 +161,13 @@ class UsersController < ApplicationController
     end
   end
 
-  # Removes user. Not allowed.
+  # Removes user
   def destroy
-    # User.find(params[:id]).destroy
+    if User.find(params[:id]).destroy
+      flash[:notice] = "User and his activities have been deleted"
+    else
+      flash[:notice] = "Error with deleting user"
+    end
     redirect_to :action => 'list'
   end
 

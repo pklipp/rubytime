@@ -41,14 +41,12 @@ class User < ActiveRecord::Base
                       :message => "should be at least 5 characters long"                       
   validates_uniqueness_of :login
   validates_confirmation_of :password  
-
+  validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
 
   # Logs user.
   def self.login(login, password)
-    tmp = find(:first,
-         :conditions => 
-         ["login = ? ", login])     
+    tmp = find(:first,:conditions =>  ["login = ? ", login])     
     if !tmp.nil?
       tmp_password = User.hashed_pass(password, tmp.salt)
       find(:first,

@@ -11,7 +11,7 @@
         <% end %>
     <% end %>
        <p>
-	       <b>Active: </b><%if @project.is_inactive==false %>YES<%else%>NO<%end%>
+	       <b>Active: </b><%= @project.is_inactive ? "YES" : "NO" %>
 	       </p>
     <p class="	p_edit_back">
     <%= link_to 'Show activities', :controller => 'activities', 

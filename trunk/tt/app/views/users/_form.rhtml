@@ -11,12 +11,12 @@
 <%  if params[:action]=="new" || params[:action]=="create"%>
 <div class="inputs">
 	   <label for="user_password">Password:</label><br/>
-	   <%= password_field 'user', 'password', :size => 32  %>
+	   <%= password_field('user', 'password',{ :size => 32})  %>
 </div>
 <div class="inputs">
 	   <label for="user_password_confirmation">Confirm password:</label>
 	   <br/>
-	   <%= password_field 'user', 'password_confirmation', :size => 32  %>
+	   <%= password_field('user', 'password_confirmation',{ :size => 32})  %>
 </div>
 <% end
 %>
@@ -34,10 +34,7 @@
 <div class="inputs">
    <label>Role:</label>
    <br/>
-   <select name="user[role_id]" id="activity_role_id">
-		   <%= options_for_select({ "choose" => "" }) %>
-		   <%= options_for_select(Role.find_all.collect {|p| [ p.name, p.id ] }, @selected['role_id'] ) %>
-	   </select>
+    <%= select('user', 'role_id', Role.find_all.collect {|p| [ p.name, p.id ] } ) %>
 </div>
 
 <%if ((params[:action]=="edit" || params[:action]=="update") && User.find(:all, :conditions => ["is_inactive = ?", false]).length>1)%>

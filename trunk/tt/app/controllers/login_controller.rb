@@ -29,10 +29,10 @@ class LoginController < ApplicationController
   def login
     if request.get?
       session[:user_id] = nil
-      @user = User.new
+      @log_user = User.new
     else
-      @user = User.new({ "login" => params[:log], "password" => params[:pass]})
-      logged_in_user = @user.try_to_login
+      @log_user = User.new({ "login" => params[:log_user][:login], "password" => params[:log_user][:password]})
+      logged_in_user = @log_user.try_to_login
       if logged_in_user
          session[:user_id] = logged_in_user.id
          redirect_to(:controller => "your_data")

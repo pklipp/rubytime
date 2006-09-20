@@ -1,52 +1,57 @@
 <div class="fieldsets">
-    <%if !@invoices.blank? %>
-    <fieldset>
-        <legend>
-        <% if params[:search].nil? %>
-        List of invoices
-        <% else %>
-        List of invoices: Search result
-        <% end %>
-        </legend>
-        <p class="p_new">
-        <%= link_to 'New invoice', :action => 'new' %>
-        </p>
-        <hr/> 
-               
-<table>
-  <tr>
-  <th>Name</th>
-  <th>Client</th>
-  <th>Created</th>
-  <th>Issued</th>
+   
+<!-- Form: search -->
 
-  </tr>
-  
-<% for invoice in @invoices %>
-  <tr>
-  <td><%=h invoice.name %></td>
-  <td><%=h invoice.client.name %></td>
-  <td><%=h invoice.created_at.strftime("%d/%m/%y") %></td>
-  <td><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
-  
-    <td><%= link_to 'Show', :action => 'show', :id => invoice %></td>
-    <td>
-    <%= link_to('Edit', :action => 'edit', :id => invoice) %>
-    </td>
-    <td>
-    <%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => invoice.id} , {:confirm => "Issuing an invoice causes that activities will not be editable and it is irretrievable. Are you sure?" }) unless invoice.is_issued  %>
-    </td>
-  </tr>
-<% end %>
-</table>
+<%= form_remote_tag  :update => "invoices_list", :url => { :controller => 'invoices', :action => 'search' }  %>
+        <fieldset>
+        <legend>Search</legend>
+        <table><tbody>
+        <tr><td colspan="2">
+        <%= radio_button("search", "is_issued","0", {:id => 'search_is_issued_0', :checked => "checked"}) %>all
+        <%= radio_button("search", "is_issued","1",{:id => 'search_is_issued_1'}) %>unissued
+        <%= radio_button("search", "is_issued","2",{:id => 'search_is_issued_2'}) %>issued
+        </td></tr>
+        <tr><td><label>From:</label></td>
+        <td><%= date_select 'search', 'date_from', :include_blank => true  %></td></tr>
+        <tr><td><label>To:</label></td>
+        <td><%= date_select 'search', 'date_to', :include_blank => true  %></td></tr>
+        <tr><td><label for="search_client_id">Client:</label></td>
+        <td><%= select("search","client_id", Client.find(:all,:order=>"name").collect{|c| [c.name , c.id ] }, {:include_blank => true, :style => "width:200px"}) %>
+        </td></tr>
+        <tr><td><label for="search_name">Invoice name:</label></td>
+        <td><%= text_field "search","name" %>
+        </td></tr>
+        <tr><td colspan="2" style="text-align:center">
+        <%= submit_tag 'Search' %>
+        </td></tr>
+        </tbody></table>
+        </fieldset>
+        <%= end_form_tag %>
+    
+<!-- End of form -->
 
-<%= link_to 'Previous page', { :page => @invoice_pages.current.previous } if @invoice_pages.current.previous %>
-<%= link_to 'Next page', { :page => @invoice_pages.current.next } if @invoice_pages.current.next %> 
+<br/><br/>
+ 
+<!-- List of activities -->
+<%if !@invoices.blank? %>    
+    <div id="invoices_list">
+        <%= render :partial => "list" %>
+    </div> 
 
-    </fieldset>
-    <%else%>
-    <p id="errorNotice">No invoices found
-    </p>
+    <%elsif !params[:search].nil? %>
+    <p id="errorNotice">No invoices found</p>
+    <% else -%>
+    <p id="errorNotice">No invoices found</p>
     <p><%= link_to 'New invoice', :action => 'new' %></p>
-    <%end%>
-    </div>
+    <%end%> 
+          
+<!-- End of list --> 
+
+<br/><br/>
+
+<%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
+      
+</div>   
+
+
+
