@@ -16,6 +16,41 @@ class InvoicesController < ApplicationController
   def list
     @invoice_pages, @invoices = paginate :invoices, :per_page => 10
   end
+  
+  #Searches invoices
+  def search
+    conditions_string =" 1 ";
+    if (!params[:search].nil?)
+      date_from = params[:search]["date_from(1i)"].to_i.to_s \
+              + "-" + params[:search]["date_from(2i)"].to_i.to_s \
+              + "-" + params[:search]["date_from(3i)"].to_i.to_s
+      date_to = params[:search]["date_to(1i)"].to_i.to_s \
+              + "-" + params[:search]["date_to(2i)"].to_i.to_s \
+              + "-" + params[:search]["date_to(3i)"].to_i.to_s
+    
+      if (!params[:search][:client_id].blank?)
+        conditions_string+= " AND client_id='" + params[:search][:client_id]+ "' "
+      end
+      if (!params[:search]['date_from(1i)'].blank?)
+        conditions_string+= " AND date >= '" + date_from + "'"
+      end
+      if (!params[:search]['date_to(1i)'].blank?)
+        conditions_string+= " AND date <= '" + date_to + "'"
+      end
+      if(params[:search][:is_issued].to_i>0)
+        if params[:search][:is_issued].to_i==1
+          conditions_string+= " AND is_issued=0 "
+        elsif params[:search][:is_issued].to_i==2
+          conditions_string+= " AND is_issued=1 "
+        end
+      end
+      if (!params[:search][:name].blank?)
+        conditions_string+= " AND name LIKE '%" + params[:search][:name] + "%'"
+      end
+    end   
+      @invoices = Invoice.find(:all, :conditions => conditions_string)
+      render :partial => '/invoices/list'  
+  end
 
   #Shows invoice's details.
   def show
@@ -60,14 +95,19 @@ class InvoicesController < ApplicationController
   #Makes invoice issued.
   def issue
     @invoice = Invoice.find(params[:id])
-    if @invoice.update_attributes({'is_issued' => 1, 'issued_at' => Time.now})
-      flash[:notice] = 'Invoice has been issued.'
+    unless @invoice.activities.empty?
+      if @invoice.update_attributes({'is_issued' => 1, 'issued_at' => Time.now})
+        flash[:notice] = 'Invoice has been issued.'
+      else
+        flash[:notice] = 'Eroros with issuing invoice.'
+      end
     else
-      flash[:notice] = 'Invoice has not been issued.'
+      flash[:notice] = 'No activities on this invoice! Cannot be issued!'
     end
-    redirect_to :action => :index
+    redirect_to :action => :show, :id => @invoice
   end
   
+  #Adds activities to invoice.
   def add_activities
     @activities = Activity.find(:all, :conditions => ["invoice_id IS NULL AND id IN (?)",params[:id]])
     @success = true
@@ -82,8 +122,8 @@ class InvoicesController < ApplicationController
     redirect_to :action => 'show', :id => params[:invoice_id]
   end
   
+  #Removess activities from invoice.
   def remove_activities
-    puts params.inspect
     @activities = Activity.find(:all, :conditions => ["id IN (?)",params[:id]])
     @success = true
     @activities.each do |activity|
@@ -95,6 +135,24 @@ class InvoicesController < ApplicationController
       flash[:notice] = 'Error with removing activities form invoice.'
     end
     redirect_to :action => 'show', :id => params[:invoice_id]
-  end    
+  end
+  
+  #Renders AJAX form for creating an invoice.
+  def add_new
+    @invoice = Invoice.new
+    @invoice.client_id =  params[:client_id]
+    render :partial => '/invoices/add_new'
+  end
+  
+  #Creates new invoice by AJAX.
+  def create_new
+    @invoice = Invoice.new(params[:invoice])
+    @invoice.user_id = @current_user.id
+    @success = false
+    if @invoice.save
+      @success = true
+    end
+    @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @invoice.client_id]) 
+  end     
   
 end

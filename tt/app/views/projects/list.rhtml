@@ -14,33 +14,7 @@
         <%= link_to 'New project', :action => 'new' %>
         </p>
         <hr/>
-        <table class="standard">
-        <tr>
-            <th> Name</th>
-            <th> Description</th>
-            <th> Client</th>
-            <th> Inactive</th>
-        </tr>
-
-        <% for project in @projects %>
-        <tr>
-
-            <td><%= h project.name %></td>
-            <td><%= h truncate(project.description,20)%></td>
-            <td><%= 
-                    if project.client 
-                        h truncate(project.client.name,20)
-                    elsif project.client_name
-                        h truncate(project.client_name,20)
-                    end %>
-            </td>
-            <td style="text-align: center"><%if project.is_inactive==true%>X<%end%></td>
-            
-            <td><%= link_to 'Show', :action => 'show', :id => project %></td>
-            <td><%= link_to 'Edit', :action => 'edit', :id => project %></td>
-        </tr>
-        <% end %>
-        </table>
+        <%= render :partial => 'list'%>
         
         <% if (@project_pages.current.previous || @project_pages.current.next) %>
         <p>

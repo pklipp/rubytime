@@ -41,6 +41,15 @@ a:hover {
 	   background-color: #f5fff5; 
 }
 
+.flashNotice2{
+	   border: 1px solid;
+	   border-color: #000;
+	   padding: 1em 1em 1em 1em;
+	   color: #32541f;
+	   font-weight: bold;
+	   background-color: #f5fff5; 
+}
+
 #errorNotice {
 	   width: 450px;
 	   border: 2px solid;
@@ -92,6 +101,16 @@ a:hover {
 	   list-style: square;
 }
 
+.formError{
+	   width: 350px;
+	   font-weight: bold;
+	   border: 2px solid;
+	   border-color: #c00;
+	   padding: 7px;
+	   margin-bottom: 20px;
+	   color: #c00;
+	   background-color: #f8f8f8;
+}
 /* */
 div.uploadStatus {
 	   margin: 5px;
