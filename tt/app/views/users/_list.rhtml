@@ -1,0 +1,46 @@
+    <%if !@users.blank? %>
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        List of users
+        <% else %>
+        List of users: Search result
+        <% end %>
+        </legend>
+        
+        <p class="p_new">
+        <%= link_to 'New user', :action => 'new' %>
+        </p>
+        <hr/>       
+        <table class="standard">
+        <tr>
+            <th>Login</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Inactive</th>
+        </tr>
+  
+        <% for user in @users %>
+        <tr>
+            <td><%= user.login %></td>
+            <td><%= h(truncate(user.name,20)) %></td>
+            <td><%= h(truncate(user.role.short_name,20).upcase) %></td>
+            <td style="text-align: center"><%if user.is_inactive==true %>X<%end%></td>
+            
+            <td><%= link_to 'Show', :action => 'show', :id => user %></td>
+            <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+        </tr>
+        <% end %>
+        </table>
+        <% if(!@user_pages.nil? and @user_pages.page_count>1)%>
+        <p>
+        <%= link_to 'Previous page', { :page => @user_pages.current.previous} \
+                                       if @user_pages.current.previous %>
+        <%= link_to 'Next page', { :page => @user_pages.current.next} \
+                                   if @user_pages.current.next %> 
+        </p>
+        <% end %>
+    </fieldset>
+    <%else%>
+    <p id="errorNotice">No users found</p>
+    <%end%>

@@ -34,14 +34,14 @@ class UsersController < ApplicationController
   
   # Lists all users or specified by search conditions.
   def list
-    if !params[:search].nil?
+      @user_pages, @users = paginate :user, :per_page => 10, :order => "is_inactive"
+  end
+  
+  #Searches users.
+  def search
       query = " 1 AND login LIKE \"%" + params[:search] + "%\" OR name LIKE \"%" + params[:search] + "%\" "
-      @user_pages, @users = paginate :user, 
-                                     :per_page => 10,
-                                     :conditions => query
-    else
-      @user_pages, @users = paginate :user, :per_page => 10
-    end
+      @users = User.find(:all,:conditions => query, :order => "is_inactive")
+      render :partial => 'list'
   end
   
   # User constructor.

@@ -12,7 +12,7 @@
 <p><b>Created by: </b><%= link_to @invoice.user.login, :controller => 'users', :action => 'show', :id => @invoice.user_id %></p>
 
 <% unless @invoice.is_issued %>
-<%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => @invoice.id}, :confirm => "Issuing an invoice causes that activities will not be editable and is irretrievable. Are you sure?" ) %> |
+<%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => @invoice.id}, :confirm => "Issuing an invoice causes that activities will not be editable and is irreversible. Are you sure?" ) %> |
 <% end %>
 <%= link_to 'Edit', :action => 'edit', :id => @invoice %> |
 <a href="#" onclick="window.open('/invoices/print/<%=@invoice.id%>','Print an invoice',600,400)" >Print</a> |
@@ -21,7 +21,11 @@
 <br /><br />
 <fieldset>
 <legend>Activities on this invoice</legend>
+<% unless @invoice.activities.empty? -%>
 <% @activities = @invoice.activities -%>
 <%= render :partial => '/invoices/activities_list' %>
+<% else -%>
+<p>No activities on this invoice yet!</p>
+<% end -%>
 </fieldset>
 </div>

@@ -55,7 +55,7 @@ class ActivitiesController < ApplicationController
     @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => '' }
     @checked = Array.new(3,false)
     @checked[0] = true
-    conditions_string =" 1 ";
+    @conditions_string =" 1 ";
     
     if (!params[:search].nil?)
     date_from = params[:search]["date_from(1i)"].to_i.to_s \
@@ -66,34 +66,34 @@ class ActivitiesController < ApplicationController
               + "-" + params[:search]["date_to(3i)"].to_i.to_s          
     
       if (!params[:search][:role_id].blank?)
-        conditions_string+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)='" + params[:search]['role_id']+ "')"
+        @conditions_string+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)='" + params[:search]['role_id']+ "')"
         @selected['role_id'] = params[:search][:role_id]
       end
 
       if (!params[:search][:user_id].blank?)
-        conditions_string+= " AND user_id='" + params[:search][:user_id]+ "'"
+        @conditions_string+= " AND user_id='" + params[:search][:user_id]+ "'"
         @selected['user_id'] = params[:search][:user_id]
       end
       if (!params[:search][:project_id].blank?)
         @client_id = Project.find_by_id(params[:search][:project_id]).client_id
-        conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
+        @conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
         @selected['project_id'] = params[:search][:project_id]
       end
 
       if (!params[:search]['date_from(1i)'].blank?)
-        conditions_string+= " AND date >= '" + date_from + "'"
+        @conditions_string+= " AND date >= '" + date_from + "'"
       end
       if (!params[:search]['date_to(1i)'].blank?)
-        conditions_string+= " AND date <= '" + date_to + "'"
+        @conditions_string+= " AND date <= '" + date_to + "'"
       end
 
       if(params[:search][:is_invoiced].to_i>0)
         @checked.fill(false)
         @checked[params[:search][:is_invoiced].to_i]=true
         if params[:search][:is_invoiced].to_i==1
-          conditions_string+= " AND invoice_id IS  NULL "
+          @conditions_string+= " AND invoice_id IS  NULL "
         elsif params[:search][:is_invoiced].to_i==2
-          conditions_string+= " AND invoice_id IS NOT NULL "
+          @conditions_string+= " AND invoice_id IS NOT NULL "
         end        
       end
 
@@ -101,20 +101,20 @@ class ActivitiesController < ApplicationController
 
      if (params[:search].nil? or (params[:search]['date_from(1i)'].blank? and !params[:search]['date_t1i)'].blank?))
        if (session[:year])
-         conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
+         @conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
        end
        if (session[:month])
-         conditions_string += " AND MONTH(date)='" + session[:month] + "' "
+         @conditions_string += " AND MONTH(date)='" + session[:month] + "' "
        end  
      end
      
      if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
         @activity_pages, @activities = paginate :activity, 
                                                 :per_page => 10,
-                                                :conditions => conditions_string
+                                                :conditions => @conditions_string
      else
         @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id])
-        @activities = Activity.find(:all, :conditions => conditions_string)
+        @activities = Activity.find(:all, :conditions => @conditions_string)
      end                                           
 
 
@@ -214,51 +214,14 @@ class ActivitiesController < ApplicationController
   
   # Generetes data for statictics
   def graph
-    @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => ''}
-    conditions_string =" 1 ";
-    if (!params[:search].nil?)
-       date_from = params[:search]["date_from(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(3i)"].to_i.to_s
-      date_to = params[:search]["date_to(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(3i)"].to_i.to_s 
-      if (!params[:search][:role_id].blank?)
-        conditions_string+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)='" + params[:search]['role_id']+ "')"
-        @selected['role_id'] = params[:search][:role_id]
-      end
-      if (!params[:search][:user_id].blank?)
-        conditions_string+= " AND user_id='" + params[:search][:user_id]+ "'"
-        @selected['user_id'] = params[:search][:user_id]
-      end
-      if (!params[:search][:project_id].blank?)
-        conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
-        @selected['project_id'] = params[:search][:project_id]
-      end
-      if (!params[:search]['date_from(1i)'].blank?)
-        conditions_string+= " AND date >= '" + date_from + "'"
-      end
-      if (!params[:search]['date_to(1i)'].blank?)
-        conditions_string+= " AND date <= '" + date_to + "'"
-      end
-    end
-    
-    if (params[:search]['date_from(1i)'].blank? and params[:search]['date_to(1i)'].blank?)
-       if (session[:year])
-         conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
-       end
-       if (session[:month])
-         conditions_string += " AND MONTH(date)='" + session[:month] + "' "
-       end
-    end
-
+    list
     @query = "SELECT "\
         + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
         + "FROM activities ac " \
         + "LEFT JOIN users us ON (ac.user_id=us.id)" \
         + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
         + "WHERE " \
-        + conditions_string \
+        + @conditions_string \
         + " GROUP BY YEAR(date), WEEK(date), role_id " \
         + " ORDER BY YEAR(date), WEEK(date), role_id " \
 
@@ -270,53 +233,14 @@ class ActivitiesController < ApplicationController
   def graph_xml
     params[:search] = session[:graph]
     session[:graph] = nil
-    @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => ''}
-    conditions_string =" 1 ";
-    if (!params[:search].nil?)
-       date_from = params[:search]["date_from(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(3i)"].to_i.to_s
-      date_to = params[:search]["date_to(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(3i)"].to_i.to_s 
-      if (!params[:search][:role_id].blank?)
-        conditions_string+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)='" + params[:search]['role_id']+ "')"
-        @selected['role_id'] = params[:search][:role_id]
-      end
-      if (!params[:search][:user_id].blank?)
-        conditions_string+= " AND user_id='" + params[:search][:user_id]+ "'"
-        @selected['user_id'] = params[:search][:user_id]
-      end
-      if (!params[:search][:project_id].blank?)
-        conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
-        @selected['project_id'] = params[:search][:project_id]
-      end
-      if (!params[:search]['date_from(1i)'].blank?)
-        conditions_string+= " AND date >= '" + date_from + "'"
-      end
-      if (!params[:search]['date_to(1i)'].blank?)
-        conditions_string+= " AND date <= '" + date_to + "'"
-      end
-    end
-    
-    unless params[:search].nil?
-      if (params[:search]['date_from(1i)'].blank? and params[:search]['date_to(1i)'].blank?)
-       if (session[:year])
-         conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
-       end
-       if (session[:month])
-         conditions_string += " AND MONTH(date)='" + session[:month] + "' "
-       end
-      end
-    end
-    
+    list
     query = "SELECT "\
             + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
             + "FROM activities ac " \
             + "LEFT JOIN users us ON (ac.user_id=us.id) " \
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) " \
             + "WHERE " \
-            + conditions_string \
+            + @conditions_string \
             + " GROUP BY YEAR(date), WEEK(date), role_id " \
             + " ORDER BY YEAR(date), WEEK(date), role_id " 
 
@@ -324,7 +248,7 @@ class ActivitiesController < ApplicationController
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE " \
-            + conditions_string \
+            + @conditions_string \
             + " GROUP BY  role_id  ORDER BY role_id "
             
     query3 = "SELECT min( year( date ) ) minyear, max( year( date ) ) maxyear "\
@@ -332,14 +256,14 @@ class ActivitiesController < ApplicationController
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
-            + conditions_string         
+            + @conditions_string         
                
     query4 = "SELECT year( date ) year, min( week( date ) ) minweek, max( week( date ) ) maxweek, count(*) as no_of_years "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
-            + conditions_string \
+            + @conditions_string \
             + " GROUP BY year"\
             + " ORDER BY year"
     

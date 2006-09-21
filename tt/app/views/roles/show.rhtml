@@ -20,7 +20,7 @@
     <%= link_to 'Show activities', :controller => 'activities', 
        :action => 'graph', 'search[role_id]' => @role.id %> |
     <%= link_to 'Edit', :action => 'edit', :id => @role %> |
-    <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
     </p>
 </fieldset>
 </div>

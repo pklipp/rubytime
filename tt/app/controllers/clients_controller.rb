@@ -34,14 +34,14 @@ class ClientsController < ApplicationController
 
   # Lists all clients or specified by search conditions.
   def list
-    if !params[:search].nil?
+      @client_pages, @clients = paginate :client, :per_page => 10, :order => "is_inactive"
+  end
+  
+  #Searches projects.
+  def search
       query = " 1 AND name LIKE \"%" + params[:search] + "%\" OR description LIKE \"%" + params[:search] + "%\" "
-      @client_pages, @clients = paginate :client, 
-                                         :per_page => 10,
-                                         :conditions => query
-    else
-      @client_pages, @clients = paginate :client, :per_page => 10
-    end
+      @clients = Client.find(:all,:conditions => query,:order => "is_inactive")
+      render :partial => 'list' 
   end
 
   # Shows details of chosen client.

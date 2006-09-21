@@ -16,12 +16,13 @@
     
     <p class="	p_edit_back">
     <%= link_to 'Edit', :action => 'edit', :id => @client %>  | 
-    <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
     </p>
 </fieldset>
 <br /><br />
 <fieldset>
     <legend>Project of this client:</legend>
-     <%= render :partial => 'projects/list' %>
+     <%= render :partial => 'projects/list2' %>
+</fieldset> 
 </div>
 <!-- End of list -->

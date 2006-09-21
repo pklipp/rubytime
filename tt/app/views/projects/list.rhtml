@@ -1,70 +1,27 @@
 
 <div class="fieldsets">
-    <!-- List of projects -->
-    <%if !@projects.blank? %>
-    <fieldset>
-        <legend>
-        <% if params[:search].nil? %>
-        List of projects
-        <% else %>
-        List of projects: Search result
-        <% end %>
-        </legend>
-        <p class="p_new">
-        <%= link_to 'New project', :action => 'new' %>
-        </p>
-        <hr/>
-        <%= render :partial => 'list'%>
         
-        <% if (@project_pages.current.previous || @project_pages.current.next) %>
-        <p>
-        <% if !params[:search].nil? %>
-        <% search = {} 
-           if !params[:search][:name].blank? 
-            search["search[name]"] = params[:search][:name]
-           end
-           if !params[:search][:client].blank? 
-            search["search[client]"] = params[:search][:client]
-           end  
-        %>
-        <%= link_to 'Previous page', ({ :page => @project_pages.current.previous }).merge(search) \
-                                       if @project_pages.current.previous %>
-        <%= link_to 'Next page', ({ :page => @project_pages.current.next}).merge(search) \
-                                   if @project_pages.current.next %> 
-        <% else %>
-        <%= link_to 'Previous page', :page => @project_pages.current.previous \
-                                       if @project_pages.current.previous %>
-        <%= link_to 'Next page', { :page => @project_pages.current.next } \
-                                   if @project_pages.current.next %> 
-        
-        <% end %>
-        </p>
-        <% end %>
-    </fieldset>
-    <%else%>
-    <p id="errorNotice">No projects found</p>
-    <%end%>
-    <!-- End of list -->
-     
-    <br/><br/>
-     
     <!-- Search form -->
     <fieldset>
         <legend>Search projects</legend>
-        <%= start_form_tag :action => 'list'%>
-        <p><label>Name or description:</label></p>
-        <p><%= text_field('search','name',
-            :value => (params[:search] ? params[:search][:name] : ""), 
-            :size => 32)%></p>
-        <p><label>Client:</label></p>
-        <p><%= text_field('search','client',
-            :value => (params[:search] ? params[:search][:client] : ""), 
-            :size => 32)%></p>
+        <%= form_remote_tag :update => 'projects_list', :url => {:controller => 'projects', :action => 'search'}%>
+        <p><label>Name or description:</label><br />
+        <%= text_field('search','name',:size => 32)%></p>
+        <p><label>Client:</label><br />
+        <%= select('search','client_id',@clients.collect {|c| [ c.name, c.id ]}, {:include_blank => true })%></p>
         <p><%= submit_tag 'Search'%></p>
         <%= end_form_tag %>
     </fieldset>
     <!-- End of search form -->
     
-    <p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+    <br/><br/>
+
+    
+    <!-- List of projects -->
+    <div id="projects_list">
+        <%= render :partial => 'list'%>
+    </div>
+    <!-- End of list -->
+    <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
         
 </div>

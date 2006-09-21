@@ -29,6 +29,8 @@ class Activity < ActiveRecord::Base
   belongs_to :invoice
   
   # validators
-  validates_presence_of :comments, :minutes, :project_id
+  validates_presence_of :comments,  :project_id
   validates_numericality_of :minutes
+  validates_presence_of :minutes
+  validates_inclusion_of :minutes, :in => 1..1000, :message => "are out of range"
 end

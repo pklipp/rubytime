@@ -34,7 +34,7 @@ class RolesController < ApplicationController
 
   # Lists all current roles.
   def list
-    @role_pages, @roles = paginate :role, :per_page => 10
+    @roles = Role.find_all
   end
 
   # Shows chosen role.
