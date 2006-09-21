@@ -34,23 +34,22 @@ class ProjectsController < ApplicationController
   
   # Lists all current projects or specified by search conditions, if given.
   def list
-    if !params[:search].nil?   
+      @clients = Client.find_all
+      @project_pages, @projects = paginate :project, :per_page => 10, :order => "is_inactive"   
+  end
+  
+  #Searches projects.
+  def search
       cond = " 1 "
       if !params[:search][:name].blank?
         cond += " AND (projects.name LIKE \"%" + params[:search][:name] 
         cond += "%\" or projects.description LIKE \"%" + params[:search][:name] + "%\" )"
       end
-      if !params[:search][:client].blank?
-        cond += " AND clients.name LIKE \"%" + params[:search][:client] + "%\" "
+      if !params[:search][:client_id].blank?
+        cond += " AND client_id =" + params[:search][:client_id]
       end
-      @project_pages, @projects = paginate :project,:per_page => 10,
-        :select => "projects.*, clients.name AS client_name",
-        :joins => "LEFT JOIN clients ON projects.client_id = clients.id",
-        :conditions => cond     
-    else
-      @project_pages, @projects = paginate :project, :per_page => 10
-    end
-    
+      @projects = Project.find(:all,:conditions => cond,:order => "is_inactive" )   
+      render :partial => 'list'
   end
   
   # Shows chosen project with activities on its.

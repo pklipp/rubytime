@@ -1,61 +1,10 @@
 
 <div class="fieldsets">
-    <!-- List of users -->
-    <%if !@users.blank? %>
-    <fieldset>
-        <legend>
-        <% if params[:search].nil? %>
-        List of users
-        <% else %>
-        List of users: Search result
-        <% end %>
-        </legend>
-        
-        <p class="p_new">
-        <%= link_to 'New user', :action => 'new' %>
-        </p>
-        <hr/>       
-        <table class="standard">
-        <tr>
-            <th>Login</th>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Inactive</th>
-        </tr>
-  
-        <% for user in @users %>
-        <tr>
-            <td><%= user.login %></td>
-            <td><%= h(truncate(user.name,20)) %></td>
-            <td><%= h(truncate(user.role.short_name,20).upcase) %></td>
-            <td style="text-align: center"><%if user.is_inactive==true %>X<%end%></td>
-            
-            <td><%= link_to 'Show', :action => 'show', :id => user %></td>
-            <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
-        </tr>
-        <% end %>
-        </table>
-        <% if (@user_pages.current.previous || @user_pages.current.next)%>
-        <p>
-        <%= link_to 'Previous page', { :page => @user_pages.current.previous,
-                                       :search => params[:search]} \
-                                       if @user_pages.current.previous %>
-        <%= link_to 'Next page', { :page => @user_pages.current.next,
-                                   :search => params[:search]} \
-                                   if @user_pages.current.next %> 
-        </p>
-        <% end %>
-    </fieldset>
-    <%else%>
-    <p id="errorNotice">No users found</p>
-    <%end%>
-    <br/><br/>
-    <!-- End of list -->
-    
+
     <!-- Form: Search users -->
     <fieldset>
         <legend>Search users</legend>
-        <%= start_form_tag :action => 'list'%>
+        <%= form_remote_tag :update => 'users_list', :url => {:controller => 'users', :action => 'search'}%>
         <p><label>Login or name:</label></p>
         <p><%= text_field_tag("search", value = params[:search], :size => 32) %></p>
         <p><%= submit_tag 'Search'%></p>
@@ -63,8 +12,15 @@
     </fieldset>
     <!-- End of search form -->
     
-    <p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
-
+    <br/><br/>
+    
+    <!-- List of users -->
+    <div id="users_list">
+    <%= render :partial => 'list'%>
+    </div>
+    <!-- End of list -->
+    
+    <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
 </div>
 
 

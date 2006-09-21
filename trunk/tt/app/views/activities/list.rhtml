@@ -79,6 +79,6 @@
 
 
   
-<p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+<p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER'] %></p>
       
 </div>   

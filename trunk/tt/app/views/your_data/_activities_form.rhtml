@@ -11,7 +11,7 @@
     <%= date_select 'activity', 'date' , :start_year => Time.now.year %>
 </div>
 <div class="inputs">
-    <label for="activity_minutes">Hours:</label><br/>
+    <label for="activity_minutes">Time(HH:MM):</label><br/>
     <%= text_field 'activity', 'minutes', :size =>6, :value => hour_format(@activity.minutes)  %>
 </div>
 <!-- End of partial form -->

@@ -26,14 +26,8 @@
         </tr>
         <% end %>
         </table>
-        <% if (@role_pages.current.next || @role_pages.current.previous) %>
-        <p>
-        <%= link_to 'Previous page', { :page => @role_pages.current.previous } if @role_pages.current.previous %>
-        <%= link_to 'Next page', { :page => @role_pages.current.next } if @role_pages.current.next %> 
-        </p>
-        <% end %>
     </fieldset>
     
-   <p><%= link_to 'Back', @request.env['HTTP_REFERER'] %></p>
+   <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
 </div>
 <!-- End of list -->

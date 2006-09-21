@@ -34,7 +34,7 @@
        <% unless @activity.invoice_id -%>
        <%= link_to 'Edit', :action => 'edit', :id => @activity %> |
        <% end %>
-       <%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+       <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
        </p>
 </fieldset>
 </div>

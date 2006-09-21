@@ -13,6 +13,6 @@
 </fieldset>
 <p>
 <%= link_to 'Show', :action => 'show_activity', :id => @activity %>  | 
-<%= link_to 'Back', @request.env['HTTP_REFERER'] %>
+<%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
 </p>
 <!-- End of form -->
