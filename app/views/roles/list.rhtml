@@ -1,0 +1,33 @@
+<!-- List of roles -->
+<div class="fieldsets">
+    <fieldset>
+        <legend>List of roles</legend>
+        
+        <p class="p_new">
+        <%= link_to 'New role', :action => 'new' %>
+        </p>
+        <hr/>
+        <table class="standard">
+        <tr>
+            <th>Name</th>
+            <th>Short name</th>
+            <th>Admin</th>
+        </tr>
+  
+        <% for role in @roles %>
+        <tr>
+            <td><%= h role.name %></td>
+            <td style="text-align: center"><%= h role.short_name.upcase %></td>
+            <td style="text-align: center"><% if role.is_admin==true %>X<% end %>
+            </td>
+            
+            <td><%= link_to 'Show', :action => 'show', :id => role %></td>
+        <td><%= link_to 'Edit', :action => 'edit', :id => role %></td>
+        </tr>
+        <% end %>
+        </table>
+    </fieldset>
+    
+   <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
+</div>
+<!-- End of list -->

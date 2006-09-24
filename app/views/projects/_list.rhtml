@@ -1,0 +1,28 @@
+    <%if !@projects.blank? %>
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        List of projects
+        <% else %>
+        List of projects: Search result
+        <% end %>
+        </legend>
+        <p class="p_new">
+        <%= link_to 'New project', :action => 'new' %>
+        </p>
+        <hr/>
+        <%= render :partial => 'list2'%>
+        
+        <% if(!@project_pages.nil? and @project_pages.page_count>1) %>
+        <p>
+        <%= link_to 'Previous page', :page => @project_pages.current.previous \
+                                       if @project_pages.current.previous %>
+        <%= link_to 'Next page', { :page => @project_pages.current.next } \
+                                   if @project_pages.current.next %> 
+        </p>
+        <% end %>
+    </fieldset>
+    <%else%>
+    <p id="errorNotice">No projects found</p>
+    <%end%>
+  

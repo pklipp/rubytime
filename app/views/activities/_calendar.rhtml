@@ -1,0 +1,34 @@
+<%  current_year = Date.today.year.to_i
+    last_year = current_year-1
+    next_year = current_year+1
+    yearClass={last_year  => "", current_year => "", next_year => ""}
+    yearClass[session[:year].to_i]="selected"
+    monthClass=Array.new(12,"")
+    monthClass[session[:month].to_i]="selected" -%>
+    <table class="calendar">
+      <tr>
+      	<td>
+      		Year: 
+      	</td>
+      	<% (last_year).upto(next_year) do |i| -%>
+      	<td colspan="4" class="<%=yearClass[i]%>">
+      	  <%= link_to i, {:action => 'set_calendar', :year => i} %> 
+      	</td>
+      	<% end -%>
+      </tr>
+      <tr>
+       	<td>
+      		Month: 
+      	</td>
+      	<% (1).upto(12) do |i| %>
+      	<td class="<%=monthClass[i]%>">
+      	<%=link_to Date::ABBR_MONTHNAMES[i], {:action => 'set_calendar', :month => i} %>
+      	</td>
+      	<% end -%>
+      </tr>
+      <tr>
+        <td colspan="12" style="padding-top:5px">
+          <%= link_to 'Unselect', {:action => 'unset_calendar'}  %>
+        </td>
+      </tr>    
+    </table>

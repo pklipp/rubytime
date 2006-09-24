@@ -1,0 +1,22 @@
+<!-- List of details of chosen user -->
+<div class="fieldsets">
+<fieldset>
+    <legend>User:</legend>
+    
+    <p><b>Login: </b><%= @user.login %></p>
+    <p><b>Name: </b><%= @user.name %></p>
+    <p><b>E-mail: </b><%= @user.email %></p>
+    <p><b>E-mail: </b><%= @user.role.name + " (" + @user.role.short_name.upcase + ")" %></p>
+    	   <p>
+	       <b>Active: </b><%if @user.is_inactive==false %>YES<%else%>NO<%end%>
+	       </p>
+    <p class="	p_edit_back">
+    <%= link_to 'Show activities', :controller => 'activities', 
+        :action => 'graph', 'search[user_id]' => @user.id %> |
+    <%= link_to 'Edit', :action => 'edit', :id => @user %> |
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%> 
+    </p>
+</fieldset>
+<!-- End of list -->
+</div>
+

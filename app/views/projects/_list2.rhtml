@@ -1,0 +1,23 @@
+  
+        <table class="standard">
+        <tr>
+            <th> Name</th>
+            <th> Description</th>
+            <% if params[:controller]!='clients' -%><th>Client</th><%end-%>
+            <th> Inactive</th>
+        </tr>
+
+        <% for project in @projects %>
+        <tr>
+
+            <td><%= h project.name %></td>
+            <td><%= h truncate(project.description,20)%></td>
+            <% if params[:controller]!='clients' -%>
+            <td><%= h truncate(project.client.name,20) %></td><%end-%>
+            <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
+            
+            <td><%= link_to 'Show', :controller => 'projects', :action => 'show', :id => project %></td>
+            <td><%= link_to 'Edit', :controller => 'projects', :action => 'edit', :id => project %></td>
+        </tr>
+        <% end %>
+        </table>

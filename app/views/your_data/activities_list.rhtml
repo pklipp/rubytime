@@ -1,0 +1,99 @@
+<div class="fieldsets">
+
+<!-- Form: Filter activities by date -->
+	<fieldset>
+	<legend>Filter by date</legend>
+    <%= render :partial => '/activities/calendar' %>
+	</fieldset>
+<!-- End of form -->
+
+<br/><br/>
+
+<!-- Form: serach activities -->
+
+<%= start_form_tag :action => 'search', :id => @activity %>
+    <fieldset>
+        <legend>Search</legend>
+        <p>
+        <label for="search">Project:</label>
+        <select name="search" id="search">
+        <%= options_for_select({ "--all--" => "" }) %>
+        <%= options_for_select(Project.find_all.collect {|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
+        </select>
+        &nbsp;&nbsp;<%= submit_tag 'Search' %>
+        &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
+        </p>
+    </fieldset>
+<%= end_form_tag %>
+<!-- End of form -->
+
+<br/><br/>
+
+<!-- List of activieties of logged user -->
+<% if !@activities.blank? %>
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        Your Activities
+        <% else %>
+        Your Activities: Search result
+        <% end %>
+        </legend>
+        
+        <table class="standard">
+        <tr>
+            <th>				Project			</th>
+            <th>				Date			</th>
+            <th>				Hours			</th>
+            <th>				Comment			</th>
+            <td>&nbsp;		</td>
+            <td>&nbsp;		</td>
+        </tr>
+
+        <% minutes_sum=0 	 
+        for activity in @activities  
+        minutes_sum+=activity.minutes %>
+        <tr>
+            <td>					<%= activity.project.name %></td>
+            <td>					<%= activity.date%>				</td>
+            <td style="text-align:right">					<%= hour_format(activity.minutes) %>				</td>
+            <td><%= h truncate(activity.comments,20)%></td>
+            <td><%= link_to "Show", :action => "show_activity", :id => activity %>				</td>
+            <td>
+            <%# unless activity.is_invoiced -%>
+            <%#= link_to "Edit", :action => "edit_activity", :id => activity %>
+            <%# end %>
+            </td>
+        </tr>
+        <% end %>
+        <tr>
+            <td>&nbsp;		</td>
+            <th style="text-align:right">			Sum:		</th>
+            <th>			<%= hour_format(minutes_sum) %>		</th>
+        </tr>
+        </table>
+        
+        <% unless @activity_pages.nil? %>
+            <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
+            <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
+        <% end %> 
+    </fieldset>
+    
+    <% else %>
+    <p id="errorNotice">No activities found</p>
+    <% end %>
+<!-- End of list -->
+
+
+
+
+
+<p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
+
+</div>
+
+
+
+
+
+
