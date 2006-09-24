@@ -1,6 +1,0 @@
-<hr />
-Add to invoice:
-<select name="invoice_id" id="invoice_id" style="width:160px">
-<%= options_for_select(@invoices.collect {|i| [ i.name, i.id ] } ) %>
-</select>&nbsp;&nbsp;&nbsp;&nbsp;
-<%= submit_tag "Add" %>
