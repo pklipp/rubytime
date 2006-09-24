@@ -1,0 +1,17 @@
+<!-- Form: Enter activity -->
+				<%= error_messages_for 'activity' %>
+				<div class="fieldsets">
+				    <fieldset>
+				    <legend>New activity</legend>
+
+    <%= start_form_tag :action => 'create_activity' %>
+    <%= render :partial => 'activities_form' %>
+    <p><%= submit_tag "Add" %></p>
+    <%= end_form_tag %>
+    </fieldset>
+</div>
+<p>
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
+</p>
+<!-- End of form -->
+

@@ -1,0 +1,28 @@
+<!-- List of details of chosen client -->
+<div class="fieldsets">
+<fieldset>
+    <legend>	Client:</legend>
+    
+    <% for column in Client.content_columns %>
+    <% if column.name!="is_inactive" %>
+    <p>
+    <b><%= column.human_name %>:</b> <%=h @client.send(column.name) %>
+    </p>
+    <% end %>
+    <% end %>
+           <p>
+	       <b>Active: </b><%= @client.is_inactive ? "YES" : "NO" %>
+	       </p>
+    
+    <p class="	p_edit_back">
+    <%= link_to 'Edit', :action => 'edit', :id => @client %>  | 
+    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
+    </p>
+</fieldset>
+<br /><br />
+<fieldset>
+    <legend>Project of this client:</legend>
+     <%= render :partial => 'projects/list2' %>
+</fieldset> 
+</div>
+<!-- End of list -->

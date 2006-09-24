@@ -1,0 +1,50 @@
+<!-- Partial form: Add/Edit user -->
+<div class="inputs">
+	   <label>Login: </label>
+	   <% if(params[:action]=="new" || params[:action]=="create" ) %>
+	   <br/><%= text_field('user', 'login', :size => 32, :maxlength => 32) %>
+	   <% else %>
+	   <b><%= @user.login %></b>
+	   <% end %>
+</div>
+
+<%  if params[:action]=="new" || params[:action]=="create"%>
+<div class="inputs">
+	   <label for="user_password">Password:</label><br/>
+	   <%= password_field('user', 'password',{ :size => 32})  %>
+</div>
+<div class="inputs">
+	   <label for="user_password_confirmation">Confirm password:</label>
+	   <br/>
+	   <%= password_field('user', 'password_confirmation',{ :size => 32})  %>
+</div>
+<% end
+%>
+
+<div class="inputs">
+	   <label for="user_name">Name:</label>
+	   <br/>
+	   <%= text_field 'user', 'name', :size => 60, :maxlength => 40  %>
+</div>
+<div class="inputs">
+	   <label for="user_email">e-mail:</label>
+	   <br/>
+	   <%= text_field 'user', 'email', :size => 60, :maxlength => 60  %>
+</div>
+<div class="inputs">
+   <label>Role:</label>
+   <br/>
+    <%= select('user', 'role_id', Role.find_all.collect {|p| [ p.name, p.id ] } ) %>
+</div>
+
+<%if ((params[:action]=="edit" || params[:action]=="update") && User.find(:all, :conditions => ["is_inactive = ?", false]).length>1)%>
+<!-- Allowed only for edit user form when there is more than one active user -->
+<div class="inputs">
+   <%= check_box 'user', 'is_inactive', :disabled => (@user.id==@current_user.id ? true : false) %>&nbsp;
+	   <label>is inactive</label>
+</div>
+<%end%>
+<!-- End of partial form -->
+
+
+
