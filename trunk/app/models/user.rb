@@ -44,6 +44,15 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
 
+  #Changes administratof privileges
+  def is_admin
+    if self.role.is_admin
+      return true
+    else
+      return false
+    end
+  end
+
   # Logs user.
   def self.login(login, password)
     tmp = find(:first,:conditions =>  ["login = ? ", login])     

@@ -49,7 +49,7 @@
           <p>
              <% if @current_user!=nil %>
              Welcome: <br/><b>
-                 <%= link_to(@current_user.name.capitalize,:controller => "your_data", 
+                 <%= link_to(@current_user.name.upcase,:controller => "your_data", 
                  :action => "edit_profile") %>
                  </b>
                  <% end %>     
@@ -69,7 +69,7 @@
           <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">
           Help</a>
           </p>
-          <%#= link_to "Dump", :controller => "admin",:action => "dump" %>
+          <%= link_to "Export data", :controller => "admin",:action => "export_db" if @current_user and @current_user.is_admin %>
           <p>
                  <%= link_to("Logout" ,:controller => "login", 
                  :action => "login") if session[:user_id] %>

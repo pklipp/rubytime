@@ -24,6 +24,23 @@ class AdminController < ApplicationController
       :filename => filename)
   end
   
+  #Dumps database
+  def export_db
+    filename = "dump_" + Time.now.strftime('%Y-%m-%d-%H-%M') + ".txt"
+    dump = {}
+    dump['activties'] = Activity.find_all
+    dump['clients'] = Client.find_all
+    dump['invoices'] = Invoice.find_all
+    dump['projects'] = Project.find_all
+    dump['roles'] = Role.find_all
+    dump['users'] = User.find_all
+    dumped_data = dump.to_yaml
+    dumped_data.gsub(/\n/,"\r\n")
+    send_data(dumped_data,
+      :type => 'text/plain; charset=utf-8; header=present',
+      :filename => filename)
+  end
+  
   #Dumps table
   def dump_table(objects,name,columns_names)
     content = Array.new
