@@ -136,7 +136,7 @@ class YourDataController < ApplicationController
   # Updates activity's details. Data is validated before. 
   def update_activity 
     @activity = Activity.find(params[:id])
-    if @activity.invoice_id
+    if @activity.invoice_id.nil?
     @projects = Project.find_all
     # hours format to minutes
     if (params[:activity]['minutes'].index(':'))
