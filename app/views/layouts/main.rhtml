@@ -81,6 +81,12 @@
     <% if flash[:notice]%>
           <p class="flashNotice"><%= flash[:notice] %></p>
     <%end%>
+    <% if flash[:warning]%>
+          <p class="flashWarning"><%= flash[:warning] %></p>
+    <%end%>
+    <% if flash[:error]%>
+          <p class="flashError"><%= flash[:error] %></p>
+    <%end%>
     <%= @content_for_layout %>
     </div>	
 

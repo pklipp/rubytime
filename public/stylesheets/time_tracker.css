@@ -41,6 +41,27 @@ a:hover {
 	   background-color: #f5fff5; 
 }
 
+.flashWarning{
+   	   width: 448px;
+	   border: 1px solid;
+	   border-color: #000;
+	   padding: 1em 1em 1em 1em;
+	   margin-bottom: 20px;
+	   color: red;
+	   font-weight: bold;
+	   background-color: #f5fff5; 
+}
+
+.flashError{
+   	   width: 448px;
+	   border: 1px solid;
+	   border-color: #000;
+	   padding: 1em 1em 1em 1em;
+	   margin-bottom: 20px;
+	   color: red;
+	   font-weight: bold;
+	   background-color: #f5fff5; 
+}
 .flashNotice2{
 	   border: 1px solid;
 	   border-color: #000;
