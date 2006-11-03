@@ -42,34 +42,27 @@
         
         <table class="standard">
         <tr>
-            <th>				Project			</th>
-            <th>				Date			</th>
-            <th>				Hours			</th>
-            <th>				Comment			</th>
-            <td>&nbsp;		</td>
-            <td>&nbsp;		</td>
+            <th>Project</th>
+            <th>Date</th>
+            <th>Hours</th>
+            <th>Comment</th>
         </tr>
 
         <% minutes_sum=0 	 
         for activity in @activities  
         minutes_sum+=activity.minutes %>
         <tr>
-            <td>					<%= activity.project.name %></td>
-            <td>					<%= activity.date%>				</td>
-            <td style="text-align:right">					<%= hour_format(activity.minutes) %>				</td>
-            <td><%= h truncate(activity.comments,20)%></td>
+            <td><%= truncate(activity.project.name,15) %></td>
+            <td><%= activity.date.strftime('%d/%m/%y %a') %></td>
+            <td style="text-align:right"><%= hour_format(activity.minutes) %></td>
+            <td><%= truncate(activity.comments,15)%></td>
             <td><%= link_to "Show", :action => "show_activity", :id => activity %>				</td>
-            <td>
-            <%# unless activity.is_invoiced -%>
-            <%#= link_to "Edit", :action => "edit_activity", :id => activity %>
-            <%# end %>
-            </td>
         </tr>
         <% end %>
         <tr>
-            <td>&nbsp;		</td>
-            <th style="text-align:right">			Sum:		</th>
-            <th>			<%= hour_format(minutes_sum) %>		</th>
+            <td></td>
+            <th style="text-align:right">Sum:</th>
+            <th><%= hour_format(minutes_sum) %></th>
         </tr>
         </table>
         

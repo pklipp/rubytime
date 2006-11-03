@@ -48,7 +48,7 @@ class YourDataController < ApplicationController
   end
   
   # Shows list of current user's activities
-  def activities_list
+  def activities_list  
     @selected = { 'project_id' => ''}
     @checked = [true,false,false] 
     conditions_string =" 1"; 
@@ -58,15 +58,6 @@ class YourDataController < ApplicationController
     if (!params[:search].blank?)  
         conditions_string+= " AND project_id='" + params[:search]+ "'"
         @selected['project_id'] = params[:search]
-    end
-    if(!params[:is_invoiced].blank? and params[:is_invoiced].to_i>0)
-      @checked = [false,false,false]
-      @checked[params[:is_invoiced].to_i]=true
-      if params[:is_invoiced].to_i==1
-      conditions_string+= " AND invoice_id IS NULL "
-      elsif params[:is_invoiced].to_i==2
-      conditions_string+= " AND invoice_id IS NOT NULL "
-      end
     end
     # filter by year set in session 
     if (session[:year]) 
@@ -78,7 +69,7 @@ class YourDataController < ApplicationController
     end
    
      if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
-        @activity_pages, @activities = paginate :activity, 
+        @activity_pages, @activities = paginate :activity,
                                                 :per_page => 10,
                                                 :conditions => conditions_string,
                                                 :order => "date DESC"
@@ -101,8 +92,8 @@ class YourDataController < ApplicationController
   # Fill form for new activity.
   def new_activity 
     @activity = Activity.new
-    @projects = Project.find_all
-    @selected = {'project_id' => ''}
+    @projects = Project.find(:all, :conditions => ["is_inactive = ?",false])
+    @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id
   end
   
   # creates new activity
@@ -114,9 +105,14 @@ class YourDataController < ApplicationController
     
     params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
     @activity = Activity.new(params[:activity])
-    @activity.user = User.find(session[:user_id]) # current user 
+    @activity.user_id = @current_user.id # current user 
     @projects = Project.find_all
-       
+    date = params[:activity]["date(1i)"].to_i.to_s \
+              + "-" + params[:activity]["date(2i)"].to_i.to_s \
+              + "-" + params[:activity]["date(3i)"].to_i.to_s      
+    if @current_user.activities.find(:first, :conditions => ["date = ? AND project_id = ? ", date, params[:activity][:project_id]])
+      flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make mistake."
+    end
     if @activity.save
       flash[:notice] = 'Activity has been successfully created'
       redirect_to :action => 'activities_list'

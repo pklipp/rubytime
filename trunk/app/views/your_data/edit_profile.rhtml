@@ -11,14 +11,14 @@
         <hr/>
         <%= start_form_tag :action => 'update_profile', :id => @current_user %>
         <div class="inputs">
-	        <label for="current_user_name">Login: </label><b><%= @current_user.login %></b>
+	        <label>Login: </label><b><%= @current_user.login %></b>
         </div>
         <div class="inputs">
-	        <label for="current_user_name">Name</label><br/>
+	        <label for="user_name">Name</label><br/>
 	        <%= text_field 'user', 'name'  %>
         </div>
         <div class="inputs">
-	        <label for="current_user_email">e-mail</label>
+	        <label for="user_email">e-mail</label>
 	        <br/><%= text_field 'user', 'email'  %>
         </div>
         <%= submit_tag 'Save' %>
