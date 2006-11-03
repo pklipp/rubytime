@@ -112,7 +112,7 @@ class ActivitiesController < ApplicationController
         @activity_pages, @activities = paginate :activity, 
                                                 :per_page => 10,
                                                 :conditions => @conditions_string,
-                                                :order => "date ASC"
+                                                :order => "date DESC"
      else
         @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id], :order => "created_at DESC")
         @activities = Activity.find(:all, :conditions => @conditions_string, :order => "date ASC")
