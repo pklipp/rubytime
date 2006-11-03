@@ -111,10 +111,11 @@ class ActivitiesController < ApplicationController
      if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
         @activity_pages, @activities = paginate :activity, 
                                                 :per_page => 10,
-                                                :conditions => @conditions_string
+                                                :conditions => @conditions_string,
+                                                :order => "date ASC"
      else
-        @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id])
-        @activities = Activity.find(:all, :conditions => @conditions_string)
+        @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id], :order => "created_at DESC")
+        @activities = Activity.find(:all, :conditions => @conditions_string, :order => "date ASC")
      end                                           
 
 
