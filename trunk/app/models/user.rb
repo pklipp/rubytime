@@ -34,8 +34,7 @@ class User < ActiveRecord::Base
                         :name, 
                         :password, 
                         :email, 
-                        :role_id, 
-                        :password_confirmation  
+                        :role_id 
   validates_length_of :password, 
                       :minimum => 5,
                       :message => "should be at least 5 characters long"                       
