@@ -46,14 +46,15 @@
     </div>
 
     <div id="sub-menu">
-          <p>
+          
              <% if @current_user!=nil %>
+             <p>
              Welcome: <br/><b>
                  <%= link_to(@current_user.name.upcase,:controller => "your_data", 
                  :action => "edit_profile") %>
                  </b>
+                 </p>
                  <% end %>     
-          </p>
           
 
              <% if (@current_user!=nil && !@current_user.is_inactive) %>
@@ -69,12 +70,10 @@
           <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">
           Help</a>
           </p>
-          <%= link_to "Export data", :controller => "admin",:action => "export_db" if @current_user and @current_user.is_admin %>
-          <p>
-                 <%= link_to("Logout" ,:controller => "login", 
-                 :action => "login") if session[:user_id] %>
-          </p>
-
+          <% if @current_user %>
+          <%= link_to "Export data", :controller => "admin",:action => "export_db" if @current_user.is_admin %>
+          <p><%= link_to("Logout" ,:controller => "login",:action => "login") %></p>
+          <% end %>
     </div>
 
     <div id="content">
