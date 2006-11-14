@@ -4,49 +4,49 @@
     <ul>
         <li>  
         <%= link_to("Your data",{:controller => "your_data"},
-                          :class=> ( (params[:controller]=="your_data" ) ?  "active" : "") ) %>
+                          :class=> ( (params[:controller]=="your_data" ) ?  "active" : nil) ) %>
         </li> 
         
         <% if @current_user.has_permisions_to("clients", "list") %>
         <li>
         <%= link_to("Clients",
                         {:controller => "clients", :action => "list"}, 
-                        :class=> ( params[:controller]=="clients" ?  "active" : "") ) %>
+                        :class=> ( params[:controller]=="clients" ?  "active" : nil) ) %>
         </li>
         <% end 
         if @current_user.has_permisions_to("projects", "list") %>
         <li>
         <%= link_to("Projects",
                           {:controller => "projects", :action => "list"}, 
-                          :class=> ( params[:controller]=="projects" ?  "active" : "")) %>
+                          :class=> ( params[:controller]=="projects" ?  "active" : nil)) %>
         </li> 
         <%end 
         if @current_user.has_permisions_to("activities", "list") %>
         <li>  
         <%= link_to("Activities",
                             {:controller => "activities", :action => "list"}, 
-                            :class=> ( params[:controller]=="activities" ?  "active" : ""))  %>
+                            :class=> ( params[:controller]=="activities" ?  "active" : nil))  %>
         </li>  
         <%end
         if @current_user.has_permisions_to("activities", "list") %>
         <li>  
         <%= link_to("Invoices",
                             {:controller => "invoices", :action => "list"}, 
-                            :class=> ( params[:controller]=="invoices" ?  "active" : ""))  %>
+                            :class=> ( params[:controller]=="invoices" ?  "active" : nil))  %>
         </li>  
         <%end  
         if @current_user.has_permisions_to("users", "list") %>
         <li>  
         <%= link_to("Users",
                             {:controller => "users", :action => "list"}, 
-                            :class=> ( params[:controller]=="users" ?  "active" : "")) %>
+                            :class=> ( params[:controller]=="users" ?  "active" : nil)) %>
         </li>
         <%end 
         if @current_user.has_permisions_to("roles", "list") %>
         <li>  
         <%= link_to("Roles",
                             {:controller => "roles", :action => "list"}, 
-                            :class=> ( params[:controller]=="roles" ?  "active" : "")) %>
+                            :class=> ( params[:controller]=="roles" ?  "active" : nil)) %>
         </li>  
         <%end %>
         </ul>
