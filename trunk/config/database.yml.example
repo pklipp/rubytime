@@ -3,7 +3,8 @@ development:
   database: rubytime_development
   host: localhost
   username: root
-  password: 
+  password:
+  encoding: utf8
 
 # Warning: The database defined as 'test' will be erased and
 # re-generated from your development database when you run 'rake'.
@@ -15,10 +16,12 @@ test:
   host: localhost
   username: root
   password:
-
+  encoding: utf8
+  
 production:
   adapter: mysql
   database: rubytime_production
   host: localhost
   username: root
   password: 
+  encoding: utf8
