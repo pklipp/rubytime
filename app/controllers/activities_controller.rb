@@ -216,15 +216,17 @@ class ActivitiesController < ApplicationController
   # Generetes data for statictics
   def graph
     list
+    sqlweek = SqlFunction.get_week('date')
+    sqlyear = SqlFunction.get_year('date')
     @query = "SELECT "\
-        + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
+        + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
         + "FROM activities ac " \
         + "LEFT JOIN users us ON (ac.user_id=us.id)" \
         + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
         + "WHERE " \
         + @conditions_string \
-        + " GROUP BY YEAR(date), WEEK(date), role_id " \
-        + " ORDER BY YEAR(date), WEEK(date), role_id " \
+        + " GROUP BY year, week, role_id " \
+        + " ORDER BY year, week, role_id " \
 
     @activities = Activity.find_by_sql @query
     session[:graph] = params[:search]
@@ -235,31 +237,33 @@ class ActivitiesController < ApplicationController
     params[:search] = session[:graph]
     session[:graph] = nil
     list
+    sqlweek = SqlFunction.get_week('date')
+    sqlyear = SqlFunction.get_year('date')
     query = "SELECT "\
-            + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
+            + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
             + "FROM activities ac " \
             + "LEFT JOIN users us ON (ac.user_id=us.id) " \
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) " \
             + "WHERE " \
             + @conditions_string \
-            + " GROUP BY YEAR(date), WEEK(date), role_id " \
-            + " ORDER BY YEAR(date), WEEK(date), role_id " 
+            + " GROUP BY year, week, role_id " \
+            + " ORDER BY year, week, role_id " 
 
-    query2 = "SELECT  SUM(minutes) minutes,  role_id, ro.short_name FROM activities ac "\
+    query2 = "SELECT  SUM(minutes) AS minutes,  role_id, ro.short_name FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE " \
             + @conditions_string \
             + " GROUP BY  role_id  ORDER BY role_id "
             
-    query3 = "SELECT min( year( date ) ) minyear, max( year( date ) ) maxyear "\
+    query3 = "SELECT min( #{sqlyear} ) minyear, max( #{sqlyear} ) maxyear "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
             + @conditions_string         
                
-    query4 = "SELECT year( date ) year, min( week( date ) ) minweek, max( week( date ) ) maxweek, count(*) as no_of_years "\
+    query4 = "SELECT #{sqlyear} AS year, min( #{sqlweek} ) AS minweek, max( #{sqlweek} ) AS maxweek, COUNT(*)AS no_of_years "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
