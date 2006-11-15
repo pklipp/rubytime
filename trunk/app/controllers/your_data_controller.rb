@@ -93,7 +93,7 @@ class YourDataController < ApplicationController
   def new_activity 
     @activity = Activity.new
     @projects = Project.find(:all, :conditions => ["is_inactive = ?",false])
-    @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id
+    @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id unless @current_user.activities.empty?
   end
   
   # creates new activity
@@ -229,15 +229,18 @@ class YourDataController < ApplicationController
       conditions_string += " AND MONTH(date)='" + session[:month] + "' "
     end
 
+    sqlweek = SqlFunction.get_week('date')
+    sqlyear = SqlFunction.get_year('date')
+    
     @query = "SELECT "\
-        + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
+        + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
         + "FROM activities ac " \
         + "LEFT JOIN users us ON (ac.user_id=us.id)" \
         + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
         + "WHERE " \
         + conditions_string \
-        + " GROUP BY YEAR(date), WEEK(date) " \
-        + " ORDER BY YEAR(date), WEEK(date) "
+        + " GROUP BY year, week " \
+        + " ORDER BY year, week "
     @activities = Activity.find_by_sql @query
     session[:graph] = params[:search]
   end
@@ -257,32 +260,33 @@ class YourDataController < ApplicationController
 #      conditions_string+= " AND is_invoiced =" + params[:is_invoiced]
 #    end
     
-  
     if (session[:year])
       conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
     end
     if (session[:month])
       conditions_string += " AND MONTH(date)='" + session[:month] + "' "
     end
+    sqlyear = SqlFunction.get_year('date')
+    sqlweek = SqlFunction.get_week('date')
     
     query = "SELECT "\
-            + " SUM(minutes) minutes, YEAR(date) year, WEEK(date) week, user_id, role_id, MAX(date) maxdate " \
+            + "SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
             + "FROM activities ac " \
             + "LEFT JOIN users us ON (ac.user_id=us.id) " \
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) " \
             + "WHERE " \
             + conditions_string \
-            + " GROUP BY YEAR(date), WEEK(date), role_id " \
-            + " ORDER BY YEAR(date), WEEK(date), role_id " 
+            + " GROUP BY year, week, role_id " \
+            + " ORDER BY year, week, role_id " 
             
-    query3 = "SELECT min( year( date ) ) minyear, max( year( date ) ) maxyear "\
+    query3 = "SELECT min(#{sqlyear}) AS minyear, max(#{sqlyear}) AS maxyear "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
             + "WHERE "\
             + conditions_string         
                
-    query4 = "SELECT year( date ) year, min( week( date ) ) minweek, max( week( date ) ) maxweek, count(*) as no_of_years "\
+    query4 = "SELECT #{sqlyear} AS year, min( #{sqlweek} ) AS minweek, max( #{sqlweek} ) AS maxweek, COUNT(*) AS no_of_years "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\

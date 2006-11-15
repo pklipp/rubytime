@@ -23,7 +23,7 @@
 # ************************************************************************
 
 class ApplicationController < ActionController::Base
-
+  
   # Checks if the user has permissions to view requested page. 
   # If no, shows "no_permission" partial.
   def authorize   
