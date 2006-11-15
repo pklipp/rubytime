@@ -1,8 +1,11 @@
 class Init < ActiveRecord::Migration
   def self.up
   
+    #Adds default charset if mysql
+    db_optionts = (ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="mysql" ? "DEFAULT CHARSET=utf8" : nil)
+    
     #Creates table roles.
-    create_table :roles, :force => true do |t|
+    create_table :roles, :force => true, :options => db_optionts do |t|
       t.column :name, :string, :null => false
       t.column :short_name, :string, :limit => 5, :null => false
       t.column :is_admin, :boolean, :default => false, :null => false
@@ -13,7 +16,7 @@ class Init < ActiveRecord::Migration
     Role.create(:name=> 'Developer', :short_name => 'DEV')
     
     #Creates table users.
-    create_table :users, :force => true do |t|
+    create_table :users, :force => true, :options => db_optionts do |t|
       t.column :login, :string, :null => false
       t.column :password, :string, :null => false
       t.column :name, :string, :null => false
@@ -28,7 +31,7 @@ class Init < ActiveRecord::Migration
     User.create(:login => 'admin', :name => 'admin', :email => 'admin@llp.pl', :role_id => 1, :password => '7be43c1935a3d4ccd904a062a0e8925fb986829f', :salt => '287560120.570862222928554')
     
     #Creates table clients.
-    create_table :clients, :force => true do |t|
+    create_table :clients, :force => true, :options => db_optionts do |t|
       t.column :name, :string, :null => false
       t.column :description, :text, :null => false
       t.column :is_inactive, :boolean, :default => false, :null => false
@@ -37,7 +40,7 @@ class Init < ActiveRecord::Migration
     Client.create(:name=> 'Lunar Logic', :description => 'Lunar Logic')
   
     #Creates table projects.
-    create_table :projects, :force => true do |t|
+    create_table :projects, :force => true, :options => db_optionts do |t|
       t.column :name, :string, :null => false
       t.column :description, :text
       t.column :client_id, :integer, :null => false
@@ -48,7 +51,7 @@ class Init < ActiveRecord::Migration
     Project.create(:name=> 'First Project', :description => 'First Project', :client_id => 1)
   
     #Creates table activities.
-    create_table :activities, :force => true do |t|
+    create_table :activities, :force => true, :options => db_optionts do |t|
       t.column :comments, :text
       t.column :date, :date, :null => false, :default => Date.today
       t.column :minutes, :integer, :default => 0, :null => false
@@ -60,7 +63,7 @@ class Init < ActiveRecord::Migration
     add_index :activities, :user_id
     
     #Creates table invoices.
-    create_table :invoices, :force => true do |t|
+    create_table :invoices, :force => true, :options => db_optionts do |t|
       t.column :name, :string, :null => false
       t.column :notes, :text
       t.column :client_id, :integer, :null => false
