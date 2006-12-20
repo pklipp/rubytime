@@ -28,6 +28,8 @@ class User < ActiveRecord::Base
   require 'digest/sha1' # needed to password hashing
   
   has_many :activities
+  has_many :projects, :through => :activities, :group => "project_id"
+  
   belongs_to :role
 
   validates_presence_of :login, 
@@ -69,10 +71,6 @@ class User < ActiveRecord::Base
     User.login(self.login, self.password)
   end  
 
-  # Logs out user. Not needed, bedauce logging out is setting current_user to null
-  # in login controller 
-  def logout
-  end
   
   # Checks if the user has permissions to view controller 
   # and action given in parameters

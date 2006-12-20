@@ -43,14 +43,14 @@ class YourDataController < ApplicationController
       graph
       render :action => 'graph'
     else
-      redirect_to :action => 'list'
+    activities_list
+    render :action => 'activities_list'
     end
   end
   
   # Shows list of current user's activities
   def activities_list  
     @selected = { 'project_id' => ''}
-    @checked = [true,false,false] 
     conditions_string =" 1"; 
     # filter activities to current_user
     conditions_string +=" AND user_id='" + @current_user.id.to_s + "'"    
@@ -106,7 +106,7 @@ class YourDataController < ApplicationController
     params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
     @activity = Activity.new(params[:activity])
     @activity.user_id = @current_user.id # current user 
-    @projects = Project.find_all
+    @projects = Project.find(:all, :conditions => ["is_inactive = ?",false])
     date = params[:activity]["date(1i)"].to_i.to_s \
               + "-" + params[:activity]["date(2i)"].to_i.to_s \
               + "-" + params[:activity]["date(3i)"].to_i.to_s      
