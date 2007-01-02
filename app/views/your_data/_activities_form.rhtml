@@ -8,7 +8,7 @@
 </div>
 <div class="inputs">
     <label for="activity_date">Date:</label><br/>
-    <%= date_select 'activity', 'date' , :start_year => Time.now.year, :order => [:day, :month, :year] %>
+    <%= date_select 'activity', 'date' , :start_year => (Time.now.year-1), :order => [:day, :month, :year] %>
 </div>
 <div class="inputs">
     <label for="activity_minutes">Time(HH:MM):</label><br/>
