@@ -204,7 +204,7 @@ div.progressBar div.background {
 }
 
 #top-menu ul li a {
-	   padding: 2px 15px;
+	   padding: 1px 15px;
 	   font-weight: bold;
 }
 
@@ -224,7 +224,7 @@ div.progressBar div.background {
 	   color: #000;
 	   text-decoration: none; 
 	   background-color: inherit;
-	   border-bottom: 3px solid #32541f;
+	   border-bottom: 4px solid #32541f;
 }
 
 /* styles for submenu */
