@@ -1,5 +1,22 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_activity:
-  id: 1
+  id: 1 
+  date: 2006-08-21
+  minutes: 60
+  project_id: 1
+  comments: "Ala ma kota"
+  user_id: 1
 another_activity:
   id: 2
+  date: 2006-08-23
+  minutes: 60
+  project_id: 1
+  comments: "Ala ma kota"
+  user_id: 1
+third_activity:
+  id: 3
+  date: 2006-08-19
+  minutes: 60
+  project_id: 1
+  comments: "Ala ma kota"
+  user_id: 1
