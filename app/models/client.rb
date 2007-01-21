@@ -32,4 +32,8 @@ class Client < ActiveRecord::Base
   validates_presence_of :name, :description
   validates_uniqueness_of :name
 
+  def Client.find_active
+    Client.find(:all, :conditions => "is_inactive = 0",
+      :order => "name")
+  end
 end

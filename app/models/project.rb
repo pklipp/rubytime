@@ -32,4 +32,8 @@ class Project < ActiveRecord::Base
   validates_presence_of :name, :description, :client_id
   validates_uniqueness_of :name
   
+  def Project.find_active
+    Project.find(:all, :conditions => "is_inactive = 0", 
+      :order => "name")
+  end
 end
