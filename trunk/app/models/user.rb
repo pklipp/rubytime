@@ -99,4 +99,9 @@ class User < ActiveRecord::Base
     self.object_id.to_s + rand.to_s
   end
   
+  # Find all activ users (alphabetic order)
+  def User.find_active
+    User.find(:all, :conditions => "is_inactive = 0",
+      :order => "name")
+  end
 end
