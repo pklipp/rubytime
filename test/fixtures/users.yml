@@ -2,6 +2,8 @@
 first_user:
   id: 1 
   login: "alex"
+  role_id: 1
 another_user:
   id: 2 
   login: "fox"
+  role_id: 1
