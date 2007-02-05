@@ -1,7 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_client:
   id: 1 
-  name: "Ala"
+  name: "project1"
+  description: "Project nr 1"
 another_client:
   id: 2 
-  name: "Kot"
+  name: "project2"
+  description: "Project nr 2"

@@ -15,7 +15,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
   fixtures :activities, :users
 
   def setup
-    @controller = ActivitiesController.new
+    @controller = YourDataController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @request.session[:user_id] = 1
@@ -24,14 +24,14 @@ class ActivitiesControllerTest < Test::Unit::TestCase
   def test_index
     get :index
     assert_response :success
-    assert_template 'list'
+    assert_template 'activities_list'
   end
 
-  def test_list
-    get :list
+  def test_activities_list
+    get :activities_list
 
     assert_response :success
-    assert_template 'list'
+    assert_template 'activities_list'
 
     assert_not_nil assigns(:activities)
     
@@ -40,43 +40,54 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_equal 3, @activities.length
     
     #chronological order
-    assert @activities[0].date >= @activities[1].date
-    assert @activities[1].date >= @activities[2].date
+    assert @activities[0].date < @activities[1].date
+    assert @activities[1].date < @activities[2].date
     
-#    puts @activities[0].date
-#    puts @activities[1].date
-#    puts @activities[2].date
-
     
     #with session conditions
     @request.session[:month] = 8.to_s
     
-    get :list
+    get :activities_list
     
-    assert_not_nil assigns(:activities)
+     assert_not_nil assigns(:activities)
     
     @activities = assigns(:activities)
     
     assert_equal 3, @activities.length
     
-#    puts @activities[0].date
-#    puts @activities[1].date
-#    puts @activities[2].date
-
     #chronological order
-    assert @activities[0].date >= @activities[1].date
-    assert @activities[1].date >= @activities[2].date
-
+    assert @activities[0].date < @activities[1].date
+    assert @activities[1].date < @activities[2].date
   end
 
-  def test_show
-    get :show, :id => 1
+  def test_show_activity
+    get :show_activity, :id => 1
 
     assert_response :success
-    assert_template 'show'
+    assert_template 'show_activity'
 
     assert_not_nil assigns(:activity)
     assert assigns(:activity).valid?
+  end
+
+  def test_new
+    get :new
+
+    assert_response :success
+    assert_template 'new_activity'
+
+    assert_not_nil assigns(:activity)
+  end
+
+  def test_create_activity
+    num_activities = Activity.count
+
+    post :create_activity, :activity => {}
+
+    assert_response :redirect
+    assert_redirected_to :action => 'activities_list'
+
+    assert_equal num_activities + 1, Activity.count
   end
 
   def test_edit
@@ -90,9 +101,9 @@ class ActivitiesControllerTest < Test::Unit::TestCase
   end
 
   def test_update
-    post :update, :id => 1, :activity => {:minutes => "1", :project_id => 1, :comments => "comment", }
+    post :update_activity, :id => 1, :activity => {:minutes => "60:00"}
     assert_response :redirect
-    assert_redirected_to :action => 'show', :id => 1
+    assert_redirected_to :action => 'activities_list', :id => 1
   end
 
   def test_destroy

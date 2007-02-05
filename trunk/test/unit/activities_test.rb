@@ -4,11 +4,12 @@ class ActivityTest < Test::Unit::TestCase
   fixtures :activities
 
   def setup
-    @activities = Activity.find(1)
+    @activity = Activity.find(1)
+    @activities = Activity.find((1..3).to_a)
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert_kind_of Activity,  @activities
+  #test activities ordering
+  def test_order
+    assert_equal 3, @activities.size 
   end
 end

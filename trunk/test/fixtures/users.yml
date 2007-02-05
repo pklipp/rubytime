@@ -1,9 +1,16 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_user:
   id: 1 
+  name: "Alexander"
   login: "alex"
+  password: "abcabc"
+  email: "alex@a.com"
   role_id: 1
+
 another_user:
   id: 2 
+  name: "Fox"
   login: "fox"
+  password: "aaabbb"
+  email: "fox@a.com"
   role_id: 1
