@@ -64,8 +64,8 @@ class ActivitiesControllerTest < Test::Unit::TestCase
 #    puts @activities[2].date
 
     #chronological order
-    assert @activities[0].date >= @activities[1].date
-    assert @activities[1].date >= @activities[2].date
+    assert @activities[0].date >= @activities[1].date, "not chronological order"
+    assert @activities[1].date >= @activities[2].date, "not chronological order"
 
   end
 
