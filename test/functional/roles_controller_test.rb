@@ -6,11 +6,13 @@ class RolesController; def rescue_action(e) raise e end; end
 
 class RolesControllerTest < Test::Unit::TestCase
   fixtures :roles
+  fixtures :users
 
   def setup
     @controller = RolesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    @request.session = {:user_id => 1}
   end
 
   def test_index
@@ -50,7 +52,7 @@ class RolesControllerTest < Test::Unit::TestCase
   def test_create
     num_roles = Role.count
 
-    post :create, :role => {}
+    post :create, :role => {:name => "Test role", :short_name => "TR" }
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
@@ -75,14 +77,17 @@ class RolesControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
+    roles_count = Role.count
     assert_not_nil Role.find(1)
 
     post :destroy, :id => 1
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    assert_raise(ActiveRecord::RecordNotFound) {
-      Role.find(1)
-    }
+    #roles destroy not allowed yet
+    assert_equal roles_count, Role.count
+#    assert_raise(ActiveRecord::RecordNotFound) {
+#      Role.find(1)
+#    }
   end
 end

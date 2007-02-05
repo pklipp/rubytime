@@ -6,11 +6,14 @@ class ProjectsController; def rescue_action(e) raise e end; end
 
 class ProjectsControllerTest < Test::Unit::TestCase
   fixtures :projects
+  fixtures :users
+  fixtures :roles
 
   def setup
     @controller = ProjectsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    @request.session = { :user_id =>  1 }
   end
 
   def test_index
@@ -50,7 +53,7 @@ class ProjectsControllerTest < Test::Unit::TestCase
   def test_create
     num_projects = Project.count
 
-    post :create, :project => {}
+    post :create, :project => { :name => "New project", :description => "desc", :client_id => 1 }
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
@@ -65,6 +68,7 @@ class ProjectsControllerTest < Test::Unit::TestCase
     assert_template 'edit'
 
     assert_not_nil assigns(:project)
+#    puts assigns(:project).inspect
     assert assigns(:project).valid?
   end
 
@@ -75,14 +79,20 @@ class ProjectsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
+    num_projects = Project.count 
+    
     assert_not_nil Project.find(1)
 
     post :destroy, :id => 1
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    assert_raise(ActiveRecord::RecordNotFound) {
-      Project.find(1)
-    }
+    #destroy in not allowed yet
+    assert_equal num_projects, Project.count
+
+#    assert_raise(ActiveRecord::RecordNotFound) {
+#      Project.find(1)
+#    }
   end
+
 end
