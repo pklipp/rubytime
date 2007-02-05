@@ -53,7 +53,7 @@ class ProjectsControllerTest < Test::Unit::TestCase
   def test_create
     num_projects = Project.count
 
-    post :create, :project => { :name => "New project", :description => "desc", :client_id => 1 }
+    post :create, :project => { :name => "New project", :description => "desc", :client_id => 1}
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
