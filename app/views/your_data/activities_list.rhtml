@@ -18,7 +18,7 @@
         <label for="search">Project:</label>
         <select name="search" id="search">
         <%= options_for_select({ "--all--" => "" }) %>
-        <%= options_for_select(@current_user.projects.collect {|p| [ p.name, p.id ] }.sort, @selected['project_id'].to_i) %>
+        <%= options_for_select(Project.find_active.collect{|p| [ p.name, p.id ] }, @selected['project_id'].to_i) %>
         </select>
         &nbsp;&nbsp;<%= submit_tag 'Search' %>
         &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
