@@ -20,3 +20,11 @@ third_activity:
   project_id: 1
   comments: "John has a little bike"
   user_id: 1
+fourth_activity:
+  id: 4
+  date: 2006-08-29
+  minutes: 60
+  project_id: 1
+  comments: "Plumbing a hole in the sky"
+  user_id: 2
+

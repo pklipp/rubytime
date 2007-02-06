@@ -5,7 +5,7 @@ require 'clients_controller'
 class ClientsController; def rescue_action(e) raise e end; end
 
 class ClientsControllerTest < Test::Unit::TestCase
-  fixtures :clients
+  fixtures :clients, :projects
 
   def setup
     @controller = ClientsController.new
@@ -76,16 +76,51 @@ class ClientsControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => 'show', :id => 1
   end
 
-  def test_destroy
-    assert_not_nil Client.find(1)
+  def test_confirm_destroy  
+    get :confirm_destroy, :id => 1
 
-    post :destroy, :id => 1
+    assert_template 'confirm_destroy'
+    assert assigns(:client)
+  end
+
+  def test_destroy
+    client_id = 1
+    client = Client.find(client_id)
+    client_count = Client.count
+    assert_not_nil client
+    projects = Project.find(:all, :conditions => ["client_id = ?", client_id])
+    assert projects.size > 0
+    
+    activities_count = Activity.count
+    client_activities_count = 0
+    projects.each do |p|
+      client_activities_count += p.activities.size 
+    end
+
+    assert client_activities_count > 0
+    
+    #destroy without confirmation is not allowed
+    post :destroy, :id => client_id
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+    
+    assert_equal client_count, Client.count
+
+    #destroy with confirmation is allowed
+    post :destroy, :id => client_id, :name_confirmation => client.name
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    #not allowed yet
-    #assert_raise(ActiveRecord::RecordNotFound) {
-    #  Client.find(1)
-    #}
+    assert_raise(ActiveRecord::RecordNotFound) {
+      Client.find(client_id)
+    }
+
+    #delete client's projects
+    projects = Project.find(:all, :conditions => ["client_id = ?", client_id])
+    assert_equal 0, projects.size
+
+    #delete client's projects' activities
+    assert_equal Activity.count + client_activities_count, activities_count
+
   end
 end

@@ -8,3 +8,4 @@ another_role:
   id: 2 
   name: "Developer" 
   short_name: "DEV"
+  is_admin: 0
