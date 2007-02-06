@@ -29,6 +29,8 @@
             
             <td><%= link_to 'Show', :action => 'show', :id => user %></td>
             <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+            <td><%= link_to 'Destroy', { :controller => 'users', :action => 'confirm_destroy', :id => user},
+	      :confirm => 'Are you sure?' %></td>
         </tr>
         <% end %>
         </table>
