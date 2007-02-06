@@ -30,7 +30,8 @@
         <tr><td><label for="search_project_id">Project:</label></td>
         <td><select name="search[project_id]" id="search_project_id" style="width:200px">
         <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select(Project.find(:all,:order=>"name").collect{|p| [p.name + " - " + p.client.name, p.id ] }, @selected['project_id'].to_i) %>
+        <%= options_for_select(Project.find_active.collect{|p| [p.name + " - " + 
+        	p.client.name, p.id ] }, @selected['project_id'].to_i) %>
         </select></td></tr>
         
         <tr><td><label for="search_role_id">Role:</label></td>
@@ -42,7 +43,7 @@
         <tr><td><label for="search_user_id">User:</label></td>
         <td><select name="search[user_id]" id="search_user_id" style="width:200px">
         <%= options_for_select({ "choose" => "" }) %>
-        <%= options_for_select(User.find(:all,:order=>"name").collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
+        <%= options_for_select(User.find_active.collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
         </select></td></tr>
  		
         <tr><td colspan="2" style="text-align:center">
