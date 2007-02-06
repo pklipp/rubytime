@@ -29,8 +29,21 @@ class Activity < ActiveRecord::Base
   belongs_to :invoice
   
   # validators
-  validates_presence_of :comments,  :project_id
+  validates_presence_of :comments,  :project_id, :date
   validates_numericality_of :minutes
   validates_presence_of :minutes
   validates_inclusion_of :minutes, :in => 1..1000, :message => "are out of range"
+
+  # duration of activity is given in 2 formats:
+  # - hr:min
+  # - hr
+  # This method converts both of them to minutes
+  def Activity.convert_duration(minutes_str)
+    if (minutes_str.index(':'))
+      parts=minutes_str.split(/:/)
+      minutes_str=parts[1].to_f + (parts[0].to_f / 60).to_f
+    end
+    minutes_str.to_f * 60
+  end
+
 end
