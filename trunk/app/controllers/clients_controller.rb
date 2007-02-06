@@ -98,9 +98,30 @@ class ClientsController < ApplicationController
     end
   end
 
-  # Removes client. Not allowed.
+  def confirm_destroy
+    @client = Client.find(params[:id])
+  end
+
+  # Removes client after confirmation
   def destroy
-    # Client.find(params[:id]).destroy
+    client = Client.find(params[:id])
+    if params[:name_confirmation] == client.name
+      result = true
+      client.projects.each do |p|
+	p.activities.each do |a|
+	  result &= a.destroy
+	end
+	result &= p.destroy
+      end
+      result &= client.destroy
+      if result
+	flash[:notice] = 'Client, his projects and activities have been deleted'
+      else 
+	flash[:error] = 'Error occured while deleting client'
+      end
+    else
+      flash[:error] = "The client has not been deleted, since the name was different" 
+    end
     redirect_to :action => 'list'
   end
   

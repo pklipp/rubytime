@@ -98,12 +98,7 @@ class YourDataController < ApplicationController
   
   # creates new activity
   def create_activity
-    if (params[:activity]['minutes'].index(':'))
-      parts=params[:activity]['minutes'].split(/:/)
-      params[:activity]['minutes']=parts[0].to_f + (parts[1].to_f / 60).to_f
-    end
-    
-    params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
+    params[:activity]['minutes']  = Activity.convert_duration(params[:activity]['minutes'])
     @activity = Activity.new(params[:activity])
     @activity.user_id = @current_user.id # current user 
     @projects = Project.find(:all, :conditions => ["is_inactive = ?",false])
@@ -113,6 +108,7 @@ class YourDataController < ApplicationController
     if @current_user.activities.find(:first, :conditions => ["date = ? AND project_id = ? ", date, params[:activity][:project_id]])
       flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make mistake."
     end
+    
     if @activity.save
       flash[:notice] = 'Activity has been successfully created'
       redirect_to :action => 'activities_list'
@@ -136,11 +132,7 @@ class YourDataController < ApplicationController
     if @activity.invoice_id.nil?
     @projects = Project.find_all
     # hours format to minutes
-    if (params[:activity]['minutes'].index(':'))
-      parts=params[:activity]['minutes'].split(/:/)
-      params[:activity]['minutes']=parts[0].to_f + (parts[1].to_f / 60).to_f
-    end
-    params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
+    params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
     if @activity.update_attributes(params[:activity])
       flash[:notice] = 'Activity has been successfully updated'
       redirect_to :action => 'activities_list', :id => @activity

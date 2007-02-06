@@ -161,12 +161,30 @@ class UsersController < ApplicationController
     end
   end
 
-  # Removes user
+  def confirm_destroy
+    @user = User.find(params[:id])
+    if @user.login == "admin"
+      flash[:error] = "Admin can't be deleted"
+      redirect_to :action => "list"
+    end
+  end
+
+  # Removes user after confirmation
   def destroy
-    if User.find(params[:id]).destroy
-      flash[:notice] = "User and his activities have been deleted"
+    user = User.find(params[:id])
+    if params[:name_confirmation] == user.name
+      result = true
+      user.activities.each do |a|
+	result &= a.destroy
+      end
+      result &= user.destroy
+      if result
+	flash[:notice] = 'User and his activities have been deleted'
+      else 
+	flash[:error] = 'Error occured while deleting user'
+      end
     else
-      flash[:notice] = "Error with deleting user"
+      flash[:error] = "The user has not been deleted, since the name was different" 
     end
     redirect_to :action => 'list'
   end
