@@ -82,7 +82,7 @@ class InvoicesController < ApplicationController
   #Updates invoice.
   def update
     @invoice = Invoice.find(params[:id])
-    @invoice.issued_at = Time.now if params[:invoice][:is_issued]
+    @invoice.issued_at = Time.now if !params[:invoice].nil? && params[:invoice][:is_issued]
     @invoice.user_id = @current_user.id
     if @invoice.update_attributes(params[:invoice])
       flash[:notice] = 'Invoice was successfully updated.'

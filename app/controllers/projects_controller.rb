@@ -34,7 +34,6 @@ class ProjectsController < ApplicationController
   
   # Lists all current projects or specified by search conditions, if given.
   def list
-      @clients = Client.find_all
       @project_pages, @projects = paginate :project, :per_page => 10, :order => "is_inactive"   
   end
   
@@ -125,10 +124,29 @@ class ProjectsController < ApplicationController
       end
     end
   end
+
+  #confirm deletion of the project
+  def confirm_destroy
+    @project = Project.find(params[:id])
+  end
   
-  # Removes project. Not allowed.
+  # Removes project after confirmation.
   def destroy
-    # Project.find(params[:id]).destroy
+    project = Project.find(params[:id])
+    if params[:name_confirmation] == project.name
+      result = true
+      project.activities.each do |a|
+	result &= a.destroy
+      end
+      result &= project.destroy
+      if result
+	flash[:notice] = 'Project and it\'s activities have been deleted'
+      else 
+	flash[:error] = 'Error occured while deleting user'
+      end
+    else
+      flash[:error] = "The project has not been deleted, since the name was different" 
+    end
     redirect_to :action => 'list'
   end
 end

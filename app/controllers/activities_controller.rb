@@ -166,44 +166,39 @@ class ActivitiesController < ApplicationController
   # Fills form with details of activities to update
   def edit
     begin
-    @activity = Activity.find(params[:id])
-    @projects = Project.find_all
+      @activity = Activity.find(params[:id])
+      @projects = Project.find_all
     rescue
-    flash[:notice] = "No such activity"
-    redirect_to :action => :index
+      flash[:notice] = "No such activity"
+      redirect_to :action => :index
     else
-    @selected = {'project_id' => ''}
-    if (@activity.project)
-      @selected['project_id']=@activity.project.id.to_i
-    end
+      @selected = {'project_id' => ''}
+      if (@activity.project)
+	@selected['project_id']=@activity.project.id.to_i
+      end
     end
   end
   
   # Updates activity
   def update
     begin
-    @activity = Activity.find(params[:id])
-    @projects = Project.find_all
+      @activity = Activity.find(params[:id])
+      @projects = Project.find_all
     rescue
-    flash[:notice] = "No such activity"
-    redirect_to :action => :index
+      flash[:notice] = "No such activity"
+      redirect_to :action => :index
     else
-    @selected = {'project_id' => ''}
-    if (@activity.project)
-      @selected['project_id']=@activity.project.id.to_i
-    end
-    # hours format to minutes
-    if (params[:activity]['minutes'].index(':'))
-      parts=params[:activity]['minutes'].split(/:/)
-      params[:activity]['minutes']=parts[0].to_f + (parts[1].to_f / 60).to_f
-    end
-    params[:activity]['minutes']= params[:activity]['minutes'].to_f * 60
-    if @activity.update_attributes(params[:activity])
-      flash[:notice] = 'Activity has been successfully updated'
-      redirect_to :action => 'show', :id => @activity
-    else
-      render :action => 'edit'
-    end
+      @selected = {'project_id' => ''}
+      if (@activity.project)
+        @selected['project_id']=@activity.project.id.to_i
+      end
+      params[:activity]['minutes']= Activity.convert_duration(params[:activity]['minutes'])
+      if @activity.update_attributes(params[:activity])
+        flash[:notice] = 'Activity has been successfully updated'
+        redirect_to :action => 'show', :id => @activity
+      else
+        render :action => 'edit'
+      end
     end
   end
   
