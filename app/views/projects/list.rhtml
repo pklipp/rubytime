@@ -8,7 +8,7 @@
         <p><label>Name or description:</label><br />
         <%= text_field('search','name',:size => 32)%></p>
         <p><label>Client:</label><br />
-        <%= select('search','client_id',@clients.collect {|c| [ c.name, c.id ]}, {:include_blank => true })%></p>
+        <%= select('search','client_id',Client.find_active.collect{|p| [ p.name, p.id ] }, {:include_blank => true })%></p>
         <p><%= submit_tag 'Search'%></p>
         <%= end_form_tag %>
     </fieldset>

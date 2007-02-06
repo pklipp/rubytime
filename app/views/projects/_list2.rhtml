@@ -18,6 +18,8 @@
             
             <td><%= link_to 'Show', :controller => 'projects', :action => 'show', :id => project %></td>
             <td><%= link_to 'Edit', :controller => 'projects', :action => 'edit', :id => project %></td>
+            <td><%= link_to 'Destroy', { :controller => 'projects', :action => 'confirm_destroy', :id => project},
+	      :confirm => 'Are you sure?' %></td>
         </tr>
         <% end %>
         </table>
