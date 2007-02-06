@@ -4,19 +4,19 @@ first_activity:
   date: 2006-08-21
   minutes: 60
   project_id: 1
-  comments: "Ala ma kota"
+  comments: "Andy has a little cat"
   user_id: 1
 another_activity:
   id: 2
   date: 2006-08-23
   minutes: 60
   project_id: 1
-  comments: "Ala ma kota"
+  comments: "Andy has a little dog"
   user_id: 1
 third_activity:
   id: 3
   date: 2006-08-19
   minutes: 60
   project_id: 1
-  comments: "Ala ma kota"
+  comments: "John has a little bike"
   user_id: 1
