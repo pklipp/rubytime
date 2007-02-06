@@ -41,7 +41,7 @@ class Activity < ActiveRecord::Base
   def Activity.convert_duration(minutes_str)
     if (minutes_str.index(':'))
       parts=minutes_str.split(/:/)
-      minutes_str=parts[1].to_f + (parts[0].to_f / 60).to_f
+      minutes_str=parts[0].to_f + (parts[1].to_f / 60).to_f
     end
     minutes_str.to_f * 60
   end
