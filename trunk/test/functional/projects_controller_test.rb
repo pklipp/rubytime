@@ -78,21 +78,41 @@ class ProjectsControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => 'show', :id => 1
   end
 
+  def test_confirm_destroy
+    get :confirm_destroy, :id => 1
+
+    assert_template 'confirm_destroy'
+    assert assigns(:project)
+  end
+
   def test_destroy
     num_projects = Project.count 
+    project_id = 1
     
-    assert_not_nil Project.find(1)
+    project = Project.find(project_id)
+    assert_not_nil project
+    activities = Activity.find(:all, :conditions => ["project_id = ?",project_id])
+    assert activities.size > 0
 
-    post :destroy, :id => 1
+    post :destroy, :id => project_id
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    #destroy in not allowed yet
+    #destroy is not allowed yet
     assert_equal num_projects, Project.count
 
-#    assert_raise(ActiveRecord::RecordNotFound) {
-#      Project.find(1)
-#    }
+    #the name of the project must equal name_confirmed
+    post :destroy, :id => project_id, :name_confirmation => project.name
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+
+    assert_raise(ActiveRecord::RecordNotFound) {
+      Project.find(project_id)
+    }
+    
+    #all activities should be deleted as well
+    activities = Activity.find(:all, :conditions => ["project_id = ?",project_id])
+    assert_equal 0, activities.size
   end
 
 end

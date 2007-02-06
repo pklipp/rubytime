@@ -2,7 +2,7 @@
 first_user:
   id: 1 
   name: "Alexander"
-  login: "alex"
+  login: "admin"
   password: "abcabc"
   email: "alex@a.com"
   role_id: 1
@@ -13,4 +13,4 @@ another_user:
   login: "fox"
   password: "aaabbb"
   email: "fox@a.com"
-  role_id: 1
+  role_id: 2

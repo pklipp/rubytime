@@ -78,21 +78,64 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => 'list'
   end
 
-  def test_destroy
-    num_projects = User.count 
-    
-    assert_not_nil User.find(1)
+  def test_confirm_destroy
+    admin_id = 1
+    user = User.find(admin_id)
+    assert user.is_admin
 
-    post :destroy, :id => 1
+    get :confirm_destroy, :id => admin_id
+
+    assert_redirect :action => 'list'
+
+    user_id = 2
+    user = User.find(user_id)
+    assert !user.is_admin
+
+    get :confirm_destroy, :id => user_id
+
+    assert_template 'confirm_destroy'
+    assert assigns(:user)
+  end
+
+  def test_destroy
+    admin_id = 1
+    user_id = 2
+    num_users = User.count 
+   
+    admin = User.find(admin_id)
+    assert_not_nil admin
+
+    post :destroy, :id => admin_id, :name_confirmation => admin.name
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    #destroy in not allowed yet
-    assert_equal num_projects, User.count
+    #destroy of admin is not allowed
+    assert_equal num_users, User.count
 
-#    assert_raise(ActiveRecord::RecordNotFound) {
-#      Project.find(1)
-#    }
+    user = User.find(user_id)
+    assert_not_nil user
+    activities = Activity.find(:all, :conditions => ["user_id = ?",user_id])
+    assert activities.size > 0
+ 
+    #destroy without confirmation is not allowed
+    post :destroy, :id => user_id
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+    assert_equal num_users, User.count
+
+    #destroy with confirmation is allowed
+    post :destroy, :id => user_id, :name_confirmation => user.name
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+    assert User.count < num_users
+
+    assert_raise(ActiveRecord::RecordNotFound) {
+      User.find(user_id)
+    }
+
+    activities = Activity.find(:all, :conditions => ["user_id = ?",user_id])
+    assert_equal 0,activities.size
+    
   end
 
 end
