@@ -5,8 +5,7 @@ require 'invoices_controller'
 class InvoicesController; def rescue_action(e) raise e end; end
 
 class InvoicesControllerTest < Test::Unit::TestCase
-  fixtures :invoices
-  fixtures :clients
+  fixtures :invoices, :clients, :roles, :projects
 
   def setup
     @controller = InvoicesController.new

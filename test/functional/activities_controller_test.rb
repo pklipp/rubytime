@@ -1,18 +1,13 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'activities_controller'
-require 'login_controller'
 
 # Re-raise errors caught by the controller.
 class ActivitiesController; 
   def rescue_action(e) raise e end; 
-  
-  #override autorization
-  def authorize
-  end
 end
 
 class ActivitiesControllerTest < Test::Unit::TestCase
-  fixtures :activities, :users
+  fixtures :activities, :users, :projects, :roles, :clients
 
   def setup
     @controller = ActivitiesController.new
