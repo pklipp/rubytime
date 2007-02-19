@@ -15,9 +15,17 @@
     <br/><br/>
 
     <!-- List of clients -->
-    <div id="clients_list">
-        <%= render :partial => 'list'%>
-    </div>
+    <%- if !@clients.blank? -%>
+      <div id="clients_list">
+          <%= render :partial => 'list'%>
+      </div>
+    <%- else -%>
+      <p id="errorNotice">No clients found</p>
+      <%- if params[:search].nil? -%>
+        <p><%= link_to 'New client', :action => 'new' %></p>
+      <%- end -%>
+    <%- end -%>
+
     <!-- End of list -->
 
 <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>

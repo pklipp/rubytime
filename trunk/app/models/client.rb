@@ -25,8 +25,8 @@
 # ************************************************************************
 
 class Client < ActiveRecord::Base
-  has_many :projects
-  has_many :invoices
+  has_many :projects, :dependent => :destroy
+  has_many :invoices, :dependent => :destroy
 
   # validators
   validates_presence_of :name, :description

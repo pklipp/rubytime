@@ -66,6 +66,7 @@ class InvoicesController < ApplicationController
   def create
     @invoice = Invoice.new(params[:invoice])
     @invoice.user_id = @current_user.id
+    @invoice.created_at = Time.now
     if @invoice.save
       flash[:notice] = 'Invoice was successfully created.'
       redirect_to :action => 'list'

@@ -25,7 +25,7 @@
 # ************************************************************************
 
 class Project < ActiveRecord::Base
-  has_many :activities
+  has_many :activities, :dependent => :destroy
   belongs_to :client
   
   # validators

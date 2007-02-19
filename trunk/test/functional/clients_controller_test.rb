@@ -5,7 +5,7 @@ require 'clients_controller'
 class ClientsController; def rescue_action(e) raise e end; end
 
 class ClientsControllerTest < Test::Unit::TestCase
-  fixtures :clients, :projects
+  fixtures :clients, :projects, :invoices
 
   def setup
     @controller = ClientsController.new
@@ -36,6 +36,8 @@ class ClientsControllerTest < Test::Unit::TestCase
     assert_template 'show'
 
     assert_not_nil assigns(:client)
+    assert_not_nil assigns(:projects)
+    
     assert assigns(:client).valid?
   end
 
@@ -88,6 +90,8 @@ class ClientsControllerTest < Test::Unit::TestCase
     client = Client.find(client_id)
     client_count = Client.count
     assert_not_nil client
+
+    #dependent data
     projects = Project.find(:all, :conditions => ["client_id = ?", client_id])
     assert projects.size > 0
     
@@ -96,8 +100,11 @@ class ClientsControllerTest < Test::Unit::TestCase
     projects.each do |p|
       client_activities_count += p.activities.size 
     end
-
     assert client_activities_count > 0
+
+    invoices = Invoice.find(:all, :conditions => ["client_id = ?",client_id])
+    assert invoices.size > 0
+
     
     #destroy without confirmation is not allowed
     post :destroy, :id => client_id
@@ -121,6 +128,10 @@ class ClientsControllerTest < Test::Unit::TestCase
 
     #delete client's projects' activities
     assert_equal Activity.count + client_activities_count, activities_count
+
+    #delete client's invoices
+    invoices =  Invoice.find(:all, :conditions => ["client_id = ?",client_id])
+    assert_equal 0, invoices.size
 
   end
 
