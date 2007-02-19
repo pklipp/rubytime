@@ -123,4 +123,16 @@ class ClientsControllerTest < Test::Unit::TestCase
     assert_equal Activity.count + client_activities_count, activities_count
 
   end
+
+  def test_destroy_all_and_add
+    clients = Client.find(:all)
+    clients.each do |c|
+      c.destroy
+    end
+  
+    assert_equal 0, Client.count
+
+    get :list
+    assert_tag :tag => "a", :attributes => { :href => "/clients/new" }
+  end
 end

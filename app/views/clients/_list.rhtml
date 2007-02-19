@@ -1,18 +1,17 @@
-    
-    <%if !@clients.blank? %>
     <fieldset>
         <legend>
-        <% if params[:search].nil? %>
-        List of clients
-        <% else %>
-        List of clients: Search result
-        <% end %>
+        <%- if params[:search].nil? -%>
+	  List of clients
+        <%- else -%>
+	  List of clients: Search result
+        <%- end -%>
         </legend>
         
         <p class="p_new">
         <%= link_to 'New client', :action => 'new' %>
         </p>
         <hr/>       
+    <%- if !@clients.blank? -%>
         <table class="standard">
         <tr>
             <th>Name:</th>
@@ -40,8 +39,8 @@
         <%= link_to 'Next page', { :page => @client_pages.current.next} \
             if @client_pages.current.next %> 
         </p>
-        <% end %>
-    </fieldset>
-    <%else%>
+        <%- end -%>
+    <%- else -%>
     <p id="errorNotice">No clients found</p>
-    <%end%>
+    <%- end -%>
+    </fieldset>
