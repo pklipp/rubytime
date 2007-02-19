@@ -115,4 +115,16 @@ class ProjectsControllerTest < Test::Unit::TestCase
     assert_equal 0, activities.size
   end
 
+  def test_destroy_all_and_add
+    projects = Project.find(:all)
+    projects.each do |p|
+      p.destroy
+    end
+  
+    assert_equal 0, Project.count
+
+    get :list
+    assert_tag :tag => "a", :attributes => { :href => "/projects/new" }
+  end
+
 end

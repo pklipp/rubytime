@@ -32,7 +32,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     
     @activities = assigns(:activities)
     
-    assert_equal 3, @activities.length
+    assert_equal 4, @activities.length
     
     #chronological order
     assert @activities[0].date >= @activities[1].date
@@ -52,7 +52,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     
     @activities = assigns(:activities)
     
-    assert_equal 3, @activities.length
+    assert_equal 4, @activities.length
     
 #    puts @activities[0].date
 #    puts @activities[1].date
