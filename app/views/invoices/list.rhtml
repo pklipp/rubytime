@@ -37,13 +37,12 @@
     <div id="invoices_list">
         <%= render :partial => "list" %>
     </div> 
-
-    <%elsif !params[:search].nil? %>
+<% else -%>
     <p id="errorNotice">No invoices found</p>
-    <% else -%>
-    <p id="errorNotice">No invoices found</p>
-    <p><%= link_to 'New invoice', :action => 'new' %></p>
-    <%end%> 
+    <%- if params[:search].nil? -%>
+      <p><%= link_to 'New invoice', :action => 'new' %></p>
+    <%- end -%>
+<%end%> 
           
 <!-- End of list --> 
 

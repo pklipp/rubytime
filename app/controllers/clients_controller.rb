@@ -106,14 +106,7 @@ class ClientsController < ApplicationController
   def destroy
     client = Client.find(params[:id])
     if params[:name_confirmation] == client.name
-      result = true
-      client.projects.each do |p|
-	p.activities.each do |a|
-	  result &= a.destroy
-	end
-	result &= p.destroy
-      end
-      result &= client.destroy
+      result = client.destroy
       if result
 	flash[:notice] = 'Client, his projects and activities have been deleted'
       else 

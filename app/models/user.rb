@@ -27,7 +27,7 @@
 class User < ActiveRecord::Base
   require 'digest/sha1' # needed to password hashing
   
-  has_many :activities
+  has_many :activities, :dependent => :destroy
   has_many :projects, :through => :activities, :group => "project_id"
   
   belongs_to :role

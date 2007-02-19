@@ -178,11 +178,7 @@ class UsersController < ApplicationController
       return
     end
     if params[:name_confirmation] == user.name
-      result = true
-      user.activities.each do |a|
-	result &= a.destroy
-      end
-      result &= user.destroy
+      result = user.destroy
       if result
 	flash[:notice] = 'User and his activities have been deleted'
       else 

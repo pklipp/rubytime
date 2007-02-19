@@ -134,11 +134,7 @@ class ProjectsController < ApplicationController
   def destroy
     project = Project.find(params[:id])
     if params[:name_confirmation] == project.name
-      result = true
-      project.activities.each do |a|
-	result &= a.destroy
-      end
-      result &= project.destroy
+      result = project.destroy
       if result
 	flash[:notice] = 'Project and it\'s activities have been deleted'
       else 

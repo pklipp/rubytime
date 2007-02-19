@@ -10,7 +10,6 @@
         <%= link_to 'New project', :action => 'new' %>
         </p>
         <hr/>
-    <%if !@projects.blank? %>
         <%= render :partial => 'list2'%>
         
         <% if(!@project_pages.nil? and @project_pages.page_count>1) %>
@@ -21,9 +20,4 @@
                                    if @project_pages.current.next %> 
         </p>
         <% end %>
-    <%else%>
-    <p id="errorNotice">No projects found</p>
-    <%end%>
-
     </fieldset>
-  

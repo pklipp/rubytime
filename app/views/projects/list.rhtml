@@ -18,9 +18,16 @@
 
     
     <!-- List of projects -->
-    <div id="projects_list">
-        <%= render :partial => 'list'%>
-    </div>
+    <%if !@projects.blank? %>
+      <div id="projects_list">
+          <%= render :partial => 'list'%>
+      </div>
+    <%else%>
+      <p id="errorNotice">No projects found</p>
+      <%- if params[:search].nil? -%>
+        <p><%= link_to 'New project', :action => 'new' %></p>
+      <%- end -%>
+    <%end%>
     <!-- End of list -->
     <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
         
