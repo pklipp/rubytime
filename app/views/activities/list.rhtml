@@ -45,6 +45,9 @@
         <%= options_for_select({ "choose" => "" }) %>
         <%= options_for_select(User.find_active.collect {|u| [ u.name, u.id ] }, @selected['user_id'].to_i ) %>
         </select></td></tr>
+        <tr><td><label for="search_details">Details:</label></td>
+	<td><%= check_box_tag 'search_details', "1" , @selected['details'] %>
+	</td></tr>
  		
         <tr><td colspan="2" style="text-align:center">
         <%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %>&nbsp;&nbsp;<%= submit_tag 'Export to CSV' %>

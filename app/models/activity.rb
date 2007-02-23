@@ -44,6 +44,7 @@ class Activity < ActiveRecord::Base
       minutes_str=parts[0].to_f + (parts[1].to_f / 60).to_f
     end
     minutes_str.to_f * 60
+    minutes_str
   end
 
 end

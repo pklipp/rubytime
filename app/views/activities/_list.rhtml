@@ -21,6 +21,9 @@
             <th> Person</th>
             <th> Date </th>
             <th> Hours </th>
+	    <%- if(!@selected.nil? and @selected['details']) -%>
+	      <th> Comment </th>
+	    <%- end -%>
             <td>&nbsp;</td>
              <td>&nbsp;</td>
         </tr>
@@ -35,7 +38,10 @@
             <td>					<%= link_to activity.user.login, :controller => 'users', :action => 'show', :id => activity.user %>				
                 (<%= activity.user.role.short_name.upcase %>)</td>
             <td style="text-align: center"><%= h activity.date %></td>
-            <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
+            <td style="text-align: right"><%= hour_format(activity.minutes) %></td>
+	    <% if(@selected and @selected['details']) %>
+	      <td><%= truncate(activity.comments,15) %></td>
+	    <% end %>
             <td><%= link_to "Show", :action => "show", :id => activity %></td>
             <td style="text-align:center">
             <%= check_box_tag("id[]", activity.id, false, :id => nil) if(!params[:search].nil? and activity.invoice_id.blank?) %>

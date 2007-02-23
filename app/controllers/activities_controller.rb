@@ -96,8 +96,9 @@ class ActivitiesController < ApplicationController
           @conditions_string+= " AND invoice_id IS NOT NULL "
         end        
       end
-
     end 
+    
+    @selected['details'] = params[:search_details] == "1"
 
      if (params[:search].nil? or (params[:search]['date_from(1i)'].blank? and !params[:search]['date_t1i)'].blank?))
        if (session[:year])
@@ -363,10 +364,14 @@ class ActivitiesController < ApplicationController
     report = StringIO.new
     minutes = 0 
     CSV::Writer.generate(report, ',') do |csv|
-      csv << ["Name", "Login", "Role", "Date", "Minutes"]
+      header = ["Name", "Login", "Role", "Date", "Minutes"]
+      header << "Comments" if @selected['details']
+      csv << header
       @activities.each do |activity|
         minutes += activity.minutes
-        csv << [activity.project.name, activity.user.login, activity.date, activity.minutes]
+	data = [activity.project.name, activity.user.login, activity.date, activity.minutes]
+	data << activity.comments if @selected['details']
+        csv << data 
       end
       csv << ["Sum", minutes]
     end
