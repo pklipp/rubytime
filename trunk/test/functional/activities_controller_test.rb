@@ -64,6 +64,35 @@ class ActivitiesControllerTest < Test::Unit::TestCase
 
   end
 
+  def test_reprot
+    post :search, { :commit => "Export to CSV" }
+    #puts @response.body.inspect
+    assert_response :success
+    assert_equal "text/csv; charset=utf-8; header=present", @response.headers["Content-Type"]
+    lines = @response.body.split "\n"
+    assert_equal Activity.count + 2, lines.size
+    data = lines[1].split ","
+    assert_equal 4,data.size
+    activity = Activity.find(4)
+    assert_equal data[0], activity.project.name
+    assert_equal data[1], activity.user.login
+    assert_equal data[2], activity.date.to_s
+    assert_equal data[3], activity.minutes.to_s
+
+
+    #check details flag
+    post :search, { :commit => "Export to CSV" , :search_details => "1" }
+    #puts @response.body.inspect
+    assert_response :success
+    assert_equal "text/csv; charset=utf-8; header=present", @response.headers["Content-Type"]
+    lines = @response.body.split "\n"
+    assert_equal Activity.count + 2, lines.size
+    data = lines[1].split ","
+    assert_equal 5,data.size
+
+    assert_equal data[4], activity.comments.to_s
+  end
+
   def test_show
     get :show, :id => 1
 

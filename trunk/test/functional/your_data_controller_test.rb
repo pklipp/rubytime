@@ -97,6 +97,7 @@ class YourDataControllerTest < Test::Unit::TestCase
 
   def test_update_activity
     post :update_activity, :id => 1, :activity => {:minutes => "60:00"}
+    #puts @response.body
     assert_response :redirect
     assert_redirected_to :action => 'activities_list', :id => 1
   end
