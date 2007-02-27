@@ -4,7 +4,7 @@ class RoleTest < Test::Unit::TestCase
   fixtures :roles
 
   def setup
-    @role = Role.find(1)
+    @role = Role.find :first
   end
 
   # Replace this with your real tests.

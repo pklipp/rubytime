@@ -36,15 +36,17 @@ class Activity < ActiveRecord::Base
 
   # duration of activity is given in 2 formats:
   # - hr:min
-  # - hr
+  # - hr (can be also float e.x. "1.5")
   # This method converts both of them to minutes
   def Activity.convert_duration(minutes_str)
+    return nil unless minutes_str.delete("0-9:.").blank?
     if (minutes_str.index(':'))
-      parts=minutes_str.split(/:/)
-      minutes_str=parts[0].to_f + (parts[1].to_f / 60).to_f
+      h, m = minutes_str.split(/:/)
+      minutes = (h.to_i * 60) + m.to_i
+    else
+      minutes = minutes_str.to_f * 60
     end
-    minutes_str.to_f * 60
-    minutes_str
+    minutes
   end
 
 end
