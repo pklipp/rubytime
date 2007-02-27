@@ -5,13 +5,13 @@ require 'clients_controller'
 class ClientsController; def rescue_action(e) raise e end; end
 
 class ClientsControllerTest < Test::Unit::TestCase
-  fixtures :clients, :projects, :invoices
+  fixtures :clients, :projects, :invoices, :users
 
   def setup
     @controller = ClientsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @request.session = {:user_id => 1}
+    login_as :pm
   end
 
   def test_index
