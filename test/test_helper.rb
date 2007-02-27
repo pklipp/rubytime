@@ -25,4 +25,40 @@ class Test::Unit::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+  def login(email = "admin", password = "admin" )
+    old_controller = @controller
+    @controller = LoginController.new
+    post(
+      :login,
+      {:log_user => {:login => email, :password => password}}
+    )
+    @controller = old_controller 
+  end
+  
+  def login_as(user = "admin", password="admin" )
+    case user.class.to_s
+    when "String"
+          login(user, password)
+    when "Symbol"
+      case user
+        when :pm
+          pm = users(:pm)
+          login(pm.login, "admin")
+        when :dev
+          dev = users(:dev)
+          login(dev.login, "dev")
+        else
+          raise "No user defined :" + user.to_s
+      end
+    end
+  end
+
+  def ascending?(array, object_method)
+    1.upto(array.size-1) { |i| return false unless array[i].send(object_method) >= array[i-1].send(object_method)  }
+  end
+  
+  def descending?(array, object_method)
+    1.upto(array.size-1) { |i| return false unless array[i].send(object_method) <= array[i-1].send(object_method) }
+  end
+  
 end

@@ -13,7 +13,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     @controller = ActivitiesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @request.session[:user_id] = 1
+    login_as :pm
   end
 
   def test_index
@@ -24,44 +24,23 @@ class ActivitiesControllerTest < Test::Unit::TestCase
 
   def test_list
     get :list
-
     assert_response :success
     assert_template 'list'
-
     assert_not_nil assigns(:activities)
-    
     @activities = assigns(:activities)
-    
     assert_equal 4, @activities.length
     
     #chronological order
-    assert @activities[0].date >= @activities[1].date
-    assert @activities[1].date >= @activities[2].date
-    
-#    puts @activities[0].date
-#    puts @activities[1].date
-#    puts @activities[2].date
-
+    assert descending?(@activities, :date) 
     
     #with session conditions
     @request.session[:month] = 8.to_s
-    
     get :list
-    
     assert_not_nil assigns(:activities)
-    
     @activities = assigns(:activities)
-    
     assert_equal 4, @activities.length
-    
-#    puts @activities[0].date
-#    puts @activities[1].date
-#    puts @activities[2].date
 
-    #chronological order
-    assert @activities[0].date >= @activities[1].date, "not chronological order"
-    assert @activities[1].date >= @activities[2].date, "not chronological order"
-
+    assert ascending?(@activities, :date) 
   end
 
   def test_reprot
