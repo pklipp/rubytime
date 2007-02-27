@@ -4,7 +4,7 @@ class ProjectTest < Test::Unit::TestCase
   fixtures :projects
 
   def setup
-    @project = Project.find(1)
+    @project = Project.find :first
   end
 
   # Replace this with your real tests.

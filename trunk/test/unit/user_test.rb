@@ -4,7 +4,7 @@ class UserTest < Test::Unit::TestCase
   fixtures :users
 
   def setup
-    @user = User.find(1)
+    @user = User.find :first
   end
 
   # Replace this with your real tests.
