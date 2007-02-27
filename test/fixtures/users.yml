@@ -1,16 +1,18 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first_user:
+pm:
   id: 1 
-  name: "Alexander"
-  login: "admin"
-  password: "abcabc"
-  email: "alex@a.com"
+  name: Alexander
+  login: admin
+  salt: salt
+  password: <%= User.hashed_pass("admin", "salt") %> # admin
+  email: alex@a.com
   role_id: 1
 
-another_user:
+dev:
   id: 2 
-  name: "Fox"
-  login: "fox"
-  password: "aaabbb"
-  email: "fox@a.com"
+  name: Fox
+  login: fox
+  salt: salt
+  password: <%= User.hashed_pass("fox", "salt") %> # admin
+  email: fox@a.com
   role_id: 2

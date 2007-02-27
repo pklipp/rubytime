@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_project:
   id: 1 
-  name: "proj1"
-  description: "desc1"
+  name: proj1
+  description: desc1
   client_id: 1
 another_project:
   id: 2 
-  name: "proj2"
-  description: "desc2"
+  name: proj2
+  description: desc2
   client_id: 1

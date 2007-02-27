@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_role:
   id: 1 
-  name: "Project Manager" 
-  short_name: "PM"
+  name: Project Manager
+  short_name: PM
   is_admin: 1
 another_role:
   id: 2 
-  name: "Developer" 
-  short_name: "DEV"
+  name: Developer
+  short_name: DEV
   is_admin: 0
