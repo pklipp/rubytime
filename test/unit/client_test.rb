@@ -4,7 +4,7 @@ class ClientTest < Test::Unit::TestCase
   fixtures :clients
 
   def setup
-    @client = Client.find(1)
+    @client = Client.find :first
   end
 
   # Replace this with your real tests.
