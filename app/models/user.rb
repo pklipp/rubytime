@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   end
 
   # Logs user.
-  def self.login(login, password)
+  def self.authorize(login, password)
     tmp = find(:first,:conditions =>  ["login = ? ", login])     
     if !tmp.nil?
       tmp_password = User.hashed_pass(password, tmp.salt)
@@ -66,10 +66,11 @@ class User < ActiveRecord::Base
     end
   end  
   
-  # Logs user by "login" method
+  # Logs user by "authorize" method
   def try_to_login
-    User.login(self.login, self.password)
+    User.authorize(self.login, self.password)
   end  
+  
 
   
   # Checks if the user has permissions to view controller 
