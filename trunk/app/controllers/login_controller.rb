@@ -31,12 +31,12 @@ class LoginController < ApplicationController
       session[:user_id] = nil
       @log_user = User.new
     else
-      @log_user = User.new({ "login" => params[:log_user][:login], "password" => params[:log_user][:password]})
-      logged_in_user = @log_user.try_to_login
-      if logged_in_user
-         session[:user_id] = logged_in_user.id
-         redirect_to(:controller => "your_data")
+      logged_in_user = User.authorize(params[:log_user][:login], params[:log_user][:password])
+      if logged_in_user.kind_of? User
+        session[:user_id] = logged_in_user.id
+        redirect_to(:controller => "your_data")
       else
+        session[:user_id] = nil
         flash[:notice] = "Invalid user/password combination"
       end
     end

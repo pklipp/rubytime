@@ -37,10 +37,9 @@ class ApplicationController < ActionController::Base
         render :partial => "users/inactive", :layout => "main" and return false
       else
         # checking permisions 
-        if @current_user.has_permisions_to(params[:controller], params[:action]) # OK user can view the page
-          @test="OK !!!" + params[:controller] + params[:action]
+        if @current_user.has_permisions_to(params[:controller], params[:action]) 
+          # OK user can view the page
         else # user is not allowed to view the page. Show proper info
-          @test="NO "
           render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
         end
       end
