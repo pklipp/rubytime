@@ -11,4 +11,12 @@ class ProjectTest < Test::Unit::TestCase
   def test_truth
     assert_kind_of Project,  @project
   end
+  
+  def test_active_text
+    p=Project.new
+    p.is_inactive = true
+    assert "YES", p.active_text
+    p.is_inactive = false
+    assert "NO", p.active_text
+  end
 end
