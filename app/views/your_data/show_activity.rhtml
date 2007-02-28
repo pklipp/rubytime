@@ -6,7 +6,7 @@
             <p><b>Project: </b> <%= h @activity.project.name %></p>
             <p><b>Date: </b> <%= @activity.date.strftime('%A %d/%m/%Y') %></p>
             <p><b>Hours: </b> <%= hour_format(@activity.minutes) %></p>
-            <p><b>Comment: </b> <%= h @activity.comments %></p>
+            <p><b>Comment: </b> <%= h simple_format(@activity.comments) %></p>
             
     <p class="	p_edit_back">
        <% unless @activity.invoice_id -%>

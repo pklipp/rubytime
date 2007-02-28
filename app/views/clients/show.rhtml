@@ -3,16 +3,14 @@
 <fieldset>
     <legend>	Client:</legend>
     
-    <% for column in Client.content_columns %>
-    <% if column.name!="is_inactive" %>
     <p>
-    <b><%= column.human_name %>:</b> <%=h @client.send(column.name) %>
+        <b>Name:</b> <%=h @client.name %>
+    </p> 
+    <p>
+    <b>Active: </b><%= @client.active_text %>
     </p>
-    <% end %>
-    <% end %>
-           <p>
-	       <b>Active: </b><%= @client.is_inactive ? "YES" : "NO" %>
-	       </p>
+    <p><b>Description:</b> </p>
+    <%= simple_format @client.description %>
     
     <p class="	p_edit_back">
     <%= link_to 'Edit', :action => 'edit', :id => @client %>  | 
