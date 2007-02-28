@@ -36,4 +36,9 @@ class Client < ActiveRecord::Base
     Client.find(:all, :conditions => "is_inactive = 0",
       :order => "name")
   end
+
+  def active_text
+    is_inactive ? "NO" : "YES"
+  end
+  
 end
