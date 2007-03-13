@@ -4,6 +4,12 @@ class AdminController < ApplicationController
   
   # Default action
   def index
+    render_text ""
+  end
+
+  def previous_day
+    yesterday = (Time.now - 1.day).strftime("%Y-%m-%d")
+    @activities = Activity.find_all(["date = ? ", yesterday])
   end
   
   #Dumps database
