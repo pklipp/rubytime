@@ -27,4 +27,31 @@ fourth_activity:
   project_id: 1
   comments: Plumbing a hole in the sky
   user_id: 2
-
+yesterday_one:
+  id: 5
+  date: <%= (Time.now - 1.day).strftime("%Y-%m-%d") %>
+  minutes: 60
+  project_id: 1
+  comments: Yesterday activity one
+  user_id: 1
+yesterday_two:
+  id: 6
+  date: <%= (Time.now - 1.day).strftime("%Y-%m-%d") %>
+  minutes: 80
+  project_id: 1
+  comments: Yesterday activity two
+  user_id: 2
+old_activity:
+  id: 7
+  date: 2000-01-01
+  minutes: 60
+  project_id: 1
+  comments: old activity
+  user_id: 1
+latest_activity:
+  id: 8
+  date: <%= (Time.now + 1.day).strftime("%Y-%m-%d") %>
+  minutes: 80
+  project_id: 1
+  comments: Latest activity
+  user_id: 1

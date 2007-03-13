@@ -70,7 +70,10 @@
           Help</a>
           </p>
           <% if @current_user %>
-          <%= link_to "Export data", :controller => "admin",:action => "export_db" if @current_user.is_admin %>
+	    <%- if @current_user.is_admin %>
+	      <p><%= link_to "Export data", :controller => "admin",:action => "export_db" %></p>
+	      <p><%= link_to "Previous day", :controller => "admin",:action => "previous_day" %></p>
+	    <%- end -%>
           <p><%= link_to("Logout" ,:controller => "login",:action => "login") %></p>
           <% end %>
     </div>

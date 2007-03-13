@@ -28,7 +28,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_template 'list'
     assert_not_nil assigns(:activities)
     @activities = assigns(:activities)
-    assert_equal 4, @activities.length
+    assert_equal 8, @activities.length
     
     #chronological order
     assert descending?(@activities, :date) 
@@ -52,7 +52,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_equal Activity.count + 2, lines.size
     data = lines[1].split ","
     assert_equal 4,data.size
-    activity = Activity.find(4)
+    activity = activities(:latest_activity)
     assert_equal data[0], activity.project.name
     assert_equal data[1], activity.user.login
     assert_equal data[2], activity.date.to_s

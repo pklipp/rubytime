@@ -13,6 +13,6 @@ dev:
   name: Fox
   login: fox
   salt: salt
-  password: <%= User.hashed_pass("fox", "salt") %> # admin
+  password: <%= User.hashed_pass("dev", "salt") %> # admin
   email: fox@a.com
   role_id: 2
