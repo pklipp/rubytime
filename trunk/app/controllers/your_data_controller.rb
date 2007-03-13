@@ -72,7 +72,7 @@ class YourDataController < ApplicationController
         @activity_pages, @activities = paginate :activity,
                                                 :per_page => 10,
                                                 :conditions => conditions_string,
-                                                :order => "date DESC"
+                                                :order => "date DESC, id DESC"
      else
         @activities = Activity.find(:all, :conditions => conditions_string, :order => "date DESC")
      end   
