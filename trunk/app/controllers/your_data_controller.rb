@@ -92,6 +92,7 @@ class YourDataController < ApplicationController
   # Fill form for new activity.
   def new_activity 
     @activity = Activity.new
+    @activity.date = Date.today
     @projects = Project.find(:all, :conditions => ["is_inactive = ?",false])
     @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id unless @current_user.activities.empty?
   end
