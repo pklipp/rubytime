@@ -15,7 +15,7 @@
       <tr>
           <th>Name:</th>
           <th>Description:</th>
-          <!--<th>Inactive:</th>-->
+          <th>Inactive:</th>
 
       </tr>
       
@@ -23,7 +23,7 @@
       <tr>
           <td><%=h(truncate(client.name,20)) %></td>
           <td><%=h(truncate(client.description,20)) %></td>
-          <!--<td style="text-align: center"><%if client.is_inactive-%>X<%end-%></td>-->
+          <td style="text-align: center"><%if client.is_inactive-%>X<%end-%></td>
           <td><%= link_to 'Show', :action => 'show', :id => client %></td>
           <td><%= link_to 'Edit', :action => 'edit', :id => client %></td>
           <td><%= link_to 'Destroy', { :controller => 'clients', :action => 'confirm_destroy', :id => client},

@@ -7,8 +7,9 @@
   <label>Client:</label><br/>
   <select name="project[client_id]" id="project_client_id">
 	   <%= options_for_select({ "choose" => "" }) %>
-	   <%= options_for_select(Client.find_all.collect {|c| [ c.name, c.id ] }, 
-			     @selected['client_id'] ) %>
+       <!-- when editing project with inctive client -->
+       <%= options_for_select((Client.find_active << Client.find(@selected['client_id'])).uniq.collect {|c| [ c.name, c.id ] },
+        @selected['client_id'] ) %>
   </select>
 </div>
 <div class="inputs">
