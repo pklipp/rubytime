@@ -2,12 +2,14 @@
 <%= error_messages_for 'activity' %>
 <div class="fieldsets">
     <fieldset>
-    <legend>New activity</legend>
-
-    <%= start_form_tag :action => 'create_activity' %>
-    <%= render :partial => 'activities_form' %>
-    <p><%= submit_tag "Add" %></p>
-    <%= end_form_tag %>
+        <legend>New activity</legend>
+        <div style="float: right; margin-right: 10px;">
+            <%= link_to_remote( "Fill with recent activity", :url => { :action => :recent_activity_js }, :complete => "eval(request.responseText)") %>
+        </div>
+        <%= start_form_tag :action => 'create_activity' %>
+        <%= render :partial => 'activities_form' %>
+        <p><%= submit_tag "Add" %></p>
+        <%= end_form_tag %>
     </fieldset>
 </div>
 <p>

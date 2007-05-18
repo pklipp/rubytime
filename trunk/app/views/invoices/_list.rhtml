@@ -8,7 +8,7 @@
         <% end %>
         </legend>
         <p class="p_new">
-        <%= link_to 'New invoice', :action => 'new' %>
+        <%= link_to [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"New invoice", :title=>"New invoice"),'New invoice'], {:action => 'new'}, :class=>"newitem" %>
         </p>
         <hr/> 
                
