@@ -4,7 +4,7 @@
         <legend>List of roles</legend>
         
         <p class="p_new">
-        <%= link_to 'New role', :action => 'new' %>
+        <%= link_to [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"New role", :title=>"New role"), 'New role'], {:action => 'new'}, :class=>"newitem"  %>
         </p>
         <hr/>
         <table class="standard">
@@ -21,8 +21,8 @@
             <td style="text-align: center"><% if role.is_admin==true %>X<% end %>
             </td>
             
-            <td><%= link_to 'Show', :action => 'show', :id => role %></td>
-        <td><%= link_to 'Edit', :action => 'edit', :id => role %></td>
+            <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"), {:action => 'show', :id => role}, :class=>"nobg" %></td>
+        <td><%= link_to image_tag("edit.png", :border=>0, :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => role}, :class=>"nobg" %></td>
         </tr>
         <% end %>
         </table>

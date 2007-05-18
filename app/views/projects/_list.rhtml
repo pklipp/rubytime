@@ -7,7 +7,8 @@
         <% end %>
         </legend>
         <p class="p_new">
-        <%= link_to 'New project', :action => 'new' %>
+
+        <%= link_to [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"New project", :title=>"New project"), "New project"], {:action => 'new'}, :class=>"newitem"  %>
         </p>
         <hr/>
         <%= render :partial => 'list2'%>
