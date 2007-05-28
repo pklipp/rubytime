@@ -1,0 +1,18 @@
+<div class="fieldsets">
+    <fieldset>
+        <legend> Client:</legend>
+        <p class="p_new">
+            <%= link_to 'Change password', :action => 'edit_client_password' %>
+        </p>
+        
+        <hr/>
+
+        <p><b>Login:</b> <%=h @client.login%></p>
+        <p><b>Name:</b> <%=h @client.name %></p>
+        <p><b>Active: </b><%= @client.active_text %></p>
+        <p><b>Description:</b></p><%= simple_format @client.description %>
+
+    </fieldset>
+    <br/><br/>
+
+</div>

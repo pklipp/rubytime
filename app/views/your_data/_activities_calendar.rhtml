@@ -1,0 +1,25 @@
+   <!-- Form: Filter activities by date -->
+    <fieldset>
+        <legend>Calendar view</legend>
+        <%= render :partial => '/activities/calendar_without_unselect' %>
+    </fieldset>
+
+    <br/><br/>
+
+<%= calendar(:year => session[:year].to_i, :month => session[:month].to_i, :first_day_of_week => 1, :table_class=>"calendarView") do |d|
+       cell_text = "<div class='day-inside'>#{d.mday}</div>"
+       cell_attrs = {:class => 'day'}
+       @activities.each do |e|
+          if e.date == d
+             cell_text << "<b>" << hour_format(e.minutes) << "</b> "
+             if e.comments.length > 10
+                cell_text << e.comments[0..12] << "..."
+             else
+                cell_text << e.comments
+             end
+             cell_text << "<a href='show_activity/" << e.id.to_s << "' class='item-more'> &raquo;</a><br/>"
+          end
+       end
+       [cell_text, cell_attrs]
+    end
+%>

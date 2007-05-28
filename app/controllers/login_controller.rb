@@ -31,7 +31,7 @@ class LoginController < ApplicationController
       session[:user_id] = nil
       @log_user = User.new
     else
-      logged_in_user = User.authorize(params[:log_user][:login], params[:log_user][:password])
+      logged_in_user = User.authorize(params[:log_user][:login], params[:log_user][:password])      
       if logged_in_user.kind_of? User
         session[:user_id] = logged_in_user.id
         redirect_to(:controller => "your_data")

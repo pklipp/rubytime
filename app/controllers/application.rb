@@ -24,9 +24,9 @@
 
 class ApplicationController < ActionController::Base
   
-  # Checks if the user has permissions to view requested page. 
+  # Checks if the user has permissions to view requested page.
   # If no, shows "no_permission" partial.
-  def authorize   
+  def authorize
     @current_user = nil
     unless session[:user_id] # if user is not logged in - redirect him to login page.
       flash[:notice] = "Please log in"
@@ -36,15 +36,30 @@ class ApplicationController < ActionController::Base
       if @current_user.is_inactive # if user is not logged in - redirect him to login page.
         render :partial => "users/inactive", :layout => "main" and return false
       else
-        # checking permisions 
-        if @current_user.has_permisions_to(params[:controller], params[:action]) 
+        # checking permisions
+        if @current_user.has_permisions_to(params[:controller], params[:action])
           # OK user can view the page
         else # user is not allowed to view the page. Show proper info
           render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
         end
       end
     end
-  end 
+  end
+
+  # Checks if the client-user has permissions to view requested page.
+  # If no, shows "no_permission" partial.
+  def authorize_client   
+    @current_client = nil
+    unless session[:client_id] # if client is not logged in - redirect him to login page.
+      flash[:notice] = "Please log in"
+      redirect_to(:controller => "clientsportal", :action => "login") and return false
+    else
+      @current_client=Client.find(session[:client_id]);
+      if @current_client.is_inactive # if client is not active
+        render :partial => "users/inactive", :layout => "clientportal" and return false        
+      end
+    end
+  end
   
   # Sets calendar options choosen by user and saves them into the session 
   def set_calendar 

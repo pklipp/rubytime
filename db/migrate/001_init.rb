@@ -53,7 +53,7 @@ class Init < ActiveRecord::Migration
     #Creates table activities.
     create_table :activities, :force => true, :options => db_optionts do |t|
       t.column :comments, :text
-      t.column :date, :date, :null => false, :default => Date.today
+      t.column :date, :date, :null => false
       t.column :minutes, :integer, :default => 0, :null => false
       t.column :project_id, :integer, :null => false
       t.column :user_id, :integer, :null => false

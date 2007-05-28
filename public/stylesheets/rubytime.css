@@ -103,6 +103,32 @@ a.item-more:hover {
     color: #c60000;
 }
 
+/* clientsportal-link */
+.clientsportal-link {
+    font-size: 1.5em;
+    text-decoration: none;
+    background-color: transparent;    
+}
+
+.clientsportal-link:hover {
+    color: red;
+    background-color: transparent;
+}
+
+/* link with image */
+a.linkwithimg {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+a.linkwithimg:hover {
+    color: #1ca105;
+}
+
+img.linkwithimg {
+    vertical-align: bottom;
+}
+
 /* style for notices */
 .flashNotice{
    	width: 448px;
