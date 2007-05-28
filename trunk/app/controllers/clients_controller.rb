@@ -63,6 +63,7 @@ class ClientsController < ApplicationController
   # Creates new client. Fills its details with data sent from html form
   def create
     @client = Client.new(params[:client])
+    @client.password = Digest::SHA1.hexdigest(@client.password)
     if @client.save
       flash[:notice] = 'Client has been successfully created'
       redirect_to :action => 'list'
@@ -90,6 +91,10 @@ class ClientsController < ApplicationController
       redirect_to :action => :index
     else
       if @client.update_attributes(params[:client])
+        if (!params[:new_password].nil? && params[:new_password] != "")
+          @client.password =  Digest::SHA1.hexdigest(params[:new_password])
+          @client.save
+        end
         flash[:notice] = 'Client has been successfully updated'
         redirect_to :action => 'show', :id => @client
       else

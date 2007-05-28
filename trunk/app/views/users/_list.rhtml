@@ -9,7 +9,7 @@
         </legend>
         
         <p class="p_new">
-        <%= link_to [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"New user", :title=>"New user"), 'New user'], {:action => 'new'}, :class=>"newitem" %>
+        <%= link_to [image_tag("user_add.png", :border=>0, :class=>"newitem", :alt=>"New user", :title=>"New user"), 'New user'], {:action => 'new'}, :class=>"newitem" %>
         </p>
         <hr/>       
         <table class="standard">
@@ -28,8 +28,8 @@
             <td style="text-align: center"><%if user.is_inactive==true %>X<%end%></td>
 
             <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"), {:action => 'show', :id => user}, :class=>"nobg" %></td>
-            <td><%= link_to image_tag("edit.png", :border=>0, :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => user}, :class=>"nobg" %></td>
-            <td><%= link_to image_tag("remove.png", :border=>0, :alt=>"Remove", :title=>"Remove"), { :controller => 'users', :action => 'confirm_destroy', :id => user},
+            <td><%= link_to image_tag("user_edit.png", :border=>0, :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => user}, :class=>"nobg" %></td>
+            <td><%= link_to image_tag("user_delete.png", :border=>0, :alt=>"Remove", :title=>"Remove"), { :controller => 'users', :action => 'confirm_destroy', :id => user},
 	      :confirm => 'Are you sure?', :class=>"nobg" %></td>
         </tr>
         <% end %>

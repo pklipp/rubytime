@@ -1,0 +1,63 @@
+<!-- List of details of chosen invoice -->
+<div class="fieldsets">
+    <fieldset>
+        <legend>Invoice</legend>
+        <p><b>Name: </b><%= @invoice.name %></p>
+
+        <p><b>Client: </b><%= @invoice.client.name %></p>
+        <!--<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>-->
+        <!--<p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %></p>-->
+        <% if @invoice.is_issued -%>
+        <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+        <% end -%>
+        <p><b>Created by: </b><%= @invoice.user.name %></p>
+    </fieldset>
+
+    <br/><br/>
+
+    <fieldset>
+        <legend>Activities on this invoice</legend>
+
+        <% unless @invoice.activities.empty? -%>
+        <% @activities = @invoice.activities -%>
+
+        <table class="standard" id="activities_list">
+
+            <tr>
+                <th> Project</th>
+                <th> Person</th>
+                <th> Date</th>
+                <th> Hours</th>
+                <td>&nbsp;</td>
+            </tr>
+
+            <% minutes_sum=0
+            for activity in @activities
+            minutes_sum+=activity.minutes %>
+            <tr>
+                <td><%= link_to activity.project.name, :action => 'show_project', :id => activity.project %></td>
+                <td><%= activity.user.login %> (<%= activity.user.role.short_name.upcase %>)</td>
+                <td style="text-align: center"><%= h activity.date %></td>
+                <td style="text-align: right"> <%= hour_format(activity.minutes) %></td>
+                <td><%= link_to image_tag("show.png", :border => "0", :alt => "Show", :title => "Show"),
+                    {:action => "show_activity", :id => activity}, :class => "nobg" %>
+                </td>
+            </tr>
+            <% end %>
+
+            <tr>
+                <td colspan="2"></td>
+                <th style="text-align: right">Sum:</th>
+                <th><%= hour_format(minutes_sum) %></th>
+                <td style="text-align:right"></td>
+                <td style="text-align:center">
+                </td>
+            </tr>
+        </table>
+
+        <% else -%>
+        <p>No activities on this invoice yet!</p>
+        <% end -%>
+
+    </fieldset>
+</div>

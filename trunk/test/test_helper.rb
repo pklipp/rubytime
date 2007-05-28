@@ -52,7 +52,16 @@ class Test::Unit::TestCase
       end
     end
   end
-
+  
+  # helper to login as client
+  def login_as_client(login = "client1", password = "pass-client1") 
+    post :login, {:log_client => {:login => login, :password => password}}
+    assert_redirected_to :action => "index"
+    assert_not_nil session[:client_id]
+    client = Client.find(session[:client_id])
+    assert_equal login, client.login
+  end
+  
   def ascending?(array, object_method)
     1.upto(array.size-1) { |i| return false unless array[i].send(object_method) >= array[i-1].send(object_method)  }
   end

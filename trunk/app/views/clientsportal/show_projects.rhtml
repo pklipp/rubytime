@@ -1,0 +1,36 @@
+<div class="fieldsets">
+    <fieldset>
+        <legend>Project of this client:</legend>
+
+        <table class="standard">
+            <tr>
+                <th> Name</th>
+                <th> Description</th>
+                <% if params[:controller]!='clients' -%>
+                <th>Client</th>
+                <%end-%>
+                <th> Inactive</th>
+            </tr>
+
+            <% for project in @projects %>
+            <tr
+            <%if project.is_inactive-%>style="color: gray"<%end-%>>
+            <td><%= h project.name %></td>
+            <td><%= h truncate(project.description,20)%></td>
+            <% if params[:controller]!='clients' -%>
+            <td><%= h truncate(project.client.name,20) %></td>
+            <%end-%>
+            <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
+
+            <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"),
+                {:action => 'show_project', :id => project}, :class=>"nobg" %>
+            </td>
+            <td>
+                <%= link_to image_tag("activities.png", :border=>0, :alt=>"Show activities", :title=>"Show activities"),
+                {:action => 'show_project_activities', :project_id => project}, :class=>"nobg" %>
+            </td>
+        </tr>
+        <% end %>
+    </table>
+</fieldset>
+</div>

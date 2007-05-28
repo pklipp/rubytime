@@ -11,3 +11,20 @@ another:
   name: Invoice 2
   created_at: 05.05.06 22:22
   user_id: 1
+client_invoice_1:
+  id: 3
+  client_id: 1
+  name: Invoice 3
+  created_at: 05.05.06 22:22
+  issued_at: <%= (Time.now).strftime("%Y-%m-%d") %>
+  is_issued: 1
+  user_id: 1
+client_invoice_2:
+  id: 4
+  client_id: 1
+  name: Invoice 4
+  created_at: 05.05.06 22:22
+  issued_at: <%= (Time.now).strftime("%Y-%m-%d") %>
+  is_issued: 1
+  user_id: 1
+

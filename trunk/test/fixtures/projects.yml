@@ -4,8 +4,28 @@ first_project:
   name: proj1
   description: desc1
   client_id: 1
+project1:
+  id: 3 
+  name: CoolProject1
+  description: Desc of CoolProject1
+  client_id: 1
+project2:
+  id: 4 
+  description: Desc of CoolProject2
+  name: CoolProject2
+  client_id: 1
+project3:
+  id: 5 
+  name: CoolProject3
+  description: Desc of CoolProject3
+  client_id: 1
 another_project:
   id: 2 
   name: proj2
   description: desc2
   client_id: 1
+client_2_project: 
+  id: 6
+  name: client2_p_name
+  description: client2_p_desc
+  client_id: 2
