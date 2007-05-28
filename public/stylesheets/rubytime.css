@@ -80,6 +80,23 @@ table.calendarView td.day {
     font-size: 0.8em;
 }
 
+table.calendarView td.empty-day {
+    height: 50px;
+    color: #ccddee;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+table.calendarView td.empty-day a{
+    background-color: transparent;
+    text-decoration: none;
+    color: #ccddee;
+}
+
+table.calendarView td.empty-day a:hover{
+    color: red;
+}
+
 table.calendarView td.weekendDay {
     background-color: #ffffcc;
 }
