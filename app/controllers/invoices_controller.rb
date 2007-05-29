@@ -139,7 +139,7 @@ class InvoicesController < ApplicationController
   end
   
   #Renders AJAX form for creating an invoice.
-  def add_new
+def add_new
     @invoice = Invoice.new
     @invoice.client_id =  params[:client_id]
     render :partial => '/invoices/add_new'
