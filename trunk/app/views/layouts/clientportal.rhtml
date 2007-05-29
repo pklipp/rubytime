@@ -40,7 +40,7 @@
     <h1>Time Tracker</h1>
 </div>
 
-<div id="top-menu" style="text-align: center">
+<div id="top-menu" style="text-align: center; font-size: 1.2em;">
     <b>Client portal</b>
 </div>
 
@@ -53,18 +53,35 @@
     <% end %>
 
     <% if (@current_client !=nil && !@current_client.is_inactive) %>
-    <ul>
-        <li><%= link_to("Your profile", :controller => "clientsportal", :action => "show_profile") %></li>
-        <li><%= link_to("Projects", :controller => "clientsportal", :action => "show_projects") %></li>
-        <li><%= link_to("Invoices", :controller => "clientsportal", :action => "show_invoices") %></li>
-    </ul>
+    <div class="menu-icon ">				
+      <%= image_tag("profile.png", :size => "32x32", :alt => "Profile", :style => "vertical-align: middle") %>
+      <%= link_to("Your profile", :controller => "clientsportal", :action => "show_profile") %>
+    </div>       
+    <div class="menu-icon ">				
+      <%= image_tag("projects.png", :size => "32x32", :alt => "Projects", :style => "vertical-align: middle") %>
+      <%= link_to("Projects", :controller => "clientsportal", :action => "show_projects") %>
+    </div>       
+    <div class="menu-icon ">				
+      <%= image_tag("invoices.png", :size => "32x32", :alt => "Invoices", :style => "vertical-align: middle") %>
+      <%= link_to("Invoices", :controller => "clientsportal", :action => "show_invoices") %>
+    </div>   
+    			
+          <br/>
+	  <hr noshade size="1" width="80%" />
+	  <br/>             
+                 
     <% end %>
 
-    <p>
-        <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">Help</a>
-    </p>
+          <div class="menu-icon ">				
+            <%= image_tag("help.png", :size => "32x32", :alt => "Help", :style => "vertical-align: middle") %>
+            <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">Help</a>
+          </div>   
+          
     <% if @current_client %>
-        <p><%= link_to("Logout" , :controller => "clientsportal", :action => "logout") %></p>
+          <div class="menu-icon ">				
+            <%= image_tag("logout.png", :size => "32x32", :alt => "Logout", :style => "vertical-align: middle") %>
+	    <%= link_to("Logout" ,:controller => "login",:action => "login") %>
+          </div>     
     <% end %>
     <!-- Current Version Number -->
     <p>
