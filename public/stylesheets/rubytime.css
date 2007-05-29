@@ -80,6 +80,10 @@ table.calendarView td.day {
     font-size: 0.8em;
 }
 
+table.calendarView td.weekendDay {
+    background-color: #ffffcc;
+}
+
 table.calendarView td.empty-day {
     height: 50px;
     color: #ccddee;
@@ -91,14 +95,6 @@ table.calendarView td.empty-day a{
     background-color: transparent;
     text-decoration: none;
     color: #ccddee;
-}
-
-table.calendarView td.empty-day a:hover{
-    color: red;
-}
-
-table.calendarView td.weekendDay {
-    background-color: #ffffcc;
 }
 
 div.day-inside {
@@ -118,18 +114,6 @@ a.item-more {
 
 a.item-more:hover {
     color: #c60000;
-}
-
-/* clientsportal-link */
-.clientsportal-link {
-    font-size: 1.5em;
-    text-decoration: none;
-    background-color: transparent;    
-}
-
-.clientsportal-link:hover {
-    color: red;
-    background-color: transparent;
 }
 
 /* link with image */
@@ -277,12 +261,10 @@ div.progressBar div.background {
 /* styles for a banner */
 #banner {
 	   color: #eee;
-	   background-color: #32541f;
-	   border-bottom: 1px solid ;
-	   border-bottom-color: #000;
+	   border-bottom: 1px solid #525c3d;
 	   padding: 3px;
-	   background-image: url("/images/llp_header.jpg");
-	   background-repeat: no-repeat;
+	   background-image: url("../images/gradient-banner.png");
+	   background-repeat: repeat-x;
 }
 
 #banner h1 {
@@ -290,19 +272,21 @@ div.progressBar div.background {
 	   padding: .3em 0 .3em .5em;
 	   font-size: 1.6em;
 	   font-weight: normal;
+	   color: white;
 }
 
 /* styles for top-menu */
 #top-menu {
-   color: inherit;
-	   background-color: #fb0;
+	   color: inherit;
+	   background-image: url("../images/gradient-top-menu.png");
+	   background-repeat: repeat-x;	   
 	   margin: 0px;
 	   padding: 0px;
 	   border-color: #79a;
 	   border-top-width: 0px;
 	   border-left-width: 0px;
 	   border-right-width: 0px;
-	   border-bottom: 1px solid #000;
+	   border-bottom: 1px solid #525c3d;
 	   height: 18px; 
 }
 
@@ -323,25 +307,23 @@ div.progressBar div.background {
 #top-menu ul li a {
 	   padding: 1px 15px;
 	   font-weight: bold;
+	   background-color: transparent;
 }
 
 #top-menu ul li a:link,#top-menu a:visited {
 	   color: #fff;
-	   background-color: #fb0;
 	   text-decoration: none;
 }
 
 #top-menu ul li a:hover {
-	   color: #000;
-	   background-color: inherit;
-	   text-decoration: underline;
+	   color: #000;	   
 }
 
 #top-menu ul li a.active {
 	   color: #000;
 	   text-decoration: none; 
 	   background-color: inherit;
-	   border-bottom: 4px solid #32541f;
+	   border-bottom: 4px solid #7ec638;
 }
 
 /* styles for submenu */
@@ -349,24 +331,26 @@ div.progressBar div.background {
 	min-height: 100%;
    	height: 100%;
 	   margin:0px;
-	   background-color: #32541f;
+	   background-color: #e8b36d;
 	   float: left;
 	   width: 170px;
 	   padding: 1em;
-	   color: white;
-	   border-right: 1px solid #000;
+	   color: white;	   
+	   background-image: url("../images/gradient-sub-menu-right.png");
+	   background-position: top right;
+	   background-repeat: repeat-y;	
+	  
 }
 
 #sub-menu a {
-   color: #fb0;
-   background-color: inherit;
-	   text-decoration: none;
+   color: #613900;
+   background-color: transparent;
+	text-decoration: none;
 }
 
 #sub-menu a:hover {
    color: #fff;
    background-color: inherit;
-	   text-decoration: underline;
 }
 
 #sub-menu li {
@@ -385,6 +369,31 @@ div.progressBar div.background {
     right: 5px; 
     top: 60%;
 }
+
+/* sub-menu icons */
+.menu-icon {
+	text-align: left;
+	width: 150px;	
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	border: 1px solid #e8b36d;
+}
+
+.menu-icon:hover {	
+	color: white;	   
+	background-image: url("../images/highlight.png");
+	background-position: top left;
+	background-repeat: repeat-y;	
+}
+
+.menu-separator {
+	width: 80%;
+	color: #e8b36d;
+	background-color: #e8b36d;
+	height: 3px;
+}
+
 
 /* styles fo content */
 #content {
@@ -427,9 +436,9 @@ table.standard th, table.calendar td.selected, table.calendar th {
 
 .fieldsets legend{
     color: #fff;
-    background-color: #32541f;
+    background-color: #56aa04;
     padding: 0.2em 1em;
-    border: solid 1px #000;
+    border: solid 1px #525c3d;
     font-size: 14px;
     font-weight: bold;   
 }
@@ -474,6 +483,16 @@ table.standard th, table.calendar td.selected, table.calendar th {
     padding: 20px 10px 10px 10px;
 }
 
+/* clientsportal-link */
+.clientsportal-link {
+    font-size: 1.5em;
+    text-decoration: none;
+    background-color: transparent;    
+}
 
+.clientsportal-link:hover {
+    color: red;
+    background-color: transparent;
+}
 
 
