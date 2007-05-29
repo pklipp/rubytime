@@ -1,46 +1,47 @@
 
 <fieldset>
-        <legend>
+    <legend>
         <% if params[:search].nil? %>
         List of invoices
         <% else %>
         List of invoices: Search result
         <% end %>
-        </legend>
-        <p class="p_new">
+    </legend>
+    <p class="p_new">
         <%= link_to [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"New invoice", :title=>"New invoice"),'New invoice'], {:action => 'new'}, :class=>"newitem" %>
-        </p>
-        <hr/> 
-               
-<table>
-  <tr>
-  <th>Name</th>
-  <th>Client</th>
-  <th>Created</th>
-  <th>Issued</th>
-
-  </tr>
-  
-<% for invoice in @invoices %>
-  <tr>
-  <td><%=h invoice.name %></td>
-  <td><%=h invoice.client.name %></td>
-  <td><%=h invoice.created_at.strftime("%d/%m/%y") %></td>
-  <td><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
-  
-    <td><%= link_to 'Show', :action => 'show', :id => invoice %></td>
-    <td>
-    <%= link_to('Edit', :action => 'edit', :id => invoice) %>
-    </td>
-    <td>
-    <%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => invoice.id} , {:confirm => "Issuing an invoice causes that activities will not be editable and it is irreversible. Are you sure?" }) unless invoice.is_issued  %>
-    </td>
-  </tr>
-<% end %>
-</table>
-
-<% if(!@invoice_pages.nil? and @invoice_pages.page_count>1) -%>
-<p><%= link_to 'Previous page', { :page => @invoice_pages.current.previous } if @invoice_pages.current.previous %>
-<%= link_to 'Next page', { :page => @invoice_pages.current.next } if @invoice_pages.current.next %></p>
-<% end -%>
+    </p>
+    <hr/> 
+    
+    <table class="standard">
+        <tr>
+            <th>Name</th>
+            <th>Client</th>
+            <th>Created</th>
+            <th>Issued</th>
+        </tr>
+        
+        <% for invoice in @invoices %>
+        <tr>
+            <td><%=h invoice.name %></td>
+            <td><%=h invoice.client.name %></td>
+            <td><%=h invoice.created_at.strftime("%d/%m/%y") %></td>
+            <td><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
+            
+            <td>
+                <%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"), {:action => 'show', :id => invoice}, :class=>"nobg"%>       
+            </td>
+            <td>
+                <%= link_to image_tag("edit.png", :border=>0, :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => invoice}, :class=>"nobg"%>
+            </td>
+            <td>
+                <%= link_to image_tag("issue.png", :border=>0, :alt=>"Issue", :title=>"Issue"), {:action => 'issue', :id => invoice}, :class=>"nobg", :confirm => "Issuing an invoice causes that activities will not be editable and it is irreversible. Are you sure?"  unless invoice.is_issued %>
+            </td>
+        </tr>
+        <% end %>
+    </table>
+    
+    <% if(!@invoice_pages.nil? and @invoice_pages.page_count>1) -%>
+    <p><%= link_to 'Previous page', { :page => @invoice_pages.current.previous } if @invoice_pages.current.previous %>
+    <%= link_to 'Next page', { :page => @invoice_pages.current.next } if @invoice_pages.current.next %></p>
+    <% end -%>
 </fieldset>
