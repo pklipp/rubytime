@@ -11,6 +11,7 @@
   * Ability to disable projects, users and clients.
   * Added to model Client 2 new fields: login, password.
   * Added new migration 002_clientportal for client's portal functionality.
+  * Added plugin CalendarHelper: http://wiki.rubyonrails.org/rails/pages/DynamicCalendarHelper
 
 *0.13.1* (11 July, 2005)
 
@@ -126,7 +127,6 @@
   * Upgraded to Active Record 1.8.0, Action Pack 1.5.1, Action Mailer 0.7.1, Action Web Service 0.6.0, Active Support 1.0.1
 
 *Older changelog can be found in SVN repository [http://rubytime.googlecode.com/svn/trunk/CHANGELOG http://rubytime.googlecode.com/svn/trunk/CHANGELOG].*
-
 
 
 
