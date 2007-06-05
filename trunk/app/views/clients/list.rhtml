@@ -4,11 +4,11 @@
     <!-- Search form -->
     <fieldset>
         <legend>Search clients</legend>
-        <%= form_remote_tag :update => 'clients_list', :url => {:controller => 'clients', :action => 'search'}%>
+        <% form_remote_tag :update => 'clients_list', :url => {:controller => 'clients', :action => 'search'} do%>
         <p><label>Name or description:</label></p>
         <p><%= text_field_tag("search", value = params[:search], :size => 32) %></p>
         <p><%= submit_tag 'Search'%></p>
-        <%= end_form_tag %>
+        <% end %>
     </fieldset>
     <!-- End of search form -->
 
@@ -28,6 +28,6 @@
 
     <!-- End of list -->
 
-<p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
+<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
 </div>
 

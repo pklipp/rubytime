@@ -5,14 +5,14 @@
 				<fieldset>
 				<legend>Edit activity</legend>
 				
-    <%= start_form_tag :action => 'update_activity', :id => @activity %>
+    <% form_tag({:action => 'update_activity', :id => @activity}) do %>
     <%= render_partial 'activities_form' %>
     <p><%= submit_tag 'Save' %></p>
-    <%= end_form_tag %>
+    <% end %>
 
 </fieldset>
 <p>
 <%= link_to 'Show', :action => 'show_activity', :id => @activity %>  | 
-<%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
+<%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
 </p>
 <!-- End of form -->

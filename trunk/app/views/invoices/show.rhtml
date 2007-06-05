@@ -1,31 +1,36 @@
 <!-- List of details of chosen invoice -->
 <div class="fieldsets">
-<fieldset>
-<legend>Invoice</legend>
-<p><b>Name: </b><%= @invoice.name %></p>
-<p><b>Client: </b><%= link_to @invoice.client.name, :controller => 'clients', :action => 'show', :id => @invoice.client_id %></p>
-<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
-<p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %></p>
-<% if @invoice.is_issued -%>
-<p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
-<% end -%>
-<p><b>Created by: </b><%= link_to @invoice.user.login, :controller => 'users', :action => 'show', :id => @invoice.user_id %></p>
-
-<% unless @invoice.is_issued %>
-<%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => @invoice.id}, :confirm => "Issuing an invoice causes that activities will not be editable and is irreversible. Are you sure?" ) %> |
-<% end %>
-<%= link_to 'Edit', :action => 'edit', :id => @invoice %> |
-<a href="#" onclick="window.open('/invoices/print/<%=@invoice.id%>','Print an invoice',600,400)" >Print</a> |
-<%= link_to 'Back', :action => 'list' %>
-</fieldset>
-<br /><br />
-<fieldset>
-<legend>Activities on this invoice</legend>
-<% unless @invoice.activities.empty? -%>
-<% @activities = @invoice.activities -%>
-<%= render :partial => '/invoices/activities_list' %>
-<% else -%>
-<p>No activities on this invoice yet!</p>
-<% end -%>
-</fieldset>
+    <fieldset>
+        <legend>Invoice</legend>
+        
+        <p><b>Name: </b><%= @invoice.name %></p>
+        <p><b>Client: </b><%= link_to @invoice.client.name, :controller => 'clients', :action => 'show', :id => @invoice.client_id %></p>
+        <p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+        <p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %></p>
+        <% if @invoice.is_issued -%>
+            <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+        <% end -%>
+        <p><b>Created by: </b><%= link_to @invoice.user.login, :controller => 'users', :action => 'show', :id => @invoice.user_id %></p>
+        
+        <% unless @invoice.is_issued %>
+            <%= link_to('Issue', {:controller => 'invoices', :action => 'issue', :id => @invoice.id}, :confirm => "Issuing an invoice causes that activities will not be editable and is irreversible. Are you sure?" ) %> |
+        <% end %>
+        
+        <%= link_to 'Edit', :action => 'edit', :id => @invoice %> |
+        <a href="#" onclick="window.open('/invoices/print/<%=@invoice.id%>','Print an invoice',600,400)" >Print</a> |
+        <%= link_to 'Back', :action => 'list' %>
+        
+    </fieldset>
+    <br /><br />
+    <fieldset>
+        <legend>Activities on this invoice</legend>
+        
+        <% unless @invoice.activities.empty? -%>
+            <% @activities = @invoice.activities -%>
+            <%= render :partial => '/invoices/activities_list' %>
+        <% else -%>
+            <p>No activities on this invoice yet!</p>
+        <% end -%>
+        
+    </fieldset>
 </div>

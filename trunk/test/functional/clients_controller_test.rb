@@ -53,7 +53,7 @@ class ClientsControllerTest < Test::Unit::TestCase
   def test_create
     num_clients = Client.count
 
-    post :create, :client => {:name => "new_project", :description => "New project", :login => "lll", :password => "pass"}
+    post :create, :client => {:name => "new_project", :description => "New project"}
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
@@ -71,18 +71,18 @@ class ClientsControllerTest < Test::Unit::TestCase
     assert assigns(:client).valid?
   end
   
-  def test_change_pass 
-    get :edit, :id => 1
-    
-    assert_response :success
-    assert_template 'edit'
-    
-    post :update, :id => 1, :new_password => "new-client-pass"
-    assert_redirected_to :action => 'show', :id => 1
-    
-    assert assigns(:client)
-    assert_equal clients(:first_client).password, Digest::SHA1.hexdigest("new-client-pass")    
-  end
+#  def test_change_pass 
+#    get :edit, :id => 1
+#    
+#    assert_response :success
+#    assert_template 'edit'
+#    
+#    post :update, :id => 1, :new_password => "new-client-pass"
+#    assert_redirected_to :action => 'show', :id => 1
+#    
+#    assert assigns(:client)
+#    assert_equal clients(:first_client).password, Digest::SHA1.hexdigest("new-client-pass")    
+#  end
 
   def test_update
     post :update, :id => 1

@@ -9,7 +9,7 @@ class AdminController < ApplicationController
 
   def previous_day
     yesterday = (Time.now - 1.day).strftime("%Y-%m-%d")
-    @activities = Activity.find_all(["date = ? ", yesterday])
+    @activities = Activity.find(:all, :conditions => ["date = ? ", yesterday])
   end
   
   #Dumps database
@@ -34,12 +34,12 @@ class AdminController < ApplicationController
   def export_db
     filename = "dump_" + Time.now.strftime('%Y-%m-%d-%H-%M') + ".txt"
     dump = {}
-    dump['activties'] = Activity.find_all
-    dump['clients'] = Client.find_all
-    dump['invoices'] = Invoice.find_all
-    dump['projects'] = Project.find_all
-    dump['roles'] = Role.find_all
-    dump['users'] = User.find_all
+    dump['activties'] = Activity.find(:all)
+    dump['clients'] = Client.find(:all)
+    dump['invoices'] = Invoice.find(:all)
+    dump['projects'] = Project.find(:all)
+    dump['roles'] = Role.find(:all)
+    dump['users'] = User.find(:all)
     dumped_data = dump.to_yaml
     dumped_data.gsub(/\n/,"\r\n")
     send_data(dumped_data,

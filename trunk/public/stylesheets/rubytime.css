@@ -413,7 +413,7 @@ table.standard, table.calendar {
 
 table.standard td, table.calendar td {
    color: inherit;
-	   background-color: #f1fff1;
+	   /* background-color: #f1fff1;*/
 }
 
 table.standard th, table.calendar td.selected, table.calendar th {
@@ -493,6 +493,11 @@ table.standard th, table.calendar td.selected, table.calendar th {
 .clientsportal-link:hover {
     color: red;
     background-color: transparent;
+}
+
+td.client_login_password {
+    border: 1px solid #ffffcc;
+    background-color: #ffffcc;
 }
 
 

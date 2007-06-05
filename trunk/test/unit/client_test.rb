@@ -17,16 +17,9 @@ class ClientTest < Test::Unit::TestCase
   end
   
   def test_client_content
-    assert_equal "client1", clients(:first_client).name
+    assert_equal "client1-name", clients(:first_client).name
     assert_equal 1, clients(:first_client).id
-    assert_equal "client2", clients(:another_client).login
-    assert_equal "client2", clients(:another_client).name
+    assert_equal "client2-name", clients(:another_client).name
   end
   
-  def test_authorize
-    assert_nil Client.authorize("", "")
-    assert_nil Client.authorize("wrong client!!", "wrong pass")
-    assert_kind_of Client, Client.authorize("client1", "pass-client1")
-    assert_kind_of Client, Client.authorize("client2", "pass-client2")
-  end
 end

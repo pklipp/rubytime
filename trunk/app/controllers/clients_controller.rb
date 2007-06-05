@@ -34,14 +34,14 @@ class ClientsController < ApplicationController
 
   # Lists all clients or specified by search conditions.
   def list
-      @client_pages, @clients = paginate :client, :per_page => 10, :order => "is_inactive"
+    @client_pages, @clients = paginate :client, :per_page => 10, :order => "is_inactive"
   end
   
   #Searches projects.
   def search
-      query = " 1 AND name LIKE \"%" + params[:search] + "%\" OR description LIKE \"%" + params[:search] + "%\" "
-      @clients = Client.find(:all,:conditions => query,:order => "is_inactive")
-      render :partial => 'list' 
+    query = " 1 AND name LIKE \"%" + params[:search] + "%\" OR description LIKE \"%" + params[:search] + "%\" "
+    @clients = Client.find(:all,:conditions => query,:order => "is_inactive")
+    render :partial => 'list' 
   end
 
   # Shows details of chosen client.
@@ -63,7 +63,6 @@ class ClientsController < ApplicationController
   # Creates new client. Fills its details with data sent from html form
   def create
     @client = Client.new(params[:client])
-    @client.password = Digest::SHA1.hexdigest(@client.password)
     if @client.save
       flash[:notice] = 'Client has been successfully created'
       redirect_to :action => 'list'
@@ -121,6 +120,58 @@ class ClientsController < ApplicationController
       flash[:error] = "The client has not been deleted, since the name was different" 
     end
     redirect_to :action => 'list'
+  end
+  
+  def add_new_login
+    @result_text = "Client added!"
+    begin
+      @client = Client.find(params[:id])
+      @client_new_login = ClientsLogin.new
+      @client_new_login.login = params[:new_login]
+      @client_new_login.password = Digest::SHA1.hexdigest(params[:new_password])
+      @client_new_login.client_id = params[:id]
+      @client_new_login.save!     
+    rescue Exception => exc
+      @result_text = "Error: #{exc.message}"      
+    end    
+    render :update do |page|
+      page.replace_html "client_logins", :partial => "list_logins"
+      page['client_login_result_text'].innerHTML = @result_text
+      page.visual_effect :highlight, "client_login_result_text"
+    end
+  end
+  
+  def destroy_client_login    
+    clients_login = ClientsLogin.find(params[:id])
+    @client = Client.find(clients_login.client.id)
+    result = clients_login.destroy
+    
+    if result
+      @result_text  = "Client's login " + clients_login.login + " removed!"
+    else 
+      @result_text  = "Error occured while deleting client\'s login"
+    end
+        
+    render :update do |page|
+      page.replace_html "client_logins", :partial => "list_logins"
+      page['client_login_result_text'].innerHTML = @result_text
+      page.visual_effect :highlight, "client_login_result_text"
+    end
+  end
+  
+  def change_clients_login_password
+    begin
+      clients_login = ClientsLogin.find(params[:id])
+      @result_text = "Client's login " + clients_login.login + " password changed!"
+      clients_login.password = Digest::SHA1.hexdigest(params[:new_password])
+      clients_login.save!
+    rescue Exception => exc
+      @result_text = "Error: #{exc.message}"  
+    end    
+    render :update do |page|
+      page['client_login_result_text'].innerHTML = @result_text
+      page.visual_effect :highlight, "client_login_result_text"
+    end
   end
   
 end

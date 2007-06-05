@@ -1,5 +1,3 @@
-include CalendarHelper
-
 # ----------------------------------------------------------------------------
 # This controller is responsible for delivering read-only info for clients.
 # Access to this controller is separated from other Time Tracker pages.
@@ -8,7 +6,8 @@ include CalendarHelper
 # ----------------------------------------------------------------------------
 
 class ClientsportalController < ApplicationController
-
+    include CalendarHelper
+  
     before_filter :authorize_client, :except => ["login", "logout"]
     layout "clientportal"
 
@@ -16,7 +15,7 @@ class ClientsportalController < ApplicationController
     # Displays welcome screen.
     #
     def index
-        @client_login = Client.find_by_id(session[:client_id]).name
+        @client_name = Client.find_by_id(session[:client_id]).name
         render :action => "index"
     end
 
@@ -27,11 +26,12 @@ class ClientsportalController < ApplicationController
     def login
         if request.get?
             session[:client_id] = nil
-            @log_client = Client.new
+            @log_client = ClientsLogin.new
         else
-            logged_in_client = Client.authorize(params[:log_client][:login], params[:log_client][:password])
+            logged_in_client = ClientsLogin.authorize(params[:log_client][:login], params[:log_client][:password])
             if logged_in_client.kind_of? Client
                 session[:client_id] = logged_in_client.id
+                session[:client_login] = params[:log_client][:login] 
                 redirect_to(:action => "index")
             else
                 session[:client_id] = nil
@@ -158,10 +158,9 @@ class ClientsportalController < ApplicationController
     #
     def edit_client_password
         begin
-            @client = Client.find(session[:client_id])
-            @current_client = @client
-            @client.password=nil
-            @client.password_confirmation=nil
+            @clients_login = ClientsLogin.find(:first, :conditions => [ "login= ?", session[:client_login]])
+            @clients_login.password=nil
+            @clients_login.password_confirmation=nil
         rescue
             flash[:notice] = "No such client"
             redirect_to :action => :index
@@ -172,15 +171,16 @@ class ClientsportalController < ApplicationController
     # Updates client password if everything is OK and redirecting to show_profile.    
     #
     def update_client_password
+        @current_client = ClientsLogin.find(:first, :conditions => [ "login= ?", session[:client_login]])
         old_pass = Digest::SHA1.hexdigest(params[:old_password])
         if (old_pass == @current_client.password)
             @client = @current_client
-            @client.password = params[:client][:password]
-            @client.password_confirmation = params[:client][:password_confirmation]
+            @client.password = params[:clients_login][:password]
+            @client.password_confirmation = params[:clients_login][:password_confirmation]
             if (@client.valid?)
-                new_pass = Digest::SHA1.hexdigest(params[:client][:password])
+                new_pass = Digest::SHA1.hexdigest(params[:clients_login][:password])
                 if @current_client.update_attributes(:password => new_pass, :password_confirmation => new_pass)
-                    flash[:notice] = 'Profile has been successfully updated'
+                    flash[:notice] = 'Individual password has been successfully updated'
                     redirect_to :action => 'show_profile'
                 else
                     flash[:notice] = 'Updating error'

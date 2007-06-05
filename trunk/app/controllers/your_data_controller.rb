@@ -21,11 +21,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # ************************************************************************
-include ActionView::Helpers::JavaScriptHelper
-include ApplicationHelper
-include CalendarHelper
-
 class YourDataController < ApplicationController
+  
+    include ActionView::Helpers::JavaScriptHelper
+    include ApplicationHelper
+  
     helper :sparklines
     before_filter :authorize
     layout "main", :except => :graph_xml
@@ -149,7 +149,7 @@ class YourDataController < ApplicationController
     def update_activity
         @activity = Activity.find(params[:id])
         if @activity.invoice_id.nil?
-            @projects = Project.find_all
+            @projects = Project.find(:all)
             # hours format to minutes
             params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
             if @activity.update_attributes(params[:activity])

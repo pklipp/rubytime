@@ -26,7 +26,9 @@
           cell_text << "<br/><i>total: </i><b>" << hour_format(total_day_minutes) << "</b>"
        else
           cell_attrs = {:class => 'empty-day'}
-          cell_text << "<a href='new_activity?date=" << session[:year] << "-" << session[:month] << "-" << d.mday.to_s << "'>+</a>"   
+          if params[:action] != "show_project_activities"
+            cell_text << "<a href='new_activity?date=" << session[:year] << "-" << session[:month] << "-" << d.mday.to_s << "'>+</a>"   
+          end
        end          
        [cell_text, cell_attrs]
     end

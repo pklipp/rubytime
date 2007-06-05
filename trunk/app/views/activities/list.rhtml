@@ -11,7 +11,7 @@
    
 <!-- Form: search -->
 
-<%= start_form_tag :action => 'search', :id => @activity %>
+<% form_tag({:action => 'search', :id => @activity}) do %>
         <fieldset>
         <legend>		Search	</legend>
 
@@ -54,7 +54,7 @@
         </td></tr>
         </tbody></table>
         </fieldset>
-        <%= end_form_tag %>
+        <% end %>
     
 <!-- End of form -->
 
@@ -83,6 +83,6 @@
 
 
   
-<p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER'] %></p>
+<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER'] %></p>
       
 </div>   

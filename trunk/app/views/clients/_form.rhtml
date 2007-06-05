@@ -1,17 +1,6 @@
 <!-- Partial form: Add/Edit client-->
 <table>
-    <tr>
-        <td width="100" align="left">Login:</td>
-        <td><%= text_field 'client', 'login', :size => 50, :maxlength => 50 %></td>
-    </tr>
-    
-    <% if (params[:action]=="new" || params[:action]=="create") %>
-    <tr>
-        <td width="100" align="left">Password:</td>
-        <td><%= text_field 'client', 'password', :size => 50, :maxlength => 50 %></td>
-    </tr>
-    <% end %>
-    
+   
     <tr>
         <td width="100" align="left">Name:</td>
         <td><%= text_field 'client', 'name', :size => 50, :maxlength => 50 %></td>

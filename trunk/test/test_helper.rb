@@ -58,7 +58,7 @@ class Test::Unit::TestCase
     post :login, {:log_client => {:login => login, :password => password}}
     assert_redirected_to :action => "index"
     assert_not_nil session[:client_id]
-    client = Client.find(session[:client_id])
+    client = ClientsLogin.find(:first, :conditions => [ "login= ?", session[:client_login]])
     assert_equal login, client.login
   end
   

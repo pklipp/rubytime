@@ -28,7 +28,7 @@
     # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     # ************************************************************************
     -->
-    <title>LLP Time Tracker - Client's portal</title>
+    <title>RubyTime - Client's portal</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="author" content="Lunar Logic Polska"/>
     <%= stylesheet_link_tag 'rubytime' %>
@@ -37,7 +37,7 @@
 </head>
 <body>
 <div id="banner">
-    <h1>Time Tracker</h1>
+    <h1>RubyTime</h1>
 </div>
 
 <div id="top-menu" style="text-align: center; font-size: 1.2em;">
@@ -45,10 +45,9 @@
 </div>
 
 <div id="sub-menu">
-
-    <% if @current_client !=nil %>
+    <% if @current_client != nil %>
     <p>
-        Welcome: <br/>
+        Welcome: <b><%= session[:client_login] %></b>
     </p>
     <% end %>
 
@@ -80,13 +79,11 @@
     <% if @current_client %>
           <div class="menu-icon ">				
             <%= image_tag("logout.png", :size => "32x32", :alt => "Logout", :style => "vertical-align: middle") %>
-	    <%= link_to("Logout" ,:controller => "login",:action => "login") %>
+	    <%= link_to("Logout" ,:controller => "clientsportal", :action => "login") %>
           </div>     
     <% end %>
-    <!-- Current Version Number -->
-    <p>
-        v.1.2_alpha
-    </p>
+    <!-- Current Version Number -->    
+        <p>v.<%= ENV['RUBYTIME_VERSION'] %></p>
 </div>
 
 <div id="content">

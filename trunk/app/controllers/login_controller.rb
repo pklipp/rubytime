@@ -62,4 +62,8 @@ class LoginController < ApplicationController
     redirect_to(:action => "login")
   end
   
+  def credits
+    render :template => "layouts/credits"
+  end
+  
 end

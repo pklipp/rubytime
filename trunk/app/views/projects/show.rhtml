@@ -1,26 +1,22 @@
 <!-- List of details of chosen project -->
 <div class="fieldsets">
-<fieldset>
-    <legend>	Project</legend>
-    
-    <p>
-        <strong>Name:</strong>
-        <%=@project.name%>
-    </p>
-    <p><strong>Description:</strong></p>
-    <%= simple_format @project.description %>
-    <p>
-	   <b>Active: </b>
-	   <%= @project.active_text %>
-    </p>
-    
-    <p class="	p_edit_back">
-    <%= link_to 'Show activities', :controller => 'activities', 
-       :action => 'graph', 'search[project_id]' => @project.id %> |
-    <%= link_to 'Edit', :action => 'edit', :id => @project %> |
-    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
-    </p>
-</fieldset>
+    <fieldset>
+        <legend>Project</legend>
+        
+        <p><strong>Name:</strong><%= @project.name %></p>
+        
+        <p><strong>Description:</strong></p>
+        <%= simple_format @project.description %>
+        
+        <p><b>Active: </b><%= @project.active_text %></p>
+        
+        <p class="p_edit_back">
+            <%= link_to 'Show activities', :controller => 'activities', 
+            :action => 'graph', 'search[project_id]' => @project.id %> |
+            <%= link_to 'Edit', :action => 'edit', :id => @project %> |
+            <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+        </p>
+    </fieldset>
 </div>
 <!-- End of list -->
 
