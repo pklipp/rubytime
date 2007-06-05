@@ -83,7 +83,10 @@ class UsersControllerTest < Test::Unit::TestCase
 
     get :confirm_destroy, :id => admin_id
 
-    assert_redirect :action => 'list'
+    assert_response :redirect
+    follow_redirect
+    assert_template 'list'
+    #assert_redirect :action => 'list'
 
     user_id = 2
     user = User.find(user_id)

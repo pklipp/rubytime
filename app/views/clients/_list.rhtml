@@ -13,7 +13,6 @@
       <hr/>       
       <table class="standard">
       <tr>
-          <th>Login:</th>
           <th>Name:</th>
           <th>Description:</th>
           <th>Inactive:</th>
@@ -22,7 +21,6 @@
       
       <% for client in @clients %>
       <tr <%if client.is_inactive-%>style="color: gray"<%end-%>>
-          <td><%=h(truncate(client.login,20)) %></td>
           <td><%=h(truncate(client.name,20)) %></td>
           <td><%=h(truncate(client.description,20)) %></td>
           <td style="text-align: center"><%if client.is_inactive-%>X<%end-%></td>

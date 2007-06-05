@@ -1,16 +1,13 @@
 <div class="fieldsets">
-<fieldset>
-  <legend>
-    Delete user: <%= @user.name %>
-  </legend>
-  
-  <p><b>All tasks associated with this user will be deleted!</b><br/>
-  If you are sure you want to delete this user
-  please type the user's name in the field below:</p>
-  <%= form_tag :action => "destroy", :id => @user %>
-  <p><label>User's name: </label><%= text_field_tag "name_confirmation" %></p>
-  <p><%= submit_tag 'Destroy' %> or <%= link_to "Cancel", :action => "list" %></p>
-  <%= end_form_tag %> 
-
-</fieldset>
+    <fieldset>
+        <legend>Delete user: <%= @user.name %></legend>
+        
+        <p><b>All tasks associated with this user will be deleted!</b><br/>
+        If you are sure you want to delete this user please type the user's name in the field below:</p>
+        <% form_tag({:action => "destroy", :id => @user}) do %>
+            <p><label>User's name: </label><%= text_field_tag "name_confirmation" %></p>
+            <p><%= submit_tag 'Destroy' %> or <%= link_to "Cancel", :action => "list" %></p>
+        <% end %> 
+        
+    </fieldset>
 </div>

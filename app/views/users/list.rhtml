@@ -1,14 +1,13 @@
-
 <div class="fieldsets">
-
+    
     <!-- Form: Search users -->
     <fieldset>
         <legend>Search users</legend>
-        <%= form_remote_tag :update => 'users_list', :url => {:controller => 'users', :action => 'search'}%>
+        <% form_remote_tag({:update => 'users_list', :url => {:controller => 'users', :action => 'search'}}) do %>
         <p><label>Login or name:</label></p>
         <p><%= text_field_tag("search", value = params[:search], :size => 32) %></p>
         <p><%= submit_tag 'Search'%></p>
-        <%= end_form_tag %>
+        <% end %>
     </fieldset>
     <!-- End of search form -->
     
@@ -16,11 +15,11 @@
     
     <!-- List of users -->
     <div id="users_list">
-    <%= render :partial => 'list'%>
+        <%= render :partial => 'list'%>
     </div>
     <!-- End of list -->
     
-    <p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
+    <p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
 </div>
 
 

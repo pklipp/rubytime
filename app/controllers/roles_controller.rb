@@ -34,7 +34,7 @@ class RolesController < ApplicationController
 
   # Lists all current roles.
   def list
-    @roles = Role.find_all
+    @roles = Role.find(:all)
   end
 
   # Shows chosen role.

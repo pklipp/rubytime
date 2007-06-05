@@ -1,20 +1,14 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_client:
-  id: 1
-  login: client1
-  password: <%= Digest::SHA1.hexdigest("pass-client1") %>
-  name: client1
+  id: 1  
+  name: client1-name
   description: Client nr 1
 another_client:
   id: 2
-  login: client2
-  password: <%= Digest::SHA1.hexdigest("pass-client2") %>
-  name: client2
+  name: client2-name
   description: Client nr 2
 inactive_client:
-  id: 3
-  login: client3
-  password: <%= Digest::SHA1.hexdigest("pass-client3") %>
-  name: client3
+  id: 3  
+  name: client3-name
   description: Client nr 3
   is_inactive: 1

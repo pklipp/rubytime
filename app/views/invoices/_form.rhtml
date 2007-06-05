@@ -1,17 +1,12 @@
-<%= #error_messages_for 'invoice' 
-%>
-
 <!--[form:invoice]-->
 
 <p><label for="invoice_name">Name</label><br/>
 <%= text_field 'invoice', 'name', :size => 22, :maxlength => 20  %></p>
 <p><label for="invoice_client_id">Client</label><br/>
-<%= select("invoice", "client_id", Client.find_all.collect {|c| [ c.name, c.id ] }, { :include_blank => true }) %></p>
+<%= select("invoice", "client_id", Client.find(:all).collect {|c| [ c.name, c.id ] }, { :include_blank => true }) %></p>
 
 <p><label for="invoice_notes">Notes</label><br/>
 <%= text_area 'invoice', 'notes', :rows => 8, :cols => 30  %></p>
-
-
 
 <!--[eoform:invoice]-->
 

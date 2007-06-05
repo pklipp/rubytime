@@ -13,7 +13,8 @@
         /* ]]> */
         </script>
 
-        <%= start_form_tag :controller => 'invoices', :action => 'add_activities' %>
+        <% form_tag({:controller => 'invoices', :action => 'add_activities'}) do %>
+        
         <table class="standard" id="activities_list">
        
         <tr>
@@ -84,7 +85,7 @@
         </tr>
 
         </table>
-        <%= end_form_tag %>
+        <% end %>
         <div id="add_invoice_form"></div>
         <% unless @activity_pages.nil? %>
             <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>

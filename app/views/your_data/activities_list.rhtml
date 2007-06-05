@@ -11,7 +11,7 @@
 
 <!-- Form: serach activities -->
 
-<%= start_form_tag :action => 'search', :id => @activity %>
+<% form_tag({:action => 'search', :id => @activity}) do %>
     <fieldset>
         <legend>Search</legend>
         <p>
@@ -24,7 +24,7 @@
         &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
         </p>
     </fieldset>
-<%= end_form_tag %>
+<% end %>
 <!-- End of form -->
 
 <br/><br/>
@@ -78,7 +78,7 @@
 <!-- End of list -->
 
 
-<p><%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%></p>
+<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
 
 </div>
 

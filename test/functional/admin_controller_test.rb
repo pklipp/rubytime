@@ -44,7 +44,7 @@ class AdminControllerTest < Test::Unit::TestCase
 
     get :previous_day
     assert_response :success
-    assert_tag :tag => "legend", :content => "Activities List" 
+    assert_tag :tag => "legend", :content => /Activities List/
     assert_tag :tag => "td", :content => activity1.date.to_s
     assert_tag :tag => "td", :content => activity1.project.name
     assert_tag :tag => "td", :content => activity2.date.to_s

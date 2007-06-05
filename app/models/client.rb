@@ -27,31 +27,18 @@
 class Client < ActiveRecord::Base
     has_many :projects, :dependent => :destroy
     has_many :invoices, :dependent => :destroy
+    has_many :clients_logins, :dependent => :destroy
 
     # validators
-    validates_presence_of :name, :description, :login, :password
-    validates_uniqueness_of :name, :login
-    validates_length_of :password, :minimum => 5, :message => "should be at least 5 characters long"
-    validates_confirmation_of :password
+    validates_presence_of :name, :description
+    validates_uniqueness_of :name
 
     def Client.find_active
-        Client.find(:all, :conditions => "is_inactive = 0",
-        :order => "name")
+        Client.find(:all, :conditions => "is_inactive = 0", :order => "name")
     end
 
     def active_text
         is_inactive ? "NO" : "YES"
-    end
-
-    # Logs client. Method returns Client object if client is logged successfuly or nil when not.
-    def self.authorize(login, password)
-        tmp = find(:first, :conditions =>  ["login = ? ", login])
-        if !tmp.nil?
-            tmp_password = Digest::SHA1.hexdigest(password)
-            find(:first, :conditions => ["login = ? and password = ?", login, tmp_password])
-        else
-            nil
-        end
     end
 
 end

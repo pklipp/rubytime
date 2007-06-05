@@ -168,7 +168,7 @@ class ActivitiesController < ApplicationController
   def edit
     begin
       @activity = Activity.find(params[:id])
-      @projects = Project.find_all
+      @projects = Project.find(:all)
     rescue
       flash[:notice] = "No such activity"
       redirect_to :action => :index
@@ -184,7 +184,7 @@ class ActivitiesController < ApplicationController
   def update
     begin
       @activity = Activity.find(params[:id])
-      @projects = Project.find_all
+      @projects = Project.find(:all)
     rescue
       flash[:notice] = "No such activity"
       redirect_to :action => :index
