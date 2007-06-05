@@ -1,7 +1,7 @@
 #labels changelog
 =RubyTime change log=
 
-*0.14.0 * (31 May, 2006), author: Wiktor Gworek
+*1.2* (31 May, 2006), author: Wiktor Gworek
 
   * Upgraded to Rail 1.2.3.
   * Added client's portal new functionality.
