@@ -142,7 +142,7 @@ class YourDataController < ApplicationController
         if @activity.user_id!=@current_user.id or @activity.invoice_id
             render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
         end
-        @projects = Project.find :all
+        @projects = Project.find(:all, :conditions => ["is_inactive = ?", false])
     end
 
     # Updates activity's details. Data is validated before.
