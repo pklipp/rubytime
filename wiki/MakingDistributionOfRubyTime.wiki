@@ -1,0 +1,63 @@
+in progress...
+
+#How to make a RubyTime distribution.
+
+= Introduction =
+
+To make any kind of distribution we use Tar2RubyScript and RubyScript2Exe. You can find them [http://www.erikveen.dds.nl/distributingrubyapplications/rails.html here].
+
+= Type of distributions =
+
+===RBA archive (SQLite version)===
+  * make clean checkout from read-only repository (http://rubytime.googlecode.com/svn/trunk/),
+  * delete web-packages folder from app directory tree,
+  * create file database.yml in config directory; content of file: 
+{{{
+development:
+  adapter: sqlite3
+  database: rubytime_development.db
+
+test:
+  adapter: sqlite3
+  database: rubytime_test.db
+
+production:
+  adapter: sqlite3
+  database: rubytime_production.db
+}}}
+  * add this to the top of config/environment.rb file: 
+{{{
+module Rails
+  class Configuration
+    def database_configuration
+      conf = YAML::load(ERB.new(IO.read(database_configuration_file)).result)
+      if defined?(TAR2RUBYSCRIPT)
+        conf.each do |k, v|
+          if v["adapter"] =~ /^sqlite/
+            v["database"] = oldlocation(v["database"]) if v.include?("database")
+            v["dbfile"]   = oldlocation(v["dbfile"])   if v.include?("dbfile")
+          end
+        end
+      end
+      conf
+    end
+  end
+end
+}}}
+  * create file init.rb in main rails app directory with content:
+{{{
+at_exit do
+  require "irb"
+  require "drb/acl"
+  require "sqlite3"
+end
+
+load "script/server"
+}}}
+  * run script:
+{{{
+ruby tar2rubyscript.rb name_of_dir_where_rails_app_is\
+}}}
+
+
+
