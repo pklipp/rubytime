@@ -145,4 +145,27 @@ class ProjectsController < ApplicationController
     end
     redirect_to :action => 'list'
   end
+  
+  # Shows report by role for a project from selected time range
+  def report_by_role    
+    flash[:warning] = nil
+    begin
+      @project = Project.find(params[:id])
+      @from_date = Date.parse(params[:from_date])
+      @to_date = Date.parse(params[:to_date])
+      
+      sql_query = "SELECT roles.name as role_name, sum(activities.minutes) as minutes " +
+          " FROM ((users left join activities on activities.user_id = users.id) left join projects on projects.id = activities.project_id) left join roles on users.role_id = roles.id " +
+          " where projects.id = " + params[:id] + " and " +
+          " activities.date <= \"" + params[:to_date] + "\" and " +        
+          " activities.date >= \"" + params[:from_date] + "\"" + 
+          " group by roles.name"
+
+      @reports = ActiveRecord::Base.connection.execute(sql_query)      
+    rescue             
+       flash[:warning] = "Wrong project selected or date" 
+       render :template => "projects/show"
+    end
+  end
+  
 end

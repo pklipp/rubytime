@@ -1,0 +1,21 @@
+<% if !@reports.nil? %>
+<div style="width: 50%; margin-left: auto; margin-right: auto;">
+    <h1><%= @project.name %></h1>
+    <h3>report by role</h3>
+    <h4>from <%= params[:from_date] %> to <%= params[:to_date] %></h4>
+    <table class="standard">
+        <tr>
+            <th>Role name</th>
+            <th>Time spent</th>
+        </tr>
+        <% for report in @reports %>
+        <tr>
+            <td><%= report[0] %></td>
+            <td><%= report[1] %></td>
+        </tr>
+        <% end %>
+    </table>
+</div>
+<% end %>
+
+<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>

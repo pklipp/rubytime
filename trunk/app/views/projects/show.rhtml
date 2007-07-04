@@ -17,6 +17,30 @@
             <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
         </p>
     </fieldset>
+    
+    <br/>
+    
+    <fieldset>
+        <legend>Reports</legend>
+        <% form_tag({:action => 'report_by_role'}, :method => :get) do %>    
+        <input type="hidden" name="id" value="<%= @project.id %>" />
+        <table>
+            <tr>
+                <td>From (YYYY:MM:DD):</td>
+                <td>
+                    <input type="text" name="from_date" value="<%= params[:from_date] %>"/>
+                </td>
+            </tr>
+            <tr>                
+                <td>To (YYYY:MM:DD):</td>
+                <td><input type="text" name="to_date" value="<%= params[:to_date] %>"/></td>
+            </tr>
+        </table>        
+        
+         <p><%= submit_tag "Show report by role" %></p>
+        <% end %>
+        
+    </fieldset>    
 </div>
 <!-- End of list -->
 
