@@ -1,7 +1,14 @@
 #labels changelog
 =RubyTime change log=
 
-*1.2* (31 May, 2006), author: Wiktor Gworek
+*1.3* (5 July, 2007), author: Wiktor Gworek
+
+  * Added RubyTime logo.
+  * Feature: issue #29: Request for report by role.
+  * Fixed issue #28: Icons are not links.
+  * Fixed credits link.
+
+*1.2* (31 May, 2007), author: Wiktor Gworek
 
   * Upgraded to Rail 1.2.3.
   * Added client's portal new functionality.
@@ -12,3 +19,5 @@
   * Added new model ClientsLogin.
   * Added new migration 002_clientportal for client's portal functionality.
   * Added plugin CalendarHelper: http://wiki.rubyonrails.org/rails/pages/DynamicCalendarHelper
+
+
