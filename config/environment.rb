@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # RubyTime version
-ENV['RUBYTIME_VERSION'] = '1.2.0'
+ENV['RUBYTIME_VERSION'] = '1.3.0'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '1.2.3' unless defined? RAILS_GEM_VERSION
