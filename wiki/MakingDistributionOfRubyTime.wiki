@@ -1,63 +1,49 @@
-in progress...
-
-#How to make a RubyTime distribution.
+#labels Phase-Deploy,distribution
+How to make a RubyTime distribution.
 
 = Introduction =
 
-To make any kind of distribution we use Tar2RubyScript and RubyScript2Exe. You can find them [http://www.erikveen.dds.nl/distributingrubyapplications/rails.html here].
+To make any kind of distribution we use Tar2RubyScript and RubyScript2Exe. More you can find [http://www.erikveen.dds.nl/distributingrubyapplications/rails.html here].
+
+= Prepare SQLite database =
+Requirements:
+  * Install sql-lite3 gem (1.1+).
+{{{
+>gem install sqlite3-ruby
+}}}
+  * Instll TCL Library (if Linux).
+  * Download SQLite library (3.3.6+). SQLite library is available here: [http://www.sqlite.org/download.html http://www.sqlite.org/download.html]
+  
+Make DB:
+  * Run:
+{{{
+>rake db:migrate
+}}}
+  * It should produce file {{{rubytime_development.db}}}. Copy this file to save place.
+
 
 = Type of distributions =
 
 ===RBA archive (SQLite version)===
-  * make clean checkout from read-only repository (http://rubytime.googlecode.com/svn/trunk/),
-  * delete web-packages folder from app directory tree,
-  * create file database.yml in config directory; content of file: 
+ * Go to directory {{{dist/}}} and execute script:
 {{{
-development:
-  adapter: sqlite3
-  database: rubytime_development.db
-
-test:
-  adapter: sqlite3
-  database: rubytime_test.db
-
-production:
-  adapter: sqlite3
-  database: rubytime_production.db
+ruby dist.rb
 }}}
-  * add this to the top of config/environment.rb file: 
+ * It should produce {{{rubytime.rb}}} file.
+ * Copy files {{{rubytime.rb}}} and {{{rubytime_development.db}}} to separate directory and pack it using zip and tar.gz.
+ * Change names to: {{{RubyTime-v[VERSION]-rba-SQLite.zip}}} and {{{RubyTime-v[VERSION]-rba-SQLite.tar.gz}}}.
+ * Remove {{{rubytime}}} dir.
+ * voilà!
+
+===EXE distribution (SQLite version)===
+  * If you want to make Windows executable, be sure that you're working under Windows.
+  * Run script:
 {{{
-module Rails
-  class Configuration
-    def database_configuration
-      conf = YAML::load(ERB.new(IO.read(database_configuration_file)).result)
-      if defined?(TAR2RUBYSCRIPT)
-        conf.each do |k, v|
-          if v["adapter"] =~ /^sqlite/
-            v["database"] = oldlocation(v["database"]) if v.include?("database")
-            v["dbfile"]   = oldlocation(v["dbfile"])   if v.include?("dbfile")
-          end
-        end
-      end
-      conf
-    end
-  end
-end
+ruby rubyscript2exe.rb rubytime.rb
 }}}
-  * create file init.rb in main rails app directory with content:
-{{{
-at_exit do
-  require "irb"
-  require "drb/acl"
-  require "sqlite3"
-end
-
-load "script/server"
-}}}
-  * run script:
-{{{
-ruby tar2rubyscript.rb name_of_dir_where_rails_app_is\
-}}}
+  * Copy file {{{rubytime.exe}}} and {{{rubytime_development.db}}} to separate directory and pack it using zip (file name {{{RubyTime-v[VERSION]-exe-SQLite.zip}}}).
 
 
-
+===Packed application (MySQL version)===
+  * Simply remove web-packages directory and pack using zip whole app directory.
+  * Change file name to {{{RubyTime-v[VERSION].zip}}}
