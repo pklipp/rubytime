@@ -40,8 +40,8 @@ ruby dist.rb
   * Run script:
 {{{
 ruby rubyscript2exe.rb rubytime.rb
-}}}
-  * Copy file {{{rubytime.exe}}} and {{{rubytime_development.db}}} to separate directory and pack it using zip (file name {{{RubyTime-v[VERSION]-exe-SQLite.zip}}}).
+}}}  
+  * Copy files {{{rubytime.exe}}}, {{{rubytime_development.db}}} and {{{readme.txt}}} from (dist/ directory) to separate directory and pack it using zip (file name {{{RubyTime-v[VERSION]-exe-SQLite.zip}}}).
 
 
 ===Packed application (MySQL version)===
