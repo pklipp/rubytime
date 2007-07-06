@@ -1,4 +1,7 @@
 # RubyTime distribution maker
+#
+# author: Wiktor Gworek
+
 require 'net/http'
 require "rubygems"
 require 'fileutils'
@@ -89,10 +92,10 @@ task_start "Removing rubytime/web-packages dir"
 FileUtils.remove_dir "rubytime/web-packages"
 task_end
 
-task_start "Downloading scripts: Tar2RubyScript & RubyScript2Exe"
-download_file("www.erikveen.dds.nl", "/tar2rubyscript/download/tar2rubyscript.rb", "tar2rubyscript.rb")
-download_file("www.erikveen.dds.nl", "/rubyscript2exe/download/rubyscript2exe.rb", "rubyscript2exe.rb")
-task_end
+#task_start "Downloading scripts: Tar2RubyScript & RubyScript2Exe"
+#download_file("www.erikveen.dds.nl", "/tar2rubyscript/download/tar2rubyscript.rb", "tar2rubyscript.rb")
+#download_file("www.erikveen.dds.nl", "/rubyscript2exe/download/rubyscript2exe.rb", "rubyscript2exe.rb")
+#task_end
 
 create_file 'rubytime/config/database.yml', database_yml
 create_file 'rubytime/init.rb', init_rb
@@ -102,7 +105,7 @@ task_start "Creating RBA distro\n"
 `ruby tar2rubyscript.rb rubytime/`
 task_end
 
-task_start "Creating executable standalone for Windows\n"
-`ruby rubyscript2exe.rb rubytime.rb`
-task_end
+#task_start "Creating executable standalone for Windows\n"
+#`ruby rubyscript2exe.rb rubytime.rb`
+#task_end
 
