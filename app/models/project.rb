@@ -27,6 +27,7 @@
 class Project < ActiveRecord::Base
   has_many :activities, :dependent => :destroy
   belongs_to :client
+  has_many :users, :through => :activities
   
   # validators
   validates_presence_of :name, :description, :client_id

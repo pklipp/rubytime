@@ -27,19 +27,18 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'activities_list'
     assert_not_nil assigns(:activities)
-    @activities = assigns(:activities)
-    assert_equal 6, @activities.length
+    assert_equal 6, assigns(:activities).length
     #chronological order
-    assert descending?(@activities, :date), "Activities should be ascending"
+    assert descending?(assigns(:activities), :date), "Activities should be ascending"
     
     #with session conditions
+    @request.session[:year] = 2006.to_s
     @request.session[:month] = 8.to_s
     get :activities_list
-    assert_not_nil assigns(:activities)
-    @activities = assigns(:activities)
-    assert_equal 3, @activities.length
+    assert_not_nil assigns(:activities)    
+    assert_equal Activity.count(:conditions => "MONTH(date) = 8  AND YEAR(date) = 2006 AND user_id = #{assigns(:current_user).id}"), assigns(:activities).size
     #chronological order
-    assert descending?(@activities, :date), "Activities should be ascending"
+    assert descending?(assigns(:activities), :date), "Activities should be ascending"
   end
 
   def test_show_activity
