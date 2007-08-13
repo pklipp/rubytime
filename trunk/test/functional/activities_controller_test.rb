@@ -27,23 +27,22 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'list'
     assert_not_nil assigns(:activities)
-    @activities = assigns(:activities)
-    assert_equal 8, @activities.length
+    assert_equal 8, assigns(:activities).length
     
     #chronological order
-    assert descending?(@activities, :date) 
+    assert descending?(assigns(:activities), :date) 
     
     #with session conditions
+    @request.session[:year] = 2006.to_s
     @request.session[:month] = 8.to_s
     get :list
     assert_not_nil assigns(:activities)
-    @activities = assigns(:activities)
-    assert_equal 4, @activities.length
+    assert_equal Activity.count(:conditions => "MONTH(date) = 8  AND YEAR(date) = 2006"), assigns(:activities).size
 
-    assert ascending?(@activities, :date) 
+    assert ascending?(assigns(:activities), :date) 
   end
 
-  def test_reprot
+  def test_report
     post :search, { :commit => "Export to CSV" }
     #puts @response.body.inspect
     assert_response :success
