@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, 
                       :minimum => 5,
                       :message => "should be at least 5 characters long"                       
-  validates_uniqueness_of :login
+  validates_uniqueness_of :login, :email
   validates_confirmation_of :password  
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
