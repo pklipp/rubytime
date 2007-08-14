@@ -69,6 +69,7 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new
     @selected = {'client_id' => ''}
+    @clients = Client.find_all_by_is_inactive(false)
     if (@project.client)
       @selected['client_id']=@project.client.id.to_i
     end
