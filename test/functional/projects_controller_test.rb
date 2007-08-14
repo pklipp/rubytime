@@ -44,6 +44,7 @@ class ProjectsControllerTest < Test::Unit::TestCase
 
     assert_response :success
     assert_template 'new'
+    assert_select "form[action=/projects/create]", true
 
     assert_not_nil assigns(:project)
   end
@@ -123,5 +124,20 @@ class ProjectsControllerTest < Test::Unit::TestCase
     get :list
     assert_tag :tag => "a", :attributes => { :href => "/projects/new" }
   end
+  
+  def test_new_should_show_information_about_creating_client_first_when_no_client_is_created 
+    Client.destroy_all
+    assert Client.find(:all).blank?
+    get :new
+
+    assert_response :success
+    assert_template 'new'
+    
+    assert_select "p.no_clients_defined"
+    assert_select "form[action=/projects/create]", false
+    
+    assert false
+  end
+  
 
 end
