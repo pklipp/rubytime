@@ -7,6 +7,7 @@ pm:
   password: <%= User.hashed_pass("admin", "salt") %> # admin
   email: alex@a.com
   role_id: 1
+  is_inactive: false
 
 dev:
   id: 2 
@@ -16,3 +17,4 @@ dev:
   password: <%= User.hashed_pass("dev", "salt") %> # admin
   email: fox@a.com
   role_id: 2
+  is_inactive: false

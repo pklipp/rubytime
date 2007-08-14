@@ -64,11 +64,11 @@ class YourDataController < ApplicationController
         end
         # filter by year set in session
         if (session[:year])
-            conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
+            conditions_string+= " AND #{SqlFunction.get_year('date')}='" + session[:year] + "'"
         end
         # filter by month set in session
         if (session[:month])
-            conditions_string+= " AND MONTH(date)='" + session[:month] + "'"
+            conditions_string+= " AND #{SqlFunction.get_month_equation('date', session[:month])} "
         end
 
         if (params[:search].nil? and session[:month].nil? and session[:month].nil?)
@@ -235,10 +235,10 @@ class YourDataController < ApplicationController
         #    end
 
         if (session[:year])
-            conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
+            conditions_string+= " AND #{SqlFunction.get_year('date')}='" + session[:year] + "'"
         end
         if (session[:month])
-            conditions_string += " AND MONTH(date)='" + session[:month] + "' "
+            conditions_string += " AND #{SqlFunction.get_month_equation('date', session[:month])} "
         end
 
         sqlweek = SqlFunction.get_week('date')
@@ -273,10 +273,10 @@ class YourDataController < ApplicationController
         #    end
 
         if (session[:year])
-            conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
+            conditions_string+= " AND #{SqlFunction.get_year('date')}='" + session[:year] + "'"
         end
         if (session[:month])
-            conditions_string += " AND MONTH(date)='" + session[:month] + "' "
+            conditions_string += " AND #{SqlFunction.get_month_equation('date', session[:month])} "
         end
         sqlyear = SqlFunction.get_year('date')
         sqlweek = SqlFunction.get_week('date')

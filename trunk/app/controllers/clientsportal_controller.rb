@@ -114,8 +114,8 @@ class ClientsportalController < ApplicationController
         + "LEFT JOIN users us ON (ac.user_id=us.id)" \
         + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
         + "WHERE project_id = '" + params[:project_id] + "' " \
-        + " AND YEAR(date)='" + session[:year] + "' " \
-        + " AND MONTH(date)='" + session[:month] + "' " \
+        + " AND #{SqlFunction.get_year('date')}='" + session[:year] + "' " \
+        + " AND #{SqlFunction.get_month_equation('date', session[:month])} " \
         + "ORDER BY date"
 
         @activities = Activity.find_by_sql @query

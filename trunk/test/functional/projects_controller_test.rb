@@ -66,7 +66,6 @@ class ProjectsControllerTest < Test::Unit::TestCase
     assert_template 'edit'
 
     assert_not_nil assigns(:project)
-#    puts assigns(:project).inspect
     assert assigns(:project).valid?
   end
 

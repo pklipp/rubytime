@@ -35,8 +35,8 @@ class YourDataControllerTest < Test::Unit::TestCase
     @request.session[:year] = 2006.to_s
     @request.session[:month] = 8.to_s
     get :activities_list
-    assert_not_nil assigns(:activities)    
-    assert_equal Activity.count(:conditions => "MONTH(date) = 8  AND YEAR(date) = 2006 AND user_id = #{assigns(:current_user).id}"), assigns(:activities).size
+    assert_not_nil assigns(:activities)  
+    assert_equal Activity.count(:conditions => "#{SqlFunction.get_month_equation('date', 8)}  AND #{SqlFunction.get_year('date')} = '2006' AND user_id = #{assigns(:current_user).id}"), assigns(:activities).size
     #chronological order
     assert descending?(assigns(:activities), :date), "Activities should be ascending"
   end

@@ -17,12 +17,11 @@ class UserTest < Test::Unit::TestCase
     assert_nil User.authorize("wrong!!", "wrong")
     assert_kind_of User, User.authorize("admin", "admin")
     assert_kind_of User, User.authorize("fox", "dev")
-    
-    
-#    u = User.find :first, :conditions => ["is_inactive = ? ", false]
-#    assert_kind_of User, u
-#    user = User.authorize(u.login, u.password)
-#    assert_kind_of User, user
-#    assert_equal u.id, user.id
+        
+    u = User.authorize("fox", "dev")
+    assert_kind_of User, u
+    assert_equal u.login, "fox"
+    assert_equal u.role.name, "Developer"
   end
+  
 end
