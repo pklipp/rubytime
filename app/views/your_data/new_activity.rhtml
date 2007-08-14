@@ -8,7 +8,7 @@
         </div>
         <% form_tag({:action => 'create_activity'}) do %>
         <%= render :partial => 'activities_form' %>
-        <p><%= submit_tag "Add" %></p>
+        <p><%= submit_tag "Add", :onclick => 'this.disabled="disabled";' %></p>
         <% end %>
     </fieldset>
 </div>
