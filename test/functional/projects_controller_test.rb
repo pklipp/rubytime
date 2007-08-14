@@ -135,8 +135,6 @@ class ProjectsControllerTest < Test::Unit::TestCase
     
     assert_select "p.no_clients_defined"
     assert_select "form[action=/projects/create]", false
-    
-    assert false
   end
   
 
