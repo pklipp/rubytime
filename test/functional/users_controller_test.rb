@@ -5,7 +5,7 @@ require 'users_controller'
 class UsersController; def rescue_action(e) raise e end; end
 
 class UsersControllerTest < Test::Unit::TestCase
-  fixtures :projects, :users, :roles
+  fixtures :projects, :users, :roles, :activities
 
   def setup
     @controller = UsersController.new
@@ -66,7 +66,6 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_template 'edit'
 
     assert_not_nil assigns(:user)
-#    puts assigns(:user).inspect
     assert assigns(:user).valid?
   end
 

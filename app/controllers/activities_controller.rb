@@ -102,10 +102,10 @@ class ActivitiesController < ApplicationController
 
      if (params[:search].nil? or (params[:search]['date_from(1i)'].blank? and !params[:search]['date_t1i)'].blank?))
        if (session[:year])
-         @conditions_string+= " AND YEAR(date)='" + session[:year] + "'"
+         @conditions_string+= " AND #{SqlFunction.get_year('date')}='" + session[:year] + "'"
        end
        if (session[:month])
-         @conditions_string += " AND MONTH(date)='" + session[:month] + "' "
+         @conditions_string += " AND #{SqlFunction.get_month_equation('date', session[:month])} "
        end  
      end
      
