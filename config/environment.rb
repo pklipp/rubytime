@@ -4,9 +4,6 @@
 # you don't control web/app server and can't set it the proper way
 # ENV['RAILS_ENV'] ||= 'production'
 
-# RubyTime version
-ENV['RUBYTIME_VERSION'] = '1.3.1'
-
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '1.2.3' unless defined? RAILS_GEM_VERSION
 
@@ -61,3 +58,8 @@ end
 # Mime::Type.register "application/x-mobile", :mobile
 
 # Include your application configuration below
+
+
+# RubyTime version
+RUBYTIME_VERSION = '1.3.1'
+
