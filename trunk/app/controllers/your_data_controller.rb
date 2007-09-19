@@ -32,7 +32,7 @@ class YourDataController < ApplicationController
 
     # Default action.
     def index
-        activities_list
+        activities_calendar
         render :action => 'activities_calendar'
     end
 
@@ -84,8 +84,8 @@ class YourDataController < ApplicationController
 
     # Shows sctivities grid for choosen year & month (like calendar)
     def activities_calendar
-        session[:year] = Time.now.year.to_s unless !session[:year].nil?
-        session[:month] = Time.now.month.to_s unless !session[:month].nil?        
+        session[:year] ||= Time.now.year.to_s 
+        session[:month] ||= Time.now.month.to_s 
         activities_list
     end
 
