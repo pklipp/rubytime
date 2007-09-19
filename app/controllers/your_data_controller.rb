@@ -33,7 +33,7 @@ class YourDataController < ApplicationController
     # Default action.
     def index
         activities_list
-        render :action => 'activities_list'
+        render :action => 'activities_calendar'
     end
 
     # Redirects to list of activitities or graph depending on submit button
