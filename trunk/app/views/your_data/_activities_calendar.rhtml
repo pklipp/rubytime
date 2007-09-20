@@ -18,7 +18,7 @@
              else
                 cell_text << e.comments
              end
-             cell_text << "<a href='show_activity/" << e.id.to_s << "' class='item-more'> &raquo;</a><br/>"
+             cell_text << "<a href='/your_data/show_activity/" << e.id.to_s << "' class='item-more'> &raquo;</a><br/>"
              total_day_minutes += e.minutes
           end
        end
@@ -27,7 +27,7 @@
        else
           cell_attrs = {:class => 'empty-day'}
           if params[:action] != "show_project_activities"
-            cell_text << "<a href='new_activity?date=" << session[:year] << "-" << session[:month] << "-" << d.mday.to_s << "'>+</a>"   
+            cell_text << "<a href='/your_data/new_activity?date=" << session[:year] << "-" << session[:month] << "-" << d.mday.to_s << "'>+</a>"   
           end
        end          
        [cell_text, cell_attrs]
