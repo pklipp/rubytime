@@ -52,6 +52,7 @@ hr{
     height: 1px;
     width: 80%;
 		}
+img{border-width: 0px;}
 /* calendar */
 table.calendarView {
     border: 1px solid black;

@@ -15,7 +15,7 @@
             <tr>
                 <td><%=h invoice.name %></td>
                 <td align="center"><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
-                <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"),
+                <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"),
                     {:action => 'show_invoice', :id => invoice}, :class=>"nobg" %>
                 </td>
             </tr>

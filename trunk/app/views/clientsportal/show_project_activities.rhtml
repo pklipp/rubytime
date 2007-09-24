@@ -27,7 +27,7 @@
                     <td style="text-align: right"><%= activity.user.name %></td>
                     <td style="text-align: right"><%= activity.role.name %></td>
                     <td style="text-align: right"><%= activity.invoice_id.blank? ? "NO" : "YES"%></td>
-                    <td><%= link_to image_tag("show.png", :border => "0", :alt => "Show", :title => "Show"),
+                    <td><%= link_to image_tag("show.png", :alt => "Show", :title => "Show"),
                         {:action => "show_activity", :id => activity}, :class => "nobg" %>
                     </td>
                 </tr>

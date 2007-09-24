@@ -13,7 +13,7 @@
         <p><b>Active: </b><%= @project.active_text %></p>
 
         <p style="font-size: 1.2em; text-align: right;">
-            <%= link_to [image_tag("activities.png", :border=>0, :alt=>"Show activities", :title=>"Show activities", :class=>"linkwithimg"), "Show activities"],
+            <%= link_to [image_tag("activities.png", :alt=>"Show activities", :title=>"Show activities", :class=>"linkwithimg"), "Show activities"],
                 {:action => 'show_project_activities', 'project_id' => @project.id}, :class=>"linkwithimg" %>
         </p>
     </fieldset>

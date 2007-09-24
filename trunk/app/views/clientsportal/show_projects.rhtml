@@ -22,11 +22,11 @@
             <%end-%>
             <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
 
-            <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"),
+            <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"),
                 {:action => 'show_project', :id => project}, :class=>"nobg" %>
             </td>
             <td>
-                <%= link_to image_tag("activities.png", :border=>0, :alt=>"Show activities", :title=>"Show activities"),
+                <%= link_to image_tag("activities.png", :alt=>"Show activities", :title=>"Show activities"),
                 {:action => 'show_project_activities', :project_id => project}, :class=>"nobg" %>
             </td>
         </tr>

@@ -14,11 +14,11 @@
                 <% end %>
             </div>            
         </td>
-        <td><%= link_to_remote image_tag("remove.png", :border=>0, :alt=>"Remove", :title=>"Remove"), 
+        <td><%= link_to_remote image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), 
         {:url => { :action => "destroy_client_login", :id => client_login },  :confirm => 'Are you sure?'}, :class=>"nobg" %></td>
         
         <td><%= 
-            link_to_function(image_tag("edit.png", :border=>0, :alt=>"Change password", :title=>"Change password"), nil) do |page|                
+            link_to_function(image_tag("edit.png", :alt=>"Change password", :title=>"Change password"), nil) do |page|                
                 js =  "if ($(&quot;client_login_" + client_login.id.to_s + "_td&quot;).className == &quot;client_login_password&quot;)" 
                 js += "  $(&quot;client_login_" + client_login.id.to_s + "_td&quot;).className = &quot;&quot;;"
                 js += "else"
