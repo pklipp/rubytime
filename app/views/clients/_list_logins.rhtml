@@ -4,7 +4,7 @@
     </tr>
     <% for client_login in @client.clients_logins %>
     <tr>
-        <td id="client_login_<%= client_login.id %>_td" width="100%" >
+        <td id="client_login_<%= client_login.id %>_td" style="width:100%" >
             <%= client_login.login %>
             <div id="client_login_<%= client_login.id %>_pass" style="display: none">
                 <% form_remote_tag(:url => { :action => "change_clients_login_password"}) do %>
