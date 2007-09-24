@@ -19,7 +19,7 @@
     <fieldset>
         <legend>Client's logins</legend>
         <p class="p_new">
-            <%= link_to_function [image_tag("add.png", :border=>0, :class=>"newitem", :alt=>"Add login", :title=>"Add login"), 'Add login'], visual_effect(:toggle_blind, "client_change_pass", :duration => 0.5), :class=>"newitem" %>
+            <%= link_to_function [image_tag("add.png", :class=>"newitem", :alt=>"Add login", :title=>"Add login"), 'Add login'], visual_effect(:toggle_blind, "client_change_pass", :duration => 0.5), :class=>"newitem" %>
         </p>      
         <div id="client_login_result_text"></div>
         <div id="client_change_pass" class="inputs" style="display: none;">

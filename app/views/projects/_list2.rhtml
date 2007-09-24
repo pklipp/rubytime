@@ -14,9 +14,9 @@
         <td><%= h truncate(project.client.name,20) %></td><%end-%>
         <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
         
-        <td><%= link_to image_tag("show.png", :border=>0, :alt=>"Show", :title=>"Show"), {:controller => 'projects', :action => 'show', :id => project}, :class=>"nobg" %></td>
-        <td><%= link_to image_tag("edit.png", :border=>0, :alt=>"Edit", :title=>"Edit"), {:controller => 'projects', :action => 'edit', :id => project}, :class=>"nobg"  %></td>
-        <td><%= link_to image_tag("remove.png", :border=>0, :alt=>"Remove", :title=>"Remove"), { :controller => 'projects', :action => 'confirm_destroy', :id => project},
+        <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:controller => 'projects', :action => 'show', :id => project}, :class=>"nobg" %></td>
+        <td><%= link_to image_tag("edit.png", :alt=>"Edit", :title=>"Edit"), {:controller => 'projects', :action => 'edit', :id => project}, :class=>"nobg"  %></td>
+        <td><%= link_to image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), { :controller => 'projects', :action => 'confirm_destroy', :id => project},
         :confirm => 'Are you sure?', :class=>"nobg" %></td>
     </tr>
     <% end %>
