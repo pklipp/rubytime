@@ -2,7 +2,8 @@
 <!-- Submenu. Content depends on user's privileges -->
 <% if (!@current_user.nil? && !@current_user.is_inactive)  %>
     <ul>
-        <!--
+        <li>&nbsp;</li>
+				<!--
 				<li>  
         <%= link_to("Your data",{:controller => "your_data", :action => 'activities_list'},
                           :class=> ( (params[:controller]=="your_data" ) ?  "active" : nil) ) %>

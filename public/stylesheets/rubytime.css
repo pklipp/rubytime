@@ -45,6 +45,13 @@ a.newitem:hover {
 img.newitem {
     vertical-align: bottom;
 }
+hr{ 
+		background-color: #ccc;
+    border-width:0;
+    color: inherit;
+    height: 1px;
+    width: 80%;
+		}
 /* calendar */
 table.calendarView {
     border: 1px solid black;
