@@ -1,21 +1,23 @@
 <!-- Partial form: Add/Edit client-->
-<table>
-   
-    <tr>
-        <td width="100" align="left">Name:</td>
-        <td><%= text_field 'client', 'name', :size => 50, :maxlength => 50 %></td>
-    </tr>
-    
-</table>
 <div class="inputs">
-    <label for="client_description">Description:</label>
-    <%= text_area 'client', 'description', :cols => 50, :rows => 15 %>
+<label for="client_name">Name:</label>
+<br/>
+<%= text_field 'client', 'name', :size => 50, :maxlength => 50 %>
+</div>
+
+<br/>
+
+<div class="inputs">
+<label for="client_description">Description:</label>
+<br/>
+<%= text_area 'client', 'description', :cols => 50, :rows => 15 %>
 </div>
 <%if (params[:action]=="edit" || params[:action]=="update") %>
 <!-- Allowed only for editing project -->
 
 <div class="inputs">
-    <%= check_box 'client', 'is_inactive'%>&nbsp;
+    <%= check_box 'client', 'is_inactive'%>
+		<br/>
     <label for="client_is_inactive">is inactive</label>
 </div>
 
@@ -23,6 +25,7 @@
 
 <div id="client_change_pass" class="inputs" style="display: none;">
     <label for="new_client_password">New password:</label>
+		<br />
     <%= text_field_tag 'new_password', nil, :size => 50, :maxlength => 50 %>    
 </div>   
 
