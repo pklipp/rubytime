@@ -8,7 +8,7 @@
     <%= text_area 'activity', 'comments', :cols => 50, :rows => 6 %>
 </div>
 <div class="inputs">
-    <label for="activity_date">Date:</label><br/>
+    <label>Date:</label><br/>
     <%= date_select 'activity', 'date' , :start_year => (Time.now.year-1), :order => [:day, :month, :year] %>
 </div>
 <div class="inputs">
