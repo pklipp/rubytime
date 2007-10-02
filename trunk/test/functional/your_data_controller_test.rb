@@ -19,7 +19,7 @@ class YourDataControllerTest < Test::Unit::TestCase
   def test_index
     get :index
     assert_response :success
-    assert_template 'activities_list'
+    assert_template 'activities_calendar'
   end
 
   def test_activities_list
