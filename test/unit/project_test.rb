@@ -19,4 +19,10 @@ class ProjectTest < Test::Unit::TestCase
     p.is_inactive = false
     assert "NO", p.active_text
   end
+  
+  def test_find_active
+    ps = Project.find_active
+    ps.each{|p| assert !p.is_inactive}
+  end
+  
 end

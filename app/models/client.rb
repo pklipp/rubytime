@@ -34,7 +34,7 @@ class Client < ActiveRecord::Base
     validates_uniqueness_of :name
 
     def Client.find_active
-        Client.find(:all, :conditions => "is_inactive = 0", :order => "name")
+        Client.find(:all, :conditions => {:is_inactive => false}, :order => "name")
     end
 
     def active_text

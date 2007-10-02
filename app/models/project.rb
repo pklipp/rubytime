@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name
   
   def Project.find_active
-    Project.find(:all, :conditions => "is_inactive = 0", 
+    Project.find(:all, :conditions => {:is_inactive => false}, 
       :order => "name")
   end
   

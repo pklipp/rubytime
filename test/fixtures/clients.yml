@@ -7,6 +7,7 @@ another_client:
   id: 2
   name: client2-name
   description: Client nr 2
+  is_inactive: 0
 inactive_client:
   id: 3  
   name: client3-name

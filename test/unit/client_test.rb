@@ -22,4 +22,9 @@ class ClientTest < Test::Unit::TestCase
     assert_equal "client2-name", clients(:another_client).name
   end
   
+  def test_find_active
+    cs = Client.find_active
+    cs.each{|c| assert !c.is_inactive}
+  end
+  
 end
