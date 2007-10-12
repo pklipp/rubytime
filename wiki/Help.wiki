@@ -47,7 +47,7 @@ gem install sqlite3-ruby
 Exract file (zip or tar.gz) to chosen localization.
 
 Run RBA file, type in the browser:
-<code>http://localhost:3000</code>
+http://localhost:3000
 ...and enjoy Time Tracker!
 
 
