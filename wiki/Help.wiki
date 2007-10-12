@@ -1,0 +1,118 @@
+#summary RubyTime help file
+
+http://copernicuslabs.com/wiki/lib/exe/detail.php?id=rubytimetracker%3Aruby_time_tracker_support&cache=cache&media=rubytimetracker:rubytimetrackerbox.jpg
+
+
+= Welcome! =
+Welcome to Polish programmers who found this page from the chapter dedicated to RubyTime Tracker in Michał Sobczak's new book, Ruby on Rails, the first Polish language book on the subject. We welcome your feedback and encourage you to get involved in development of this project. - Paul
+
+
+= Security Warning =
+This application should be installed behind a firewall and denied public access. There are existing security vulnerabilities that will be addressed in the next release.
+
+= Installation Instructions =
+
+Website: http://www.llp.pl/site/rubytimetracker.html
+
+**Code Repository**: http://code.google.com/p/rubytime/
+
+Initial login for all versions is: 'admin' with a password 'admin'.
+
+Note: Before run RBA, EXE files or WEBRick server by //ruby script/server// comand, make sure that there is no run server at port 3000 on the machine.
+
+ RBA archive (SQLite version)  
+
+Download here: 
+http://code.google.com/p/rubytime/downloads/list
+
+
+== Requirements: ==
+
+  * Ruby (1.8.4+) 
+  * RubyGems (0.9.0+) 
+  * Rails (1.1.6+) 
+  * SQLite library (3.3.6+)
+  * sqlite3-ruby gem (1.1+)
+  * TCL Library (if Linux)
+
+Installations steps and current versions of Ruby, RubyGems, Rails are available here: http://www.rubyonrails.org/down .
+
+SQLite library is available here: http://www.sqlite.org/download.html
+
+To install sqlite3-ruby gem type
+<code>>gem install sqlite3-ruby</code>
+
+== Installation steps: ==
+
+Exract file (zip or tar.gz) to chosen localization.
+
+Run RBA file, type in the browser:
+<code>http://localhost:3000</code>
+...and enjoy Time Tracker!
+
+
+=== Executable file (SQLite version)  ===
+
+Download here: http://code.google.com/p/rubytime/downloads/list
+
+== Requirements: ==
+
+  * None!
+
+== Installation steps: ==
+
+Extract file (zip) to chosen localization.
+
+Run EXE file, type in the browser:
+<code>http://localhost:3000</code>
+....and enjoy Time Tracker!
+
+
+=== Packed application (MySQL version) ===
+
+Download here: 
+http://code.google.com/p/rubytime/downloads/list
+
+
+== Requirements: ==
+
+  * Ruby (1.8.4+) 
+  * RubyGems (0.9.0+) 
+  * Rails (1.1.6+) 
+  * Web server: e.g. Apache2 with FastCGI support, Mongrel (>gem install mongrel), WEBrick - distributed with Rails installation  
+  * MySQL database (5.0+, current version: http://dev.mysql.com/downloads/) 
+
+Installations steps and current versions of Ruby, RubyGems, Rails are available here: http://www.rubyonrails.org/down .
+
+
+== Installation steps(for simplest local use): ==
+
+Extract file (zip or tar.gz) in chosen location
+
+Configure database in file: config/database.yml - default database name is: rails_development, user: root@localhost with empty password. 
+
+If it doesn't already exist, create a database with the name specified in database.yml.
+
+Go to command line and:
+
+Create tables and insert into them started data in the database by a database migration:
+
+<code>llp_tt> rake db:migrate</code>
+
+Run server, e.g. WebRick:
+
+<code>llp_tt> ruby script/server</code>
+
+Type in the browser: <code>http://localhost:3000</code> 
+
+...and enjoy Time Tracker
+
+= Features =
+
+= Bug Reports =
+
+Report bugs here: http://code.google.com/p/rubytime/issues/list
+
+= Feature Requests =
+
+Request features here: http://code.google.com/p/rubytime/issues/list
