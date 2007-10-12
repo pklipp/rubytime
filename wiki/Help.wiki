@@ -40,7 +40,7 @@ Installations steps and current versions of Ruby, RubyGems, Rails are available 
 SQLite library is available here: http://www.sqlite.org/download.html
 
 To install sqlite3-ruby gem type
-<code>>gem install sqlite3-ruby</code>
+gem install sqlite3-ruby
 
 == Installation steps: ==
 
@@ -64,7 +64,7 @@ Download here: http://code.google.com/p/rubytime/downloads/list
 Extract file (zip) to chosen localization.
 
 Run EXE file, type in the browser:
-<code>http://localhost:3000</code>
+http://localhost:3000
 ....and enjoy Time Tracker!
 
 
@@ -97,13 +97,13 @@ Go to command line and:
 
 Create tables and insert into them started data in the database by a database migration:
 
-<code>llp_tt> rake db:migrate</code>
+llp_tt> rake db:migrate
 
 Run server, e.g. WebRick:
 
-<code>llp_tt> ruby script/server</code>
+llp_tt> ruby script/server
 
-Type in the browser: <code>http://localhost:3000</code> 
+Type in the browser: http://localhost:3000
 
 ...and enjoy Time Tracker
 
