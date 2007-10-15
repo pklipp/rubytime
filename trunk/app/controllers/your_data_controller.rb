@@ -103,7 +103,7 @@ class YourDataController < ApplicationController
     def new_activity
         @activity = Activity.new
         @activity.date = !params[:date].nil? ? Date.parse(params[:date]) : Date.today
-        @projects = Project.find(:all, :conditions => ["is_inactive = ?", false], :order => "name")
+        @projects = Project.find_active
         @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id unless @current_user.activities.empty?
     end
 
@@ -112,7 +112,7 @@ class YourDataController < ApplicationController
         params[:activity]['minutes']  = Activity.convert_duration(params[:activity]['minutes'])
         @activity = Activity.new(params[:activity])
         @activity.user_id = @current_user.id # current user
-        @projects = Project.find(:all, :conditions => ["is_inactive = ?", false], :order => "name")
+        @projects = Project.find_active
         date = params[:activity]["date(1i)"].to_i.to_s \
               + "-" + params[:activity]["date(2i)"].to_i.to_s \
               + "-" + params[:activity]["date(3i)"].to_i.to_s
@@ -142,14 +142,14 @@ class YourDataController < ApplicationController
         if @activity.user_id!=@current_user.id or @activity.invoice_id
             render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
         end
-        @projects = Project.find(:all, :conditions => ["is_inactive = ?", false], :order => "name")
+        @projects = Project.find_active
     end
 
     # Updates activity's details. Data is validated before.
     def update_activity
         @activity = Activity.find(params[:id])
         if @activity.invoice_id.nil?
-            @projects = Project.find(:all, :conditions => ["is_inactive = ?", false], :order => "name")
+            @projects = Project.find_active
             # hours format to minutes
             params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
             if @activity.update_attributes(params[:activity])
