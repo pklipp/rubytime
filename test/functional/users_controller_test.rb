@@ -78,7 +78,7 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_confirm_destroy
     admin_id = 1
     user = User.find(admin_id)
-    assert user.is_admin
+    assert user.is_admin?
 
     get :confirm_destroy, :id => admin_id
 
@@ -89,7 +89,7 @@ class UsersControllerTest < Test::Unit::TestCase
 
     user_id = 2
     user = User.find(user_id)
-    assert !user.is_admin
+    assert !user.is_admin?
 
     get :confirm_destroy, :id => user_id
 

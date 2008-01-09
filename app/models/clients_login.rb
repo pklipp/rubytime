@@ -7,17 +7,11 @@ class ClientsLogin < ActiveRecord::Base
   validates_length_of :password, :minimum => 5
   validates_confirmation_of :password  
     
-  # Logs client. Method returns Client object if client is logged successfuly or nil when not.
+  # Tries to authorize client basing on login and password information
+  # On success returns object of +Client+ class, on failure returns +nil+ 
   def self.authorize(login, password)
-    tmp = find(:first, :conditions =>  ["login = ? ", login])
-    if !tmp.nil?
-      tmp_password = Digest::SHA1.hexdigest(password)
-      client_login = find(:first, :conditions => ["login = ? and password = ?", login, tmp_password])
-      
-      return client_login.nil? ? nil : client_login.client
-    else
-      nil
-    end
+    login_details = self.find_by_login_and_password( login, Digest::SHA1.hexdigest(password))
+    login_details ? login_details.client : nil 
   end
   
 end

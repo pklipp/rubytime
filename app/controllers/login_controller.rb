@@ -25,7 +25,8 @@
 class LoginController < ApplicationController
   layout "main"
   
-  # Sign-in user if login and password are correct. Sets session[:user_id] to proper ID from database.
+  # Signs-in user if login and password are correct, by setting session[:user_id]
+  # This is a default way to authorize users in application
   def login
     if request.get?
       session[:user_id] = nil
@@ -42,26 +43,13 @@ class LoginController < ApplicationController
     end
   end
 
-  # Logs user from key.
-  def login_from_key
-    if (params[:key])
-      @user_tmp=User.find(:first, :conditions => [ "login_key LIKE ? ", params[:key]])
-      if (@user_tmp)
-        session[:user_id]=@user_tmp.id
-        redirect_to(:controller => "users", :action => 'list' )
-        @key="sss: " + session[:user_id].to_s + session[:user_id].to_s;
-      end
-    else
-      @key="none";
-    end
-  end
-
-  # Logs out user. 
+  # Logs out current user by setting session[:user_id] to nil 
   def logout
     session[:user_id] = nil
     redirect_to(:action => "login")
   end
   
+  # Shows credits page
   def credits
     render :template => "layouts/credits"
   end

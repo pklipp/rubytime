@@ -163,7 +163,7 @@ class UsersController < ApplicationController
 
   def confirm_destroy
     @user = User.find(params[:id])
-    if @user.is_admin
+    if @user.is_admin?
       flash[:error] = "Admin can't be deleted"
       redirect_to :action => "list"
     end
@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   # Removes user after confirmation
   def destroy
     user = User.find(params[:id])
-    if user.is_admin
+    if user.is_admin?
       flash[:error] = "Admin can't be deleted"
       redirect_to :action => "list"
       return

@@ -23,7 +23,7 @@
 # ************************************************************************
 
 class ActivitiesController < ApplicationController
-  helper :sparklines
+  helper :sparklines                    # sparklines helps with flash graphs
   before_filter :authorize              # force authorisation 
   layout "main", :except => :graph_xml  # graph_xml is loaded only by AJAX, no layout needed
   
@@ -36,98 +36,58 @@ class ActivitiesController < ApplicationController
   # Redirects to list of activitities or graph depending on submit button
   # with data specified by search conditions
   def search
-    if params[:commit]=="Search"
-      list
-      render :action => 'list'
-    elsif params[:commit]=="Export to CSV"
-      list
-      report
-    elsif params[:commit]=="Generate graph"
-      graph
-      render :action => 'graph'
-    else
-      redirect_to :action => 'list'
+    case params[:commit]
+      when "Search"
+        list
+        render :action => 'list'
+      when "Export to CSV"
+        list
+        report
+      when "Generate graph"
+        graph
+        render :action => 'graph'
+      else
+        redirect_to :action => 'list'
     end
   end
   
-  #Lists all current projects or specified by search conditions
+  # Lists all current projects or specified by search conditions
   def list 
-    @selected = { 'user_id' => '', 'project_id' => '', 'role_id' => '' }
-    @checked = Array.new(3,false)
-    @checked[0] = true
-    @conditions_string =" 1 ";
-    
-    if (!params[:search].nil?)
-    date_from = params[:search]["date_from(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_from(3i)"].to_i.to_s
-    date_to = params[:search]["date_to(1i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(2i)"].to_i.to_s \
-              + "-" + params[:search]["date_to(3i)"].to_i.to_s          
-    
-      if (!params[:search][:role_id].blank?)
-        @conditions_string+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)='" + params[:search]['role_id']+ "')"
-        @selected['role_id'] = params[:search][:role_id]
-      end
-
-      if (!params[:search][:user_id].blank?)
-        @conditions_string+= " AND user_id='" + params[:search][:user_id]+ "'"
-        @selected['user_id'] = params[:search][:user_id]
-      end
-      if (!params[:search][:project_id].blank?)
-        @client_id = Project.find_by_id(params[:search][:project_id]).client_id
-        @conditions_string+= " AND project_id='" + params[:search][:project_id]+ "'"
-        @selected['project_id'] = params[:search][:project_id]
-      end
-
-      if (!params[:search]['date_from(1i)'].blank?)
-        @conditions_string+= " AND date >= '" + date_from + "'"
-      end
-      if (!params[:search]['date_to(1i)'].blank?)
-        @conditions_string+= " AND date <= '" + date_to + "'"
-      end
-
-      if(params[:search][:is_invoiced].to_i>0)
-        @checked.fill(false)
-        @checked[params[:search][:is_invoiced].to_i]=true
-        if params[:search][:is_invoiced].to_i==1
-          @conditions_string+= " AND invoice_id IS  NULL "
-        elsif params[:search][:is_invoiced].to_i==2
-          @conditions_string+= " AND invoice_id IS NOT NULL "
-        end        
-      end
-    end 
-    
-    @selected['details'] = params[:search_details] == "1"
-
-     if (params[:search].nil? or (params[:search]['date_from(1i)'].blank? and !params[:search]['date_t1i)'].blank?))
-       if (session[:year])
-         @conditions_string+= " AND #{SqlFunction.get_year('date')}='" + session[:year] + "'"
-       end
-       if (session[:month])
-         @conditions_string += " AND #{SqlFunction.get_month_equation('date', session[:month])} "
-       end  
-     end
-     
-     if(params[:search].nil? and session[:month].nil? and session[:month].nil?)
-        @activity_pages, @activities = paginate :activity, 
-                                                :per_page => 10,
-                                                :conditions => @conditions_string,
-                                                :order => "date DESC"
+     if(params[:search].nil? and session[:month].nil? and session[:year].nil?)
+        # Return all activities, paginated
+        @activity_pages, @activities = Activity.list( {}, {:current=> params[:page]})
      else
+        # Prepare :search hash
+        params[:search]||= {}
+        params[:search][:default_month] = session[:month]
+        params[:search][:default_year]  = session[:year]
+      
+        # Get client and his not issued invoices if client is selected
+        @client_id = Project.find(params[:search][:project_id]).client_id unless params[:search][:project_id].blank?
         @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id], :order => "created_at DESC")
-        @activities = Activity.find(:all, :conditions => @conditions_string, :order => "date ASC")
-     end                                           
+      
+        # Create dates structure, holding start and end date of selected peroid
+        dates = Struct.new( :date_from, :date_to ).new
+        
+        # Fill start date if selected on form
+        if params[:dates] and not params[:dates][:date_from].blank?
+          dates.date_from = params[:dates]["date_from(1i)"].to_i.to_s \
+              + "-" + params[:dates]["date_from(2i)"].to_i.to_s \
+              + "-" + params[:dates]["date_from(3i)"].to_i.to_s
+        end
 
-
+        # Fill end date if selected on form
+        if params[:dates] and not params[:dates]['date_to(1i)'].blank?
+          dates.date_to = params[:dates]["date_to(1i)"].to_i.to_s \
+                    + "-" + params[:dates]["date_to(2i)"].to_i.to_s \
+                    + "-" + params[:dates]["date_to(3i)"].to_i.to_s          
+        end
+    
+        # Get list of activities meeting specified conditions
+        @activities = Activity.list( params[:search].merge({:date_from=> dates.date_from, :date_to=> dates.date_to}) )
+     end
   end
-  
-  # Lists current user's activities
-  def your_list
-    list(" AND user_id='" + @current_user.id.to_s + "'")
-    render :action => "list"
-  end
-  
+    
   # Shows chosen activity
   def show
     begin
@@ -361,16 +321,18 @@ class ActivitiesController < ApplicationController
   end
   
   def report
+    require 'csv'
+    
     report = StringIO.new
     minutes = 0 
-    CSV::Writer.generate(report, ',') do |csv|
+    ::CSV::Writer.generate(report, ',') do |csv|
       header = ["Name", "Login", "Role", "Date", "Minutes"]
-      header << "Comments" if @selected['details']
+      header << "Comments" if params[:search] and params[:search][:details]
       csv << header
       @activities.each do |activity|
         minutes += activity.minutes
 	data = [activity.project.name, activity.user.login, activity.date, activity.minutes]
-	data << activity.comments if @selected['details']
+	data << activity.comments if params[:search] and params[:search][:details]
         csv << data 
       end
       csv << ["Sum", minutes]

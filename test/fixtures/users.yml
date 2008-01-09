@@ -18,3 +18,4 @@ dev:
   email: fox@a.com
   role_id: 2
   is_inactive: false
+  login_key: FoxFox

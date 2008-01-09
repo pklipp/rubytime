@@ -39,7 +39,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:activities)
     assert_equal Activity.count(:conditions => "#{SqlFunction.get_month_equation('date', 8)}  AND #{SqlFunction.get_year('date')} = '2006'"), assigns(:activities).size
 
-    assert ascending?(assigns(:activities), :date) 
+    assert descending?(assigns(:activities), :date) 
   end
 
   def test_report
@@ -59,15 +59,16 @@ class ActivitiesControllerTest < Test::Unit::TestCase
 
 
     #check details flag
-    post :search, { :commit => "Export to CSV" , :search_details => "1" }
+    post :search, { :commit => "Export to CSV" , :search=> {:details => "1"} }
     #puts @response.body.inspect
     assert_response :success
     assert_equal "text/csv; charset=utf-8; header=present", @response.headers["Content-Type"]
     lines = @response.body.split "\n"
     assert_equal Activity.count + 2, lines.size
     data = lines[1].split ","
+    p data.inspect
     assert_equal 5,data.size
-
+    
     assert_equal data[4], activity.comments.to_s
   end
 
