@@ -49,4 +49,86 @@ class Activity < ActiveRecord::Base
     minutes
   end
 
+  #
+  # Gets list of activities meeting specified conditions
+  # If pagination_options are specified uses paginating find plugin.
+  #
+  # ==== Options
+  # Options acts as filters for set of results
+  # +role_id+:: Select activities with specified role
+  # +user_id+:: Select activities from specified user
+  # +project_id+:: Select activities from specified project
+  # +date_from+:: Filter activities by starting date, date format is String (01-12-2007)
+  # +date_to+:: Filter activities by end date, date format is String (01-12-2007)
+  # +is_invoiced+:: Select already invoiced activities
+  # +default_year+:: If date_from and date_to is not selected, use this year
+  # +default_month+:: If date_from and date_to is not selected, use this month
+  #
+  # ==== Pagination options
+  # +per_page+:: How many results per page should be returned
+  # +current+:: Current page number
+  #
+  def self.list( options={}, pagination_options={} )
+    cond_str, cond_arr = [ " 1 ", [] ];
+    options||= {}
+        
+    unless options[:role_id].blank?
+      cond_str+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)=?)"
+      cond_arr<< options[:role_id]
+    end
+
+    unless options[:user_id].blank?
+      cond_str+= " AND user_id=?"
+      cond_arr<< options[:user_id]
+    end
+    
+    unless options[:project_id].blank?
+      cond_str+= " AND project_id=?"
+      cond_arr<< options[:project_id]
+    end
+
+    unless options[:date_from].blank?
+      cond_str+= " AND date >= ?"
+      cond_arr<< options[:date_from]
+    end
+      
+    unless options[:date_to].blank?
+      cond_str+= " AND date <= ?"
+      cond_arr<< options[:date_to]
+    end
+
+    if options[:is_invoiced].to_i > 0
+      if options[:is_invoiced].to_i == 1
+        cond_str+= " AND invoice_id IS  NULL "
+      elsif options[:is_invoiced].to_i == 2
+        cond_str+= " AND invoice_id IS NOT NULL "
+      end        
+    end 
+
+    # TODO
+    if ( options[:date_from].blank? and options[:date_to].blank? )
+      unless options[:default_year].blank?
+        cond_str+= " AND #{SqlFunction.get_year('date')}='" + options[:default_year] + "'"
+      end
+      unless options[:default_month].blank?
+        cond_str+= " AND #{SqlFunction.get_month_equation('date', options[:default_month])} "
+      end  
+    end
+     
+    # Use paginating find if :pagination_options are specified
+    unless pagination_options.empty?
+      pagination_options[:per_page]||= 30
+      pagination_options[:current]||= 0
+
+      activities = self.find(:all, :conditions=> [cond_str]+ cond_arr, :page=>{ :current=> pagination_options[:page].to_i, :size=> pagination_options[:per_page] }, :order=> "date DESC")
+
+      pages = ActionController::Pagination::Paginator.new nil, activities.size, 
+              pagination_options[:per_page], pagination_options[:current]
+              
+      return [pages, activities.load_page]
+    else
+      return self.find(:all, :conditions=> [cond_str]+ cond_arr, :order=> "date DESC")
+    end
+  end
+
 end

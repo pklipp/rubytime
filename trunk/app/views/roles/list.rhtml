@@ -18,7 +18,7 @@
         <tr>
             <td><%= h role.name %></td>
             <td style="text-align: center"><%= h role.short_name.upcase %></td>
-            <td style="text-align: center"><% if role.is_admin==true %>X<% end %>
+            <td style="text-align: center"><% if role.is_admin? %>X<% end %>
             </td>
             
             <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:action => 'show', :id => role}, :class=>"nobg" %></td>

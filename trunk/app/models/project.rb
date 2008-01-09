@@ -29,16 +29,19 @@ class Project < ActiveRecord::Base
   belongs_to :client
   has_many :users, :through => :activities
   
-  # validators
   validates_presence_of :name, :description, :client_id
   validates_uniqueness_of :name
   
+  # Finds all active projects
   def Project.find_active
     Project.find(:all, :conditions => {:is_inactive => false}, 
       :order => "name")
   end
   
+  # Returns String
+  # * -YES- if project is active
+  # * -NO- if project is not active
   def active_text
-    is_inactive ? "NO" : "YES"
+    is_inactive? ? "NO" : "YES"
   end
 end

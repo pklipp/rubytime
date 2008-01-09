@@ -25,7 +25,7 @@
 # ************************************************************************
 
 class User < ActiveRecord::Base
-  require 'digest/sha1' # needed to password hashing
+  require 'digest/sha1' # needed for password hashing
   
   has_many :activities, :dependent => :destroy
   has_many :projects, :through => :activities, :group => "project_id"
@@ -45,64 +45,52 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
 
-  #Changes administratof privileges
-  def is_admin
-    if self.role.is_admin
-      return true
-    else
-      return false
-    end
+  # Checks if user has administrator privileges
+  def is_admin?
+    self.role.is_admin?
   end
 
-  # Logs user.
+  # Tries to authorize user basing on login and password information
+  # On success returns object of +User+ class, on failure returns +nil+ 
   def self.authorize(login, password)
-    tmp = find(:first,:conditions =>  ["login = ? ", login])     
-    if !tmp.nil?
-      tmp_password = User.hashed_pass(password, tmp.salt)
-      find(:first,
-           :conditions => ["login = ? and password = ?", login, tmp_password])
-    else
-      nil
+    unless ( user = User.find_by_login(login) ).nil?
+      return user if User.hashed_pass( password, user.salt ) == user.password
     end
-  end  
-  
-  # Logs user by "authorize" method
-  def try_to_login
-    User.authorize(self.login, self.password)
-  end  
-  
 
-  
-  # Checks if the user has permissions to view controller 
-  # and action given in parameters
-  def has_permisions_to(controller, action)
-    case self.role.is_admin 
-      when true
-        true 
+    nil
+  end  
+    
+  # Checks if the user has permissions to view specified controller and action 
+  # If user has administrator role, he has all permissions
+  def has_permissions_to?(controller, action)
+    return true if self.is_admin?
+    
+    case controller # those controllers are not allowed by default
+      when "your_data", "login", "sparklines"
+        true
       else
-        case controller # those controllers are not allowed by default
-          when "your_data", "login", "sparklines"
-            true
-          else
-            false
-        end
+        false
     end
   end
   
-  # Hashes password from given password and salt.
+  # Returns hashed version of password from given password and salt.
+  #
+  # This function uses +SHA1+ digest algorithm combined with 
+  # password salt for additional protection.
   def self.hashed_pass(pass,salt)
     string_to_hash = pass + "wibble" + salt
     Digest::SHA1.hexdigest(string_to_hash)
   end
   
-  # Creates new salt usind to password hashing
+  # Generates new, random salt and returns it as string
   def self.create_new_salt
     self.object_id.to_s + rand.to_s
   end
   
-  # Find all activ users (alphabetic order)
+  # Finds all +active+ users sorted +in alphabetic order+
   def User.find_active
     User.find(:all, :conditions => "is_inactive = 0",
       :order => "name")
   end
+
 end

@@ -88,7 +88,7 @@
             </div>             
             
             <% if @current_user %>
-            <%- if @current_user.is_admin %>
+            <%- if @current_user.is_admin? %>
             <div class="menu-icon ">				
                 <%= link_to [image_tag("export.png", :size => "32x32", :alt => "Export", :style => "vertical-align: middle;"), " Export data"], :controller => "admin",:action => "export_db" %>
             </div>

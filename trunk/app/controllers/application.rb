@@ -23,58 +23,73 @@
 # ************************************************************************
 
 class ApplicationController < ActionController::Base
-  helper :all
-  # protect_from_forgery # :secret => '2ad098d99a44d9da14d5c660ba4b6abb'
-
+#    helper :all
+  #
   # Checks if the user has permissions to view requested page.
   # If no, shows "no_permission" partial.
+  #
   def authorize
     @current_user = nil
-    unless session[:user_id] # if user is not logged in - redirect him to login page.
+    
+    # Check if user is not logged in - redirect him to login page.
+    unless session[:user_id]
       flash[:notice] = "Please log in"
       redirect_to(:controller => "login", :action => "login") and return false
-    else
-      @current_user=User.find(session[:user_id]);
-      if @current_user.is_inactive # if user is not logged in - redirect him to login page.
-        render :partial => "users/inactive", :layout => "main" and return false
-      else
-        # checking permisions
-        if @current_user.has_permisions_to(params[:controller], params[:action])
-          # OK user can view the page
-        else # user is not allowed to view the page. Show proper info
-          render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
-        end
-      end
+    end
+    
+    # User is logged in, restore record
+    @current_user=User.find(session[:user_id]);
+    
+    # Check if user is inactive - redirect him to 'inactive' page
+    if @current_user.is_inactive
+      render :partial => "users/inactive", :layout => "main" and return false
+    end
+    
+    # Check user permissions
+    unless @current_user.has_permissions_to?(params[:controller], params[:action])
+      # user is not allowed to view the page. Show proper info
+      render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
     end
   end
 
+  #
   # Checks if the client-user has permissions to view requested page.
   # If no, shows "no_permission" partial.
+  #
   def authorize_client   
     @current_client = nil
-    unless session[:client_id] # if client is not logged in - redirect him to login page.
+
+    # if client is not logged in - redirect him to login page.
+    unless session[:client_id]
       flash[:notice] = "Please log in"
       redirect_to(:controller => "clientsportal", :action => "login") and return false
-    else
-      @current_client=Client.find(session[:client_id]);
-      if @current_client.is_inactive # if client is not active
-        render :partial => "users/inactive", :layout => "clientportal" and return false        
-      end
+    end
+    
+    # Client is logged in, restore record
+    @current_client=Client.find(session[:client_id]);
+    
+    # Check if client is inactive - redirect to 'inactive' page
+    if @current_client.is_inactive
+      render :partial => "users/inactive", :layout => "clientportal" and return false        
     end
   end
   
-  # Sets calendar options choosen by user and saves them into the session 
+  #
+  # Sets calendar options choosen by user and saves them into the session
+  # 
   def set_calendar 
-    session[:year]=params[:year] if params[:year]
-    session[:month]=params[:month] if params[:month] 
-    redirect_to request.env['HTTP_REFERER'] and return
+    @session[:year]=params[:year] if params[:year]
+    @session[:month]=params[:month] if params[:month] 
+    redirect_to @request.env['HTTP_REFERER'] and return
   end
   
+  #
   # Sets calendar options tu nils
+  #
   def unset_calendar 
-    session[:year]=nil
-    session[:month]=nil  
-    redirect_to request.env['HTTP_REFERER'] and return
+    @session[:year]=nil
+    @session[:month]=nil  
+    redirect_to @request.env['HTTP_REFERER'] and return
   end
   
 end
