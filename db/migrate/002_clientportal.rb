@@ -11,9 +11,8 @@
 class Clientportal < ActiveRecord::Migration
   def self.up
     #Adds default charset if mysql
-    db_optionts = (ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="mysql" ? "DEFAULT CHARSET=utf8" : nil)
     
-    create_table :clients_logins, :force => true, :options => db_optionts  do |t|
+    create_table :clients_logins, :force => true do |t|
       t.column :login,     :string,  :null => false
       t.column :password,  :string,  :null => false
       t.column :client_id, :integer, :null => false

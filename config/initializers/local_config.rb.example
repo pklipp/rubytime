@@ -1,10 +1,14 @@
-MAIL_FROM = "user@llp.pl"
+MAIL_FROM = "@llp.pl"
 ActionMailer::Base.delivery_method = :smtp
+ActionMailer::Base.raise_delivery_errors = true
 ActionMailer::Base.smtp_settings  = { 
   :address => "smtp.gmail.com",
   :port => 587,
   :domain => "llp.pl",
-  :user_name => "user@llp.pl",
+  :user_name => "@llp.pl",
   :password => "pass", 
   :authentication => :plain
 }
+
+# action_mailer_tls plugin for supporting TLS
+
