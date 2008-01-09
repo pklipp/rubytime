@@ -62,4 +62,5 @@ end
 
 # RubyTime version
 RUBYTIME_VERSION = '1.3.1'
+require 'local_config.rb'
 
