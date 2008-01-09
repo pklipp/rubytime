@@ -9,7 +9,7 @@
             <p><b>Comment: </b> <%= simple_format(@activity.comments) %></p>
 
     <p class="	p_edit_back">
-    <%= link_to 'Back', @request.env['HTTP_REFERER'] if @request.env['HTTP_REFERER']%>
+    <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
     </p>
 </fieldset>
 <!-- End of list -->
