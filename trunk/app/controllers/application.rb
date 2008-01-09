@@ -78,18 +78,18 @@ class ApplicationController < ActionController::Base
   # Sets calendar options choosen by user and saves them into the session
   # 
   def set_calendar 
-    @session[:year]=params[:year] if params[:year]
-    @session[:month]=params[:month] if params[:month] 
-    redirect_to @request.env['HTTP_REFERER'] and return
+    session[:year]=params[:year] if params[:year]
+    session[:month]=params[:month] if params[:month] 
+    redirect_to request.env['HTTP_REFERER'] and return
   end
   
   #
   # Sets calendar options tu nils
   #
   def unset_calendar 
-    @session[:year]=nil
-    @session[:month]=nil  
-    redirect_to @request.env['HTTP_REFERER'] and return
+    session[:year]=nil
+    session[:month]=nil  
+    redirect_to request.env['HTTP_REFERER'] and return
   end
   
 end

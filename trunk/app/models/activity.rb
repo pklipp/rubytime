@@ -34,24 +34,10 @@ class Activity < ActiveRecord::Base
   validates_presence_of :minutes
   validates_inclusion_of :minutes, :in => 1..1000, :message => "are out of range"
 
-  # duration of activity is given in 2 formats:
-  # - hr:min
-  # - hr (can be also float e.x. "1.5")
-  # This method converts both of them to minutes
-  def Activity.convert_duration(minutes_str)
-    return nil unless minutes_str.delete("0-9:.").blank?
-    if (minutes_str.index(':'))
-      h, m = minutes_str.split(/:/)
-      minutes = (h.to_i * 60) + m.to_i
-    else
-      minutes = minutes_str.to_f * 60
-    end
-    minutes
-  end
-
+private
+  
   #
-  # Gets list of activities meeting specified conditions
-  # If pagination_options are specified uses paginating find plugin.
+  # Gets sql conditions array for specified options
   #
   # ==== Options
   # Options acts as filters for set of results
@@ -64,11 +50,7 @@ class Activity < ActiveRecord::Base
   # +default_year+:: If date_from and date_to is not selected, use this year
   # +default_month+:: If date_from and date_to is not selected, use this month
   #
-  # ==== Pagination options
-  # +per_page+:: How many results per page should be returned
-  # +current+:: Current page number
-  #
-  def self.list( options={}, pagination_options={} )
+  def self.filter_conditions( options={} )
     cond_str, cond_arr = [ " 1 ", [] ];
     options||= {}
         
@@ -114,21 +96,106 @@ class Activity < ActiveRecord::Base
         cond_str+= " AND #{SqlFunction.get_month_equation('date', options[:default_month])} "
       end  
     end
+ 
+    return [cond_str] + cond_arr
+  end
+
+
+public
+  # duration of activity is given in 2 formats:
+  # - hr:min
+  # - hr (can be also float e.x. "1.5")
+  # This method converts both of them to minutes
+  def Activity.convert_duration(minutes_str)
+    return nil unless minutes_str.delete("0-9:.").blank?
+    if (minutes_str.index(':'))
+      h, m = minutes_str.split(/:/)
+      minutes = (h.to_i * 60) + m.to_i
+    else
+      minutes = minutes_str.to_f * 60
+    end
+    minutes
+  end
+
+  #
+  # Gets list of activities meeting specified conditions
+  # If pagination_options are specified uses paginating find plugin.
+  #
+  # ==== Conditions
+  # See +filter_conditions+ class method.
+  #
+  # ==== Pagination options
+  # +per_page+:: How many results per page should be returned
+  # +current+:: Current page number
+  #
+  def self.list( conditions={}, pagination_options={} )
      
     # Use paginating find if :pagination_options are specified
     unless pagination_options.empty?
       pagination_options[:per_page]||= 30
       pagination_options[:current]||= 0
 
-      activities = self.find(:all, :conditions=> [cond_str]+ cond_arr, :page=>{ :current=> pagination_options[:page].to_i, :size=> pagination_options[:per_page] }, :order=> "date DESC")
+      activities = self.find(:all, :conditions=> self.filter_conditions(conditions), :page=>{ :current=> pagination_options[:page].to_i, :size=> pagination_options[:per_page] }, :order=> "date DESC")
 
       pages = ActionController::Pagination::Paginator.new nil, activities.size, 
               pagination_options[:per_page], pagination_options[:current]
               
       return [pages, activities.load_page]
     else
-      return self.find(:all, :conditions=> [cond_str]+ cond_arr, :order=> "date DESC")
+      return self.find(:all, :conditions=> self.filter_conditions(conditions), :order=> "date DESC")
     end
+  end
+
+  #
+  # Gets hash of objects needed for activity graph drawing
+  # 
+  # ==== Conditions
+  # See +filter_conditions+ class method.
+  #
+  # ==== Returns Hash
+  # +activities+::
+  # +grouped_roles+::
+  # +years+::
+  # +weeks+:: 
+  def self.for_graph( conditions={} )
+    sqlweek = SqlFunction.get_week('date')
+    sqlyear = SqlFunction.get_year('date')
+    conditions_str, *conditions_arr = self.filter_conditions( conditions )
+
+    query = "SELECT "\
+        + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
+        + "FROM activities ac " \
+        + "LEFT JOIN users us ON (ac.user_id=us.id)" \
+        + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
+        + "WHERE #{conditions_str}" \
+        + " GROUP BY year, week, role_id " \
+        + " ORDER BY year, week, role_id "
+    activities = self.find_by_sql( [query]+conditions_arr )
+
+    query = "SELECT  SUM(minutes) AS minutes,  role_id, ro.short_name FROM activities ac "\
+        + "LEFT JOIN users us ON (ac.user_id=us.id) "\
+        + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
+        + "WHERE #{conditions_str}" \
+        + " GROUP BY  role_id  ORDER BY role_id "
+    grouped_roles = self.find_by_sql( [query]+conditions_arr )
+    
+    query = "SELECT min( #{sqlyear} ) minyear, max( #{sqlyear} ) maxyear "\
+            + "FROM activities ac "\
+            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
+            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
+            + "WHERE #{conditions_str}"         
+    years = self.find_by_sql( [query]+conditions_arr )
+    
+    query = "SELECT #{sqlyear} AS year, min( #{sqlweek} ) AS minweek, max( #{sqlweek} ) AS maxweek, COUNT(*)AS no_of_years "\
+            + "FROM activities ac "\
+            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
+            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
+            + "WHERE #{conditions_str}"\
+            + " GROUP BY year"\
+            + " ORDER BY year"
+    weeks = self.find_by_sql( [query]+conditions_arr )
+    
+    {:activities=> activities, :grouped_roles=> grouped_roles, :years=> years, :weeks=> weeks}
   end
 
 end
