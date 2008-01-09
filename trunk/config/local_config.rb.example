@@ -1,4 +1,4 @@
-MAIL_FROM
+MAIL_FROM = "user@llp.pl"
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings  = { 
   :address => "smtp.gmail.com",
