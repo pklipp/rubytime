@@ -23,7 +23,9 @@
 # ************************************************************************
 
 class ApplicationController < ActionController::Base
-  
+  helper :all
+  # protect_from_forgery # :secret => '2ad098d99a44d9da14d5c660ba4b6abb'
+
   # Checks if the user has permissions to view requested page.
   # If no, shows "no_permission" partial.
   def authorize
@@ -63,16 +65,16 @@ class ApplicationController < ActionController::Base
   
   # Sets calendar options choosen by user and saves them into the session 
   def set_calendar 
-    @session[:year]=params[:year] if params[:year]
-    @session[:month]=params[:month] if params[:month] 
-    redirect_to @request.env['HTTP_REFERER'] and return
+    session[:year]=params[:year] if params[:year]
+    session[:month]=params[:month] if params[:month] 
+    redirect_to request.env['HTTP_REFERER'] and return
   end
   
   # Sets calendar options tu nils
   def unset_calendar 
-    @session[:year]=nil
-    @session[:month]=nil  
-    redirect_to @request.env['HTTP_REFERER'] and return
+    session[:year]=nil
+    session[:month]=nil  
+    redirect_to request.env['HTTP_REFERER'] and return
   end
   
 end

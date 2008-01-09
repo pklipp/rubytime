@@ -15,7 +15,11 @@ class Test::Unit::TestCase
   # in MySQL.  Turn off transactional fixtures in this case; however, if you
   # don't care one way or the other, switching from MyISAM to InnoDB tables
   # is recommended.
-  self.use_transactional_fixtures = false #true
+  #
+  # The only drawback to using transactional fixtures is when you actually 
+  # need to test transactions.  Since your test is bracketed by a transaction,
+  # any transactions started in your code will be automatically rolled back.
+  self.use_transactional_fixtures = false
 
   # Instantiated fixtures are slow, but give you @david where otherwise you
   # would need people(:david).  If you don't want to migrate your existing
@@ -23,6 +27,12 @@ class Test::Unit::TestCase
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
   self.use_instantiated_fixtures  = false
+
+  # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
+  #
+  # Note: You'll currently still have to declare fixtures explicitly in integration tests
+  # -- they do not yet inherit this setting
+  fixtures :all
 
   # Add more helper methods to be used by all tests here...
   def login(email = "admin", password = "admin" )
@@ -54,12 +64,12 @@ class Test::Unit::TestCase
   end
   
   # helper to login as client
-  def login_as_client(login = "client1", password = "pass-client1") 
-    post :login, {:log_client => {:login => login, :password => password}}
+  def login_as_client(login_ = "client1", password_ = "pass-client1") 
+    post :login, {:log_client => {:login => login_, :password => password_}}
     assert_redirected_to :action => "index"
     assert_not_nil session[:client_id]
     client = ClientsLogin.find(:first, :conditions => [ "login= ?", session[:client_login]])
-    assert_equal login, client.login
+    assert_equal login_, client.login
   end
   
   def ascending?(array, object_method)
