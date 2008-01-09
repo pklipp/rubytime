@@ -27,6 +27,30 @@ class ActivitiesController < ApplicationController
   before_filter :authorize              # force authorisation 
   layout "main", :except => :graph_xml  # graph_xml is loaded only by AJAX, no layout needed
   
+private
+  
+  # Prepares params[:search] to be passed directly to methods using Activity.filter_conditions
+  def prepare_search_details
+    params[:search]||= {}
+    params[:search][:default_month] = session[:month]
+    params[:search][:default_year]  = session[:year]
+        
+    # Fill start date if selected on form
+    if params[:dates] and not params[:dates][:date_from].blank?
+      params[:search][:date_from] = params[:dates]["date_from(1i)"].to_i.to_s \
+          + "-" + params[:dates]["date_from(2i)"].to_i.to_s \
+          + "-" + params[:dates]["date_from(3i)"].to_i.to_s
+    end
+  
+    # Fill end date if selected on form
+    if params[:dates] and not params[:dates]['date_to(1i)'].blank?
+      params[:search][:date_to] = params[:dates]["date_to(1i)"].to_i.to_s \
+                + "-" + params[:dates]["date_to(2i)"].to_i.to_s \
+                + "-" + params[:dates]["date_to(3i)"].to_i.to_s          
+    end
+  end
+
+public
   # Default action
   def index
     list
@@ -41,7 +65,6 @@ class ActivitiesController < ApplicationController
         list
         render :action => 'list'
       when "Export to CSV"
-        list
         report
       when "Generate graph"
         graph
@@ -57,34 +80,15 @@ class ActivitiesController < ApplicationController
         # Return all activities, paginated
         @activity_pages, @activities = Activity.list( {}, {:current=> params[:page]})
      else
-        # Prepare :search hash
-        params[:search]||= {}
-        params[:search][:default_month] = session[:month]
-        params[:search][:default_year]  = session[:year]
-      
+        prepare_search_details      
+        
         # Get client and his not issued invoices if client is selected
         @client_id = Project.find(params[:search][:project_id]).client_id unless params[:search][:project_id].blank?
         @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id], :order => "created_at DESC")
       
-        # Create dates structure, holding start and end date of selected peroid
-        dates = Struct.new( :date_from, :date_to ).new
-        
-        # Fill start date if selected on form
-        if params[:dates] and not params[:dates][:date_from].blank?
-          dates.date_from = params[:dates]["date_from(1i)"].to_i.to_s \
-              + "-" + params[:dates]["date_from(2i)"].to_i.to_s \
-              + "-" + params[:dates]["date_from(3i)"].to_i.to_s
-        end
-
-        # Fill end date if selected on form
-        if params[:dates] and not params[:dates]['date_to(1i)'].blank?
-          dates.date_to = params[:dates]["date_to(1i)"].to_i.to_s \
-                    + "-" + params[:dates]["date_to(2i)"].to_i.to_s \
-                    + "-" + params[:dates]["date_to(3i)"].to_i.to_s          
-        end
     
         # Get list of activities meeting specified conditions
-        @activities = Activity.list( params[:search].merge({:date_from=> dates.date_from, :date_to=> dates.date_to}) )
+        @activities = Activity.list( params[:search] )
      end
   end
     
@@ -163,7 +167,7 @@ class ActivitiesController < ApplicationController
     end
   end
   
-  # Romoves activity. Not allowed.
+  # Removes activity. Not allowed.
   def destroy
     # Activity.find(params[:id]).destroy
     redirect_to :action => 'list'
@@ -171,156 +175,31 @@ class ActivitiesController < ApplicationController
   
   # Generetes data for statictics
   def graph
-    list
-    sqlweek = SqlFunction.get_week('date')
-    sqlyear = SqlFunction.get_year('date')
-    @query = "SELECT "\
-        + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
-        + "FROM activities ac " \
-        + "LEFT JOIN users us ON (ac.user_id=us.id)" \
-        + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
-        + "WHERE " \
-        + @conditions_string \
-        + " GROUP BY year, week, role_id " \
-        + " ORDER BY year, week, role_id " \
-
-    @activities = Activity.find_by_sql @query
+    prepare_search_details
+    @activities = Activity.for_graph( params[:search] )[:activities]
     session[:graph] = params[:search]
   end
   
-  # Generates XML data to for a graph
+  # Generates XML data for a graph
   def graph_xml
     params[:search] = session[:graph]
     session[:graph] = nil
-    list
-    sqlweek = SqlFunction.get_week('date')
-    sqlyear = SqlFunction.get_year('date')
-    query = "SELECT "\
-            + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
-            + "FROM activities ac " \
-            + "LEFT JOIN users us ON (ac.user_id=us.id) " \
-            + "LEFT JOIN roles ro ON (us.role_id=ro.id) " \
-            + "WHERE " \
-            + @conditions_string \
-            + " GROUP BY year, week, role_id " \
-            + " ORDER BY year, week, role_id " 
-
-    query2 = "SELECT  SUM(minutes) AS minutes,  role_id, ro.short_name FROM activities ac "\
-            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
-            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
-            + "WHERE " \
-            + @conditions_string \
-            + " GROUP BY  role_id  ORDER BY role_id "
-            
-    query3 = "SELECT min( #{sqlyear} ) minyear, max( #{sqlyear} ) maxyear "\
-            + "FROM activities ac "\
-            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
-            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
-            + "WHERE "\
-            + @conditions_string         
-               
-    query4 = "SELECT #{sqlyear} AS year, min( #{sqlweek} ) AS minweek, max( #{sqlweek} ) AS maxweek, COUNT(*)AS no_of_years "\
-            + "FROM activities ac "\
-            + "LEFT JOIN users us ON (ac.user_id=us.id) "\
-            + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
-            + "WHERE "\
-            + @conditions_string \
-            + " GROUP BY year"\
-            + " ORDER BY year"
     
-    @activities = Activity.find_by_sql(query)
-    @grouped_roles  = Activity.find_by_sql(query2) 
-    @weeks = Activity.find_by_sql(query4)
-    @years = Activity.find_by_sql(query3)
+    prepare_search_details
+    query_results = Activity.for_graph( params[:search] )    
+    
+    @activities     = query_results[:activities]
+    @grouped_roles  = query_results[:grouped_roles] 
+    @weeks          = query_results[:weeks]
+    @years          = query_results[:years]
 
-    @xm = Builder::XmlMarkup.new(:indent=>2, :margin=>4)
-      @xm.chart {
-        skip_level = (@activities.length/10) - 2
-        @xm.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up', "skip" => skip_level )
-        @xm.axis_ticks("value_ticks"=>'true', "category_ticks"=>"true", "major_thickness"=>"2", "minor_thickness"=>"1", "minor_count"=>"1", "major_color"=>"000000", "minor_color"=>"222222", "position"=>"outside")
-        @xm.axis_value("font"=>'arial', "bold"=>'true', "size"=>'10', "color"=>"ffffff", "alpha"=>'75', "steps"=>'10', "suffix" => ' min' , "show_min"=>'true', "separator" => '', "orientation" => 'diagonal_up')
-        @xm.chart_border("top_thickness" => '0', "bottom_thickness" => '1', "left_thickness" => '2', "right_thickness" => '0', "color" => '000000')
-        if @activities.length>1
-        @xm.chart_data(){
-          @xm.row {
-            @xm.null()
-            for week in @weeks
-              (week.minweek.to_i).upto(week.maxweek.to_i) do |i|
-                @xm.string("Year:" + week.year.to_s + ",Week:" + i.to_s)  
-              end
-            end
-          }
-          for roles in @grouped_roles           
-            t = Array.new
-            duration = 0
-            for week in @weeks
-              duration = week.maxweek.to_i - week.minweek.to_i
-              t<< Array.new(duration+1,0)
-            end
-
-            for act in @activities
-                if act.role_id==roles.role_id
-                  minyear_id = act.year.to_i - @years[0].minyear.to_i
-                  t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
-                end
-            end
-              @xm.row {
-                label = roles.role.short_name.to_s
-                @xm.string(label)
-                for i in t
-                  for j in i
-                    @xm.number(j.to_s)
-                  end
-                end
-              }
-          end 
-        }
-        elsif @activities.length==1
-          @xm.chart_data(){
-          @xm.row {
-            @xm.null()
-            @xm.string("week: " + @weeks[0].minweek)
-            @xm.string("week: " + @weeks[0].minweek)
-          }                    
-          @xm.row {
-            @xm.string(@grouped_roles[0].short_name)
-            @xm.number(@activities[0].minutes)
-            @xm.number(@activities[0].minutes)
-          }
-        }
-        else
-        @xm.chart_data(){
-          @xm.row {
-            @xm.null()
-            @xm.string("0")
-          }
-          @xm.row {
-            @xm.string("No activities found")
-            @xm.number(0)
-          }
-        }
-        end 
-        @xm.chart_grid_h("alpha"=>'30', "color"=>'000000', "thickness"=>'1', "type"=>"solid") 
-        @xm.chart_grid_v("alpha"=>'20', "color"=>'000000', "thickness"=>'1', "type"=>"dashed") 
-        @xm.chart_pref("line_thickness"=>"2", "point_shape"=>"none", "fill_shape"=>'false') 
-        @xm.chart_rect("x"=>'60', "y"=>'45', "width"=>'520', "height"=>'340', "positive_color"=>'000000', "positive_alpha"=>'20', "negative_color"=>'ff0000', "negative_alpha"=>'10')
-        @xm.chart_type("Line")
-        @xm.chart_value("position"=>'cursor', "size"=>'12', "color"=>'ffffff', "alpha"=>'75')
-        @xm.chart_transition("type" => 'scale', "delay" => '0', "duration" => '1', "order" => 'series')
-        @xm.chart_value("suffix" => ' min' )
-        @xm.legend_label("size" => '10', "bullet" => 'circle')
-        @xm.legend_rect("x"=>'60', "y"=>'10', "width"=>'400', "height"=>'10', "margin"=>'5')
-        @xm.series_color{
-          @xm.color("cc5511")
-          @xm.color("77bb11")
-          @xm.color("F0F030")
-          @xm.color("1155cc")
-          @xm.color("D100D1")  
-        }
-      }
   end
   
+  # Exports all selected activities to CSV file 
   def report
+    prepare_search_details
+    activities = Activity.list( params[:search] )    
+    
     require 'csv'
     
     report = StringIO.new
@@ -329,10 +208,10 @@ class ActivitiesController < ApplicationController
       header = ["Name", "Login", "Role", "Date", "Minutes"]
       header << "Comments" if params[:search] and params[:search][:details]
       csv << header
-      @activities.each do |activity|
+      activities.each do |activity|
         minutes += activity.minutes
-	data = [activity.project.name, activity.user.login, activity.date, activity.minutes]
-	data << activity.comments if params[:search] and params[:search][:details]
+	      data = [activity.project.name, activity.user.login, activity.date, activity.minutes]
+	      data << activity.comments if params[:search] and params[:search][:details]
         csv << data 
       end
       csv << ["Sum", minutes]
