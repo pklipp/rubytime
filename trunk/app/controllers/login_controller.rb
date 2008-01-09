@@ -66,4 +66,10 @@ class LoginController < ApplicationController
     render :template => "layouts/credits"
   end
   
+  def remember_password
+    user = User.find_by_email('krzysztof.knapik@llp.pl')
+    a = Notifier.deliver_remember_password(user)
+    render :text => "Mail was sent. \n" + a.to_s
+  end
+  
 end
