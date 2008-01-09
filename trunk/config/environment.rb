@@ -61,3 +61,4 @@ Rails::Initializer.run do |config|
 end
 
 RUBYTIME_VERSION = 2.0
+require 'extensions.rb'
