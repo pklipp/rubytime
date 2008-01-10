@@ -12,7 +12,7 @@
         <%= simple_format @client.description %>    
         <p class="p_edit_back">
             <%= link_to 'Edit', :action => 'edit', :id => @client %>  | 
-            <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+            <%= back_link(:span) %>
         </p>
     </fieldset>
     <br /><br />

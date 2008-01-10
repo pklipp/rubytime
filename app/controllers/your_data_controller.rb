@@ -72,10 +72,7 @@ class YourDataController < ApplicationController
         end
 
         if (params[:search].nil? and session[:month].nil? and session[:month].nil?)
-            @activity_pages, @activities = paginate :activity,
-            :per_page => 10,
-            :conditions => conditions_string,
-            :order => "date DESC, created_at DESC"
+            @activities = Activity.paginate :per_page => 10, :page => params[:page] || 1, :conditions => conditions_string, :order => "date DESC, created_at DESC"
         else
             @activities = Activity.find(:all, :conditions => conditions_string, :order => "date DESC, created_at DESC")
         end

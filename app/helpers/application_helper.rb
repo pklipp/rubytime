@@ -31,4 +31,13 @@ module ApplicationHelper
     return_string = array[0].to_s + ":" + (100+array[1]).to_s.slice(1,2);
   end
   
+  def paginate_me(collection)
+     will_paginate collection 
+  rescue NoMethodError
+     return nil
+  end
+  
+  def back_link(tag_type = :p)
+    content_tag(tag_type, link_to('Back', request.env['HTTP_REFERER'])) if request.env['HTTP_REFERER']
+  end
 end

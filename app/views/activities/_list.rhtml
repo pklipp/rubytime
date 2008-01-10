@@ -87,9 +87,6 @@
         </table>
         <% end %>
         <div id="add_invoice_form"></div>
-        <% unless @activity_pages.nil? %>
-            <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
-            <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
-        <% end %>
+        <%= paginate_me @activities %>
 <!-- End of list -->
 

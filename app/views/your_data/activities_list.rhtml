@@ -66,10 +66,7 @@
         </tr>
         </table>
         
-        <% unless @activity_pages.nil? %>
-            <%= link_to 'Previous page', { :page => @activity_pages.current.previous } if @activity_pages.current.previous %>
-            <%= link_to 'Next page', { :page => @activity_pages.current.next } if @activity_pages.current.next %>    
-        <% end %> 
+        <%= paginate_me @activities %> 
     </fieldset>
     
     <% else %>
@@ -77,9 +74,7 @@
     <% end %>
 <!-- End of list -->
 
-
-<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
-
+<%= back_link %>
 </div>
 
 

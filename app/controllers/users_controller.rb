@@ -32,12 +32,20 @@ class UsersController < ApplicationController
     render :action => 'list'
   end
   
-  # Lists all users or specified by search conditions.
+  # Lists all users.
   def list
-      @user_pages, @users = paginate :user, :per_page => 10, :order => "is_inactive"
+    @users = User.paginate(:per_page => 10, :order => "is_inactive", :page => params[:page] || 1)
+#    respond_to do |format|
+#      format.html # index.html.erb
+#      format.js do
+#        render :update do |page|
+#          page.replace_html 'invoices_list', :partial => "list"
+#        end
+#      end
+#    end
   end
   
-  #Searches users.
+  # Searches users.
   def search
       query = " 1 AND login LIKE \"%" + params[:search] + "%\" OR name LIKE \"%" + params[:search] + "%\" "
       @users = User.find(:all,:conditions => query, :order => "is_inactive")

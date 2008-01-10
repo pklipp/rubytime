@@ -105,7 +105,7 @@ public
   # Activity constructor
   def new
     @activity = Activity.new
-    @projects = Project.find_all
+    @projects = Project.find(:all)
     @selected = {'project_id' => ''}
   end
   
@@ -113,7 +113,7 @@ public
   def create
     @activity = Activity.new(params[:activity])
     @activity.user = User.find(session[:user_id])
-    @projects = Project.find_all
+    @projects = Project.find(:all)
     
     @selected = {'project_id' => ''}
     if (@activity.project)

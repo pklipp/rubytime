@@ -38,7 +38,7 @@ Rails::Initializer.run do |config|
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
     :session_key => '_rubytime_session',
-    #:secret      => 'db222f3cbc64bcada65757d8cb2f570e4d4518aa3b3e5a6979f57466d5b9c0d064b56e8b69c718466822f62aa672ee59700777b727a0fd15c542b6aec07398ef'
+    :secret      => 'db222f3cbc64bcada65757d8cb2f570e4d4518aa3b3e5a6979f57466d5b9c0d064b56e8b69c718466822f62aa672ee59700777b727a0fd15c542b6aec07398ef'
   }
 
   # Use the database for sessions instead of the cookie-based default,

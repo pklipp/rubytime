@@ -25,6 +25,7 @@
 # ************************************************************************
 
 class Project < ActiveRecord::Base
+
   has_many :activities, :dependent => :destroy
   belongs_to :client
   has_many :users, :through => :activities

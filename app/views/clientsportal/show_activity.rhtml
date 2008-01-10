@@ -8,7 +8,7 @@
             <p><b>Hours: </b> <%= hour_format(@activity.minutes) %></p>
             <p><b>Comment: </b> <%= simple_format(@activity.comments) %></p>
 
-    <p class="	p_edit_back">
+    <p class="p_edit_back">
     <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
     </p>
 </fieldset>
