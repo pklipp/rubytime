@@ -31,12 +31,6 @@
       </tr>
       <% end %>
       </table>
-      <% if(!@client_pages.nil? and @client_pages.page_count>1) %>
-      <p>
-      <%= link_to 'Previous page', { :page => @client_pages.current.previous } \
-          if @client_pages.current.previous %>
-      <%= link_to 'Next page', { :page => @client_pages.current.next} \
-          if @client_pages.current.next %> 
-      </p>
-      <%- end -%>
+      <%= paginate_me @clients %>
+
   </fieldset>

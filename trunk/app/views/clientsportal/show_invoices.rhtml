@@ -23,10 +23,6 @@
             <% end %>
         </table>
 
-        <% if(!@invoice_pages.nil? and @invoice_pages.page_count>1) -%>
-        <p><%= link_to 'Previous page', { :page => @invoice_pages.current.previous } if @invoice_pages.current.previous
-            %>
-            <%= link_to 'Next page', { :page => @invoice_pages.current.next } if @invoice_pages.current.next %></p>
-        <% end -%>
+        <%= paginate_me @invoices %>
     </fieldset>
 </div>

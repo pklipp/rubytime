@@ -32,9 +32,17 @@ class ClientsController < ApplicationController
     render :action => 'list'
   end
 
-  # Lists all clients or specified by search conditions.
+  # Lists all clients.
   def list
-    @client_pages, @clients = paginate :client, :per_page => 10, :order => "is_inactive"
+    @clients = Client.paginate(:per_page => 10, :order => "is_inactive", :page => params[:page] || 1)
+#    respond_to do |format|
+#      format.html # index.html.erb
+#      format.js do
+#        render :update do |page|
+#          page.replace_html 'clients_list', :partial => "list"
+#        end
+#      end
+#    end
   end
   
   #Searches projects.

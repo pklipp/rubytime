@@ -84,7 +84,5 @@ Please install flash plug-in for your browser
 </fieldset>
 <!-- End of graph -->
 
-<% if !params[:search].nil? %>
-<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
-<% end %>
+<%= back_link unless params[:search].nil? %>
 </div>

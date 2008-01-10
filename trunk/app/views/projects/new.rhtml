@@ -22,5 +22,5 @@
     Click here to create <%= link_to "new client", :controller => "clients", :action => "new" %>
   </p>
 <% end %>
-<p><%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%></p>
+<%= back_link %>
 <!-- End of form -->
