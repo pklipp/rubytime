@@ -23,52 +23,58 @@
 # ************************************************************************
 
 class ClientsController < ApplicationController
-  before_filter :authorize
+  before_filter :authorize, :load_client
   layout "main"
 
+private
+  def load_client
+    @client = Client.find( params[:id] ) if params[:id]
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = "No such client"
+      redirect_to :action => :index
+  end
+public
+  #
   # Default action, render list action
+  #
   def index
     list
     render :action => 'list'
   end
-
-  # Lists all clients.
+  
+  #
+  # Lists all clients using pagination
+  #
   def list
     @clients = Client.paginate(:per_page => 10, :order => "is_inactive", :page => params[:page] || 1)
-#    respond_to do |format|
-#      format.html # index.html.erb
-#      format.js do
-#        render :update do |page|
-#          page.replace_html 'clients_list', :partial => "list"
-#        end
-#      end
-#    end
   end
   
-  #Searches projects.
+  #
+  # Searches clients for matching name or description
+  #
   def search
-    query = " 1 AND name LIKE \"%" + params[:search] + "%\" OR description LIKE \"%" + params[:search] + "%\" "
-    @clients = Client.find(:all,:conditions => query,:order => "is_inactive")
+    @clients = Client.search( params[:search] )
     render :partial => 'list' 
   end
 
+  #
   # Shows details of chosen client.
+  #
   def show
-    begin
-      @client = Client.find(params[:id])
-      @projects = @client.projects
-    rescue
-      flash[:notice] = "No such client"
-      redirect_to :action => :index
-    end
+    assert_params_must_have :id
+    @projects = @client.projects
   end
 
+  #
   # Action to show new user form
+  #
   def new
     @client = Client.new
   end
 
+  #
   # Creates new client. Fills its details with data sent from html form
+  #
   def create
     @client = Client.new(params[:client])
     if @client.save
@@ -79,50 +85,52 @@ class ClientsController < ApplicationController
     end
   end
 
+  #
   # Fills form with client's details to update.
+  #
   def edit
-    begin
-      @client = Client.find(params[:id])
-    rescue
-      flash[:notice] = "No such client"
-      redirect_to :action => :index
-    end
+    assert_params_must_have :id
   end
 
+  #
   # Update user's details.
+  #
   def update
-    begin
-      @client = Client.find(params[:id])
-    rescue
-      flash[:notice] = "No such client"
-      redirect_to :action => :index
-    else
-      if @client.update_attributes(params[:client])
-        if (!params[:new_password].nil? && params[:new_password] != "")
-          @client.password =  Digest::SHA1.hexdigest(params[:new_password])
-          @client.save
-        end
-        flash[:notice] = 'Client has been successfully updated'
-        redirect_to :action => 'show', :id => @client
-      else
-        render :action => 'edit'
+    assert_params_must_have :id
+
+    if @client.update_attributes(params[:client])
+      if (!params[:new_password].nil? && params[:new_password] != "")
+        @client.update_attribute( :password, Digest::SHA1.hexdigest(params[:new_password]) )
       end
+      flash[:notice] = 'Client has been successfully updated'
+      redirect_to :action => 'show', :id => @client
+    else
+      render :action => 'edit'
     end
   end
 
+  #
+  # Displays client removal confirmation box
+  # It requires admin to type client's name there in order to remove him
+  #
   def confirm_destroy
-    @client = Client.find(params[:id])
+    assert_params_must_have :id
   end
 
+  #
   # Removes client after confirmation
+  # If confirmation doesn't match it returns to list action with info in flash
+  #
   def destroy
-    client = Client.find(params[:id])
-    if params[:name_confirmation] == client.name
-      result = client.destroy
+    assert_params_must_have :id
+    
+    # Do check confirmation
+    if params[:name_confirmation] == @client.name
+      result = @client.destroy
       if result
-	flash[:notice] = 'Client, his projects and activities have been deleted'
+	     flash[:notice] = 'Client, his projects and activities have been deleted'
       else 
-	flash[:error] = 'Error occured while deleting client'
+	     flash[:error] = 'Error occured while deleting client'
       end
     else
       flash[:error] = "The client has not been deleted, since the name was different" 
@@ -130,18 +138,25 @@ class ClientsController < ApplicationController
     redirect_to :action => 'list'
   end
   
+  #
+  # Adds new client login to system
+  # RJS action
+  #
   def add_new_login
+    assert_params_must_have :id
     @result_text = "Client added!"
+    
+    # Try adding new client login to system, any exceptions will be presented to user
     begin
-      @client = Client.find(params[:id])
-      @client_new_login = ClientsLogin.new
-      @client_new_login.login = params[:new_login]
-      @client_new_login.password = Digest::SHA1.hexdigest(params[:new_password])
+      @client_new_login           = ClientsLogin.new
+      @client_new_login.login     = params[:new_login]
+      @client_new_login.password  = Digest::SHA1.hexdigest(params[:new_password])
       @client_new_login.client_id = params[:id]
-      @client_new_login.save!     
+      @client_new_login.save!
     rescue Exception => exc
       @result_text = "Error: #{exc.message}"      
     end    
+    
     render :update do |page|
       page.replace_html "client_logins", :partial => "list_logins"
       page['client_login_result_text'].innerHTML = @result_text
@@ -149,12 +164,15 @@ class ClientsController < ApplicationController
     end
   end
   
+  # 
+  # Removes client's login from system
+  # RJS action 
+  #
   def destroy_client_login    
-    clients_login = ClientsLogin.find(params[:id])
+    clients_login = ClientsLogin.find(params[:client_login_id])
     @client = Client.find(clients_login.client.id)
-    result = clients_login.destroy
     
-    if result
+    if clients_login.destroy
       @result_text  = "Client's login " + clients_login.login + " removed!"
     else 
       @result_text  = "Error occured while deleting client\'s login"
@@ -167,15 +185,20 @@ class ClientsController < ApplicationController
     end
   end
   
+  #
+  # Enables administrator to change client login details
+  # RJS action
+  #
   def change_clients_login_password
     begin
-      clients_login = ClientsLogin.find(params[:id])
-      @result_text = "Client's login " + clients_login.login + " password changed!"
-      clients_login.password = Digest::SHA1.hexdigest(params[:new_password])
+      clients_login           = ClientsLogin.find(params[:client_login_id])
+      clients_login.password  = Digest::SHA1.hexdigest(params[:new_password])
       clients_login.save!
+      @result_text = "Client's login " + clients_login.login + " password changed!"
     rescue Exception => exc
       @result_text = "Error: #{exc.message}"  
     end    
+    
     render :update do |page|
       page['client_login_result_text'].innerHTML = @result_text
       page.visual_effect :highlight, "client_login_result_text"

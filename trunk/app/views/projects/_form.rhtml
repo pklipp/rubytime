@@ -9,10 +9,10 @@
         <%= options_for_select({ "choose" => "" }) %>
         <!-- when editing project with inctive client -->
         <% if (params[:action]=="edit" || params[:action]=="update") %>
-            <%= options_for_select((Client.find_active << Client.find(@selected['client_id'])).uniq.collect {|c|
-                [ c.name, c.id ] }, @selected['client_id'] ) %>
+            <%= options_for_select((Client.find_active << Client.find(@selected['client_id'] || params['client_id'])).uniq.collect {|c|
+                [ c.name, c.id ] }, @selected['client_id'] || params[:client_id] ) %>
         <% else %>
-            <%= options_for_select(Client.find_active.collect {|c| [ c.name, c.id ] }, @selected['client_id'] ) %>
+            <%= options_for_select(Client.find_active.collect {|c| [ c.name, c.id ] }, @selected['client_id'] || params[:client_id] ) %>
         <% end %>
     </select>
 </div>

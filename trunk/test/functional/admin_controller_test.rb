@@ -25,7 +25,7 @@ class AdminControllerTest < Test::Unit::TestCase
     login_as :pm
     get :export_db
     assert_response :success 
-    assert_equal "text/plain; charset=utf-8; header=present", @response.headers["Content-Type"] 
+    assert_equal "text/plain; charset=utf-8; header=present", @response.headers["type"] 
   end
 
   def test_previous_day

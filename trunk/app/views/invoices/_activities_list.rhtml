@@ -13,7 +13,7 @@
         /* ]]> */
         </script>
 
-        <%= start_form_tag :controller => 'invoices', :action => 'remove_activities' %>
+        <% form_tag :controller => 'invoices', :action => 'remove_activities' do -%>
         
         <table class="standard" id="activities_list">
        
@@ -64,7 +64,7 @@
         </tr>
         <% end -%>
         </table>
-        <%= end_form_tag %> 
+        <% end %> 
 
 <!-- End of list -->
 

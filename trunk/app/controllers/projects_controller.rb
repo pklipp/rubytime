@@ -23,9 +23,23 @@
 # ************************************************************************
 
 class ProjectsController < ApplicationController
-  before_filter :authorize # force authotization
+  before_filter :authorize, :load_project, :prepare_selected_hash # force authorization
   layout "main"
 
+private
+  def load_project
+    @project = Project.find( params[:id] ) if params[:id]
+  rescue
+    flash[:notice] = "No such project"
+    redirect_to :action => :index    
+  end
+  
+  def prepare_selected_hash
+    @selected = {}
+    @selected['client_id'] = @project.client.id.to_i if @project and @project.client
+  end
+  
+public
   # Default action.
   def index
     list
@@ -35,119 +49,76 @@ class ProjectsController < ApplicationController
   # Lists all current projects or specified by search conditions, if given.
   def list
     @projects = Project.paginate(:per_page => 10, :order => "is_inactive", :page => params[:page] || 1)
-#    respond_to do |format|
-#      format.html # index.html.erb
-#      format.js do
-#        render :update do |page|
-#          page.replace_html 'project_list', :partial => "list"
-#        end
-#      end
-#    end
   end
   
-  #Searches projects.
+  #
+  # Searches through projects
+  #
   def search
-      cond = " 1 "
-      unless params[:search][:name].blank?
-        cond += " AND (projects.name LIKE \"%" + params[:search][:name] 
-        cond += "%\" or projects.description LIKE \"%" + params[:search][:name] + "%\" )"
-      end
-      unless params[:search][:client_id].blank?
-        cond += " AND client_id =" + params[:search][:client_id]
-      end
-      @projects = Project.find(:all,:conditions => cond,:order => "is_inactive" )   
-      render :partial => 'list'
+    params[:search]||= {}
+    
+    @projects = Project.search( :name=> params[:search][:name], :client_id=> params[:search][:client_id] )   
+    render :partial => 'list'
   end
   
   # Shows chosen project with activities on its.
   def show
-    begin
-      @project = Project.find(params[:id])
-    rescue
-      flash[:notice] = "No such project"
-      redirect_to :action => :index
-    else
-      @activities = Activity.find(
-        :all, 
-        :conditions => [ "project_id = (?)", params[:id]])
-    end
+    assert_params_must_have :id
+    @activities = @project.activities
   end
   
   # Project constructor.
   def new
     @project = Project.new
-    @selected = {'client_id' => ''}
     @clients = Client.find(:all)
-    if (@project.client)
-      @selected['client_id']=@project.client.id.to_i
-    end
   end
   
   # Creates new project and adds it to database.
   def create
     @project = Project.new(params[:project])
-    @selected = {'client_id' => ''}
-    if (@project.client)
-      @selected['client_id']=@project.client.id.to_i
-    end
+    @selected['client_id'] = @project.client.id if @project.client
+    
     if @project.save
       flash[:notice] = 'Project has been successfully created'
       redirect_to :action => 'list'
     else
       render :action => 'new'
     end
+    
   end
   
   # Fills form with project's details to update.
   def edit
-    begin
-      @project = Project.find(params[:id])
-    rescue
-      flash[:notice] = "No such project"
-      redirect_to :action => :index
-    else
-      @selected = {'client_id' => ''}
-    if (@project.client)
-      @selected['client_id']=@project.client.id.to_i
-    end
-    end
+    assert_params_must_have :id
   end
   
   # Updates projects's details. Data is validated before.
   def update
-    begin
-      @project = Project.find(params[:id])
-    rescue
-      flash[:notice] = "No such project"
-      redirect_to :action => :index
-    else  
-      @selected = {'client_id' => ''}
-      if (@project.client)
-        @selected['client_id']=@project.client.id.to_i
-      end    
-      if @project.update_attributes(params[:project])
-        flash[:notice] = 'Project has been successfully updated'
+    assert_params_must_have :id
+        
+    if @project.update_attributes(params[:project])
+      flash[:notice] = 'Project has been successfully updated'
       redirect_to :action => 'show', :id => @project
-      else
-        render :action => 'edit'
-      end
-    end
+    else
+      render :action => 'edit'
+    end    
   end
 
   #confirm deletion of the project
   def confirm_destroy
-    @project = Project.find(params[:id])
+    assert_params_must_have :id
   end
   
   # Removes project after confirmation.
   def destroy
-    project = Project.find(params[:id])
-    if params[:name_confirmation] == project.name
-      result = project.destroy
+    assert_params_must_have :id
+    
+    if params[:name_confirmation] == @project.name
+      result = @project.destroy
       if result
-	flash[:notice] = 'Project and it\'s activities have been deleted'
+	     flash[:notice] = 'Project and it\'s activities have been deleted'
       else 
-	flash[:error] = 'Error occured while deleting user'
+	     flash[:error] = 'Error occured while deleting user'
       end
     else
       flash[:error] = "The project has not been deleted, since the name was different" 
@@ -157,24 +128,11 @@ class ProjectsController < ApplicationController
   
   # Shows report by role for a project from selected time range
   def report_by_role    
-    flash[:warning] = nil
-    begin
-      @project = Project.find(params[:id])
-      @from_date = Date.parse(params[:from_date])
-      @to_date = Date.parse(params[:to_date])
-      
-      sql_query = "SELECT roles.name as role_name, sum(activities.minutes) as minutes " +
-          " FROM ((users left join activities on activities.user_id = users.id) left join projects on projects.id = activities.project_id) left join roles on users.role_id = roles.id " +
-          " where projects.id = " + params[:id] + " and " +
-          " activities.date <= \"" + params[:to_date] + "\" and " +        
-          " activities.date >= \"" + params[:from_date] + "\"" + 
-          " group by roles.name"
-
-      @reports = ActiveRecord::Base.connection.execute(sql_query)      
-    rescue             
-       flash[:warning] = "Wrong project selected or date" 
-       render :template => "projects/show"
-    end
+    assert_params_must_have :id
+    @from_date = Date.parse(params[:from_date])
+    @to_date = Date.parse(params[:to_date])
+    
+    @reports = Report.report_by_role( params[:id], params[:from_date], params[:to_date] )      
   end
   
 end

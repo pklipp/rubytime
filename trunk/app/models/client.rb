@@ -41,4 +41,8 @@ class Client < ActiveRecord::Base
         is_inactive ? "NO" : "YES"
     end
 
+    def self.search( text )
+      Client.find(:all,:conditions => ["name LIKE ? OR description LIKE ?", "%#{text}%", "%#{text}%"], :order => "is_inactive")
+    end
+
 end

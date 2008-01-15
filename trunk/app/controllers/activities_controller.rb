@@ -27,38 +27,22 @@ class ActivitiesController < ApplicationController
   before_filter :authorize              # force authorisation 
   layout "main", :except => :graph_xml  # graph_xml is loaded only by AJAX, no layout needed
   
-private
-  
-  # Prepares params[:search] to be passed directly to methods using Activity.filter_conditions
-  def prepare_search_details
-    params[:search]||= {}
-    params[:search][:default_month] = session[:month]
-    params[:search][:default_year]  = session[:year]
-        
-    # Fill start date if selected on form
-    if params[:dates] and not params[:dates][:date_from].blank?
-      params[:search][:date_from] = params[:dates]["date_from(1i)"].to_i.to_s \
-          + "-" + params[:dates]["date_from(2i)"].to_i.to_s \
-          + "-" + params[:dates]["date_from(3i)"].to_i.to_s
-    end
-  
-    # Fill end date if selected on form
-    if params[:dates] and not params[:dates]['date_to(1i)'].blank?
-      params[:search][:date_to] = params[:dates]["date_to(1i)"].to_i.to_s \
-                + "-" + params[:dates]["date_to(2i)"].to_i.to_s \
-                + "-" + params[:dates]["date_to(3i)"].to_i.to_s          
-    end
-  end
+  # Params filter provides reusable method prepare_search_dates
+  require 'params_filter'
+  include ParamsFilter
 
-public
-  # Default action
+  #
+  # Default action rendering list
+  #
   def index
     list
     render :action => 'list'
   end
   
+  #
   # Redirects to list of activitities or graph depending on submit button
   # with data specified by search conditions
+  #
   def search
     case params[:commit]
       when "Search"
@@ -74,13 +58,16 @@ public
     end
   end
   
-  # Lists all current projects or specified by search conditions
+  #
+  # Lists all current projects or specified by search conditions.
+  #
   def list 
      if(params[:search].nil? and session[:month].nil? and session[:year].nil?)
         # Return all activities, paginated
-        @activity_pages, @activities = Activity.list( {}, {:current=> params[:page]})
+        @activities = Activity.list( {}, {:page=> params[:page]})
      else
-        prepare_search_details      
+        # Prepare params[:search] to be passed directly to Activity.list
+        prepare_search_dates      
         
         # Get client and his not issued invoices if client is selected
         @client_id = Project.find(params[:search][:project_id]).client_id unless params[:search][:project_id].blank?
@@ -92,100 +79,80 @@ public
      end
   end
     
+  #
   # Shows chosen activity
+  #
   def show
-    begin
-    @activity = Activity.find(params[:id])
-    rescue
-    flash[:notice] = "No such activity"
-    redirect_to :action => :index
-    end
-  end
-  
-  # Activity constructor
-  def new
-    @activity = Activity.new
-    @projects = Project.find(:all)
-    @selected = {'project_id' => ''}
-  end
-  
-  # Creates new activity
-  def create
-    @activity = Activity.new(params[:activity])
-    @activity.user = User.find(session[:user_id])
-    @projects = Project.find(:all)
-    
-    @selected = {'project_id' => ''}
-    if (@activity.project)
-      @selected['project_id']=@activity.project.id.to_i
-    end
-    
-    if @activity.save
-      flash[:notice] = 'Activity has been successfully created'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
+    if ( @activity = Activity.find(params[:id]) ).nil?
+      flash[:notice] = "No such activity"
+      redirect_to :action => :index
     end
   end
   
   # Fills form with details of activities to update
-  def edit
-    begin
-      @activity = Activity.find(params[:id])
-      @projects = Project.find(:all)
-    rescue
-      flash[:notice] = "No such activity"
-      redirect_to :action => :index
-    else
-      @selected = {'project_id' => ''}
-      if (@activity.project)
-	@selected['project_id']=@activity.project.id.to_i
-      end
-    end
-  end
+#  def edit
+#    begin
+#      @activity = Activity.find(params[:id])
+#      @projects = Project.find(:all)
+#    rescue
+#      flash[:notice] = "No such activity"
+#      redirect_to :action => :index
+#    else
+#      @selected = {'project_id' => ''}
+#      if (@activity.project)
+#	@selected['project_id']=@activity.project.id.to_i
+#      end
+#    end
+#  end
+#  
+#  # Updates activity
+#  def update
+#    begin
+#      @activity = Activity.find(params[:id])
+#      @projects = Project.find(:all)
+#    rescue
+#      flash[:notice] = "No such activity"
+#      redirect_to :action => :index
+#    else
+#      @selected = {'project_id' => ''}
+#      if (@activity.project)
+#        @selected['project_id']=@activity.project.id.to_i
+#      end
+#      params[:activity]['minutes']= Activity.convert_duration(params[:activity]['minutes'])
+#      if @activity.update_attributes(params[:activity])
+#        flash[:notice] = 'Activity has been successfully updated'
+#        redirect_to :action => 'show', :id => @activity
+#      else
+#        render :action => 'edit'
+#      end
+#    end
+#  end
   
-  # Updates activity
-  def update
-    begin
-      @activity = Activity.find(params[:id])
-      @projects = Project.find(:all)
-    rescue
-      flash[:notice] = "No such activity"
-      redirect_to :action => :index
-    else
-      @selected = {'project_id' => ''}
-      if (@activity.project)
-        @selected['project_id']=@activity.project.id.to_i
-      end
-      params[:activity]['minutes']= Activity.convert_duration(params[:activity]['minutes'])
-      if @activity.update_attributes(params[:activity])
-        flash[:notice] = 'Activity has been successfully updated'
-        redirect_to :action => 'show', :id => @activity
-      else
-        render :action => 'edit'
-      end
-    end
-  end
-  
+  #
   # Removes activity. Not allowed.
+  #
   def destroy
     # Activity.find(params[:id]).destroy
     redirect_to :action => 'list'
   end
   
+  #
   # Generetes data for statictics
+  #
   def graph
-    prepare_search_details
+    prepare_search_dates
     @activities = Activity.for_graph( params[:search] )[:activities]
     session[:graph] = params[:search]
   end
   
+  #
   # Generates XML data for a graph
+  #
   def graph_xml
     params[:search] = session[:graph]
     session[:graph] = nil
     
-    prepare_search_details
+    prepare_search_dates
     query_results = Activity.for_graph( params[:search] )    
     
     @activities     = query_results[:activities]
@@ -195,9 +162,12 @@ public
 
   end
   
-  # Exports all selected activities to CSV file 
+  #
+  # Exports all selected activities to CSV file
+  # Export is done in-memory basing on conditions in params[:search]
+  # 
   def report
-    prepare_search_details
+    prepare_search_dates
     activities = Activity.list( params[:search] )    
     
     require 'csv'
