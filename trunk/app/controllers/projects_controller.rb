@@ -27,32 +27,43 @@ class ProjectsController < ApplicationController
   layout "main"
 
 private
+  #
+  # Loads project if params[:id] is given. This method should be called in before_filter.
+  #
   def load_project
     @project = Project.find( params[:id] ) if params[:id]
-  rescue
+
+  rescue ActiveRecord::RecordNotFound
     flash[:notice] = "No such project"
     redirect_to :action => :index    
   end
   
+  #
+  # Prepares selected hash, which is used in some views
+  #
   def prepare_selected_hash
     @selected = {}
     @selected['client_id'] = @project.client.id.to_i if @project and @project.client
   end
   
 public
-  # Default action.
+  #
+  # Default action. Renders list of projects
+  #
   def index
     list
     render :action => 'list'
   end
   
-  # Lists all current projects or specified by search conditions, if given.
+  #
+  # Lists all current projects, with pagination
+  #
   def list
     @projects = Project.paginate(:per_page => 10, :order => "is_inactive", :page => params[:page] || 1)
   end
   
   #
-  # Searches through projects
+  # Searches through projects using project name and client_id, rendering list of results
   #
   def search
     params[:search]||= {}
@@ -61,19 +72,25 @@ public
     render :partial => 'list'
   end
   
-  # Shows chosen project with activities on its.
+  #
+  # Shows chosen project with activities on it.
+  #
   def show
     assert_params_must_have :id
     @activities = @project.activities
   end
   
-  # Project constructor.
+  #
+  # Shows new project form
+  #
   def new
     @project = Project.new
     @clients = Client.find(:all)
   end
   
+  #
   # Creates new project and adds it to database.
+  #
   def create
     @project = Project.new(params[:project])
     @selected['client_id'] = @project.client.id if @project.client
@@ -87,12 +104,16 @@ public
     
   end
   
-  # Fills form with project's details to update.
+  #
+  # Shows form with project's details to update.
+  #
   def edit
     assert_params_must_have :id
   end
   
+  #
   # Updates projects's details. Data is validated before.
+  #
   def update
     assert_params_must_have :id
         
@@ -104,35 +125,39 @@ public
     end    
   end
 
-  #confirm deletion of the project
+  #
+  # Shows confirmation of deletion form for the project
+  # Confirmation is based on writing project name in input field
+  #
   def confirm_destroy
     assert_params_must_have :id
   end
   
+  #
   # Removes project after confirmation.
+  # Confirmation is based on writing project name in input field
+  #
   def destroy
     assert_params_must_have :id
     
     if params[:name_confirmation] == @project.name
-      result = @project.destroy
-      if result
-	     flash[:notice] = 'Project and it\'s activities have been deleted'
-      else 
-	     flash[:error] = 'Error occured while deleting user'
-      end
+      flash[:notice]  = @project.destroy ? 'Project and it\'s activities have been deleted' : 'Error occured while deleting user' 
     else
-      flash[:error] = "The project has not been deleted, since the name was different" 
+      flash[:error]   = "The project has not been deleted, since the name was different" 
     end
+
     redirect_to :action => 'list'
   end
   
+  #
   # Shows report by role for a project from selected time range
+  #
   def report_by_role    
     assert_params_must_have :id
-    @from_date = Date.parse(params[:from_date])
-    @to_date = Date.parse(params[:to_date])
+    @from_date  = Date.parse(params[:from_date])
+    @to_date    = Date.parse(params[:to_date])
     
-    @reports = Report.report_by_role( params[:id], params[:from_date], params[:to_date] )      
+    @reports    = Report.report_by_role( params[:id], params[:from_date], params[:to_date] )      
   end
   
 end

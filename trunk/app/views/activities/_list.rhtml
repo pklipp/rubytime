@@ -45,7 +45,7 @@
 	    <% end %>
             <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:controller => "activities", :action => "show", :id => activity}, :class=>"nobg" %></td>
             <td style="text-align:center">
-            <%= check_box_tag("id[]", activity.id, false, :id => nil) if(!params[:search].nil? and activity.invoice_id.blank?) %>
+            <%= check_box_tag("activity_id[]", activity.id, false, :id => nil) if(!params[:search].nil? and activity.invoice_id.blank?) %>
             </td>
             </tr>
         <% end %>

@@ -23,75 +23,93 @@
 # ************************************************************************
 
 class RolesController < ApplicationController
-  before_filter :authorize  # force authorisation 
+  before_filter :authorize, :load_role  # force authorisation 
   layout "main"
   
-  # Default action.
+private
+  #
+  # Loads role if params[:id] is given. This method should be called in before_filter.
+  #
+  def load_role
+    @role = Role.find( params[:id] ) if params[:id]
+    
+  rescue ActiveRecord::RecordNotFound
+    flash[:notice] = "No such role"
+    redirect_to :action => :index    
+  end
+  
+public
+  #
+  # Default action. Renders all roles list
+  #
   def index
     list
     render :action => 'list'
   end
 
+  #
   # Lists all current roles.
+  #
   def list
     @roles = Role.find(:all)
   end
 
-  # Shows chosen role.
+  #
+  # Shows chosen role details
+  #
   def show
-    begin
-      @role = Role.find(params[:id])
-    rescue
-      flash[:notice] = "No such role"
-      redirect_to :action => :index
-    end
+    assert_params_must_have :id
   end
 
-  # Role constructor.
+  #
+  # Shows new role form
+  #
   def new
     @role = Role.new
   end
 
-  # Creates new role.
+  #
+  # Creates new role
+  #
   def create
     params[:role][:short_name] = params[:role][:short_name].upcase
-    @role = Role.new(params[:role])
+    @role = Role.new( params[:role] )
+
     if @role.save
       flash[:notice] = 'Role has been successfully created'
       redirect_to :action => 'list'
     else
       render :action => 'new'
     end
+    
   end
 
-  # Fills form with user's details to update.
+  #
+  # Shows form for editing role
+  # Form is filled with details to update.
+  #
   def edit
-    begin
-      @role = Role.find(params[:id])
-    rescue
-      flash[:notice] = "No such role"
-      redirect_to :action => :index
-    end
+    assert_params_must_have :id
   end
 
-  # Updates user's details. Data is validated before.
+  #
+  # Updates role details. Data is validated before.
+  #
   def update
-    begin
-      @role = Role.find(params[:id])
-    rescue
-      flash[:notice] = "No such role"
-      redirect_to :action => :index
-    else
-      if @role.update_attributes(params[:role])
-        flash[:notice] = 'Role has been successfully updated'
-        redirect_to :action => 'show', :id => @role
+    assert_params_must_have :id
+
+    if @role.update_attributes(params[:role])
+      flash[:notice] = 'Role has been successfully updated'
+      redirect_to :action => 'show', :id => @role
     else
       render :action => 'edit'
     end
-    end
+    
   end
   
+  #
   # Removes role. Not allowed.
+  #
   def destroy
     # Role.find(params[:id]).destroy
     redirect_to :action => 'list'

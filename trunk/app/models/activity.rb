@@ -87,10 +87,9 @@ private
       end        
     end 
 
-    # TODO
     if ( options[:date_from].blank? and options[:date_to].blank? )
       unless options[:default_year].blank?
-        cond_str+= " AND #{SqlFunction.get_year('date')}='" + options[:default_year] + "'"
+        cond_str+= " AND #{SqlFunction.get_year('date')}=" + ActiveRecord::Base.sanitize(options[:default_year])
       end
       unless options[:default_month].blank?
         cond_str+= " AND #{SqlFunction.get_month_equation('date', options[:default_month])} "
@@ -102,10 +101,13 @@ private
 
 
 public
-  # duration of activity is given in 2 formats:
+  #
+  # Converts given duration to minutes count 
+  # duration of activity may be given in 2 formats:
   # - hr:min
   # - hr (can be also float e.x. "1.5")
   # This method converts both of them to minutes
+  #
   def Activity.convert_duration(minutes_str)
     return nil unless minutes_str.delete("0-9:.").blank?
     if (minutes_str.index(':'))
@@ -207,7 +209,7 @@ public
       + " AND #{SqlFunction.get_month_equation('date', month)} " \
       + "ORDER BY date"
 
-    Activity.find_by_sql( [query, project_id, month] )
+    Activity.find_by_sql( [query, project_id, year] )
   end
 
 end

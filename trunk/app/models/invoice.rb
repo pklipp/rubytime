@@ -84,6 +84,7 @@ private
 
 public
 
+  # TODO
   def self.search( conditions={} )
     
   end

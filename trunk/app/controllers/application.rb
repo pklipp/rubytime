@@ -23,7 +23,6 @@
 # ************************************************************************
 
 class ApplicationController < ActionController::Base
-#    helper :all
 
   #
   # Checks if +normal user+ is logged in, is active, and has permissions to access requested controller/action
@@ -74,7 +73,7 @@ class ApplicationController < ActionController::Base
     @current_client=Client.find(session[:client_id]);
     
     # Check if client is inactive - redirect to 'inactive' page
-    if @current_client.is_inactive
+    if @current_client.is_inactive?
       render :partial => "users/inactive", :layout => "clientportal" and return false        
     end
   end

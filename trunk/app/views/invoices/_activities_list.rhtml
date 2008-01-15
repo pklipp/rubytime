@@ -37,7 +37,7 @@
             <td style="text-align: right">					<%= hour_format(activity.minutes) %>				</td>
             <td><%= link_to "Show", :controller => 'activities', :action => "show", :id => activity %></td>
             <td style="text-align:center">
-            <%= check_box_tag("id[]", activity.id, false, :id => nil) unless @invoice.is_issued%>
+            <%= check_box_tag("activity_id[]", activity.id, false, :id => nil) unless @invoice.is_issued%>
             </td>
             </tr>
         <% end %>
@@ -53,7 +53,7 @@
         <% unless @invoice.is_issued -%>
         <tr>
             <td colspan="6" style="text-align:right">  
-            <%= hidden_field_tag("invoice_id", @invoice.id) %>
+            <%= hidden_field_tag("id", @invoice.id) %>
             Remove from invoice:
             &nbsp;&nbsp; 
             <%= check_box_tag("select_all", 1, false, {:id => nil, :onclick=>"selectAll(this)"}) %>

@@ -33,14 +33,24 @@ class Client < ActiveRecord::Base
     validates_presence_of :name, :description
     validates_uniqueness_of :name
 
+    #
+    # Finds all active clients sorted by name
+    #
     def Client.find_active
         Client.find(:all, :conditions => {:is_inactive => false}, :order => "name")
     end
 
+    #
+    # Returns text 'NO' or 'YES' based on if user is active
+    #
     def active_text
         is_inactive ? "NO" : "YES"
     end
 
+    #
+    # Searches for users using name or description
+    # Active users are returned first
+    #
     def self.search( text )
       Client.find(:all,:conditions => ["name LIKE ? OR description LIKE ?", "%#{text}%", "%#{text}%"], :order => "is_inactive")
     end
