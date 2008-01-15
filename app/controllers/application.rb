@@ -24,9 +24,12 @@
 
 class ApplicationController < ActionController::Base
 #    helper :all
+
   #
-  # Checks if the user has permissions to view requested page.
-  # If no, shows "no_permission" partial.
+  # Checks if +normal user+ is logged in, is active, and has permissions to access requested controller/action
+  # This method is present in most before_filters, to authorize users
+  # This method sets up +@current_user+
+  # If user is not authorized, shows "no_permission" partial.
   #
   def authorize
     @current_user = nil
@@ -53,13 +56,15 @@ class ApplicationController < ActionController::Base
   end
 
   #
-  # Checks if the client-user has permissions to view requested page.
-  # If no, shows "no_permission" partial.
+  # Checks if the +client user+ is logged in and is active
+  # This method is present in before_filters in client section to authorize client
+  # This method sets up @current_client
+  # If client is not authorized, shows "no_permission" partial.
   #
   def authorize_client   
     @current_client = nil
 
-    # if client is not logged in - redirect him to login page.
+    # If client is not logged in - redirect him to login page.
     unless session[:client_id]
       flash[:notice] = "Please log in"
       redirect_to(:controller => "clientsportal", :action => "login") and return false
@@ -84,7 +89,7 @@ class ApplicationController < ActionController::Base
   end
   
   #
-  # Sets calendar options tu nils
+  # Sets calendar options stored in session to nils
   #
   def unset_calendar 
     session[:year]=nil

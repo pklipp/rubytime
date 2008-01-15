@@ -1,18 +1,51 @@
+# ************************************************************************
+# Ruby Time
+# Copyright (c) 2006 Lunar Logic Polska sp. z o.o.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a 
+# copy of this software and associated documentation files (the 
+# "Software"), to deal in the Software without restriction, including 
+# without limitation the rights to use, copy, modify, merge, publish, 
+# distribute, sublicense, and/or sell copies of the Software, and to 
+# permit persons to whom the Software is furnished to do so, subject to 
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included 
+# in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# ************************************************************************
+
 class AdminController < ApplicationController
   before_filter :authorize              # force authorisation 
-  layout "main", :except => :graph_xml  # graph_xml is loaded only by AJAX, no layout needed
+  layout "main"
   
-  # Default action
+  #
+  # Default empty action
+  #
   def index
     render_text ""
   end
 
+  #
+  # Shows all activities from previous day
+  # Usefull in situations when admin needs to see what have been done since yesterday
+  # 
   def previous_day
     yesterday = (Time.now - 1.day).strftime("%Y-%m-%d")
     @activities = Activity.find(:all, :conditions => ["date = ? ", yesterday])
   end
   
-  #Dumps database
+  #
+  # Dumps database using mysqldump and sends dump file to browser
+  # The dump is created in memory
+  #
   def dump
     dump = StringIO.new
     filename = "dump-" + Date.today.to_s + ".sql"
@@ -30,7 +63,10 @@ class AdminController < ApplicationController
       :filename => filename)
   end
   
-  #Dumps database
+  #
+  # Dumps database to YAML format and sends it to browser
+  # The dump is created in memory
+  #
   def export_db
     filename = "dump_" + Time.now.strftime('%Y-%m-%d-%H-%M') + ".txt"
     dump = {}
@@ -46,32 +82,5 @@ class AdminController < ApplicationController
       :type => 'text/plain; charset=utf-8; header=present',
       :filename => filename)
   end
-  
-  #Dumps table
-  def dump_table(objects,name,columns_names)
-    content = Array.new
-    @query = String.new
-    @query = "INSERT INTO " + name + " VALUES\n" 
-    counter = 0
-    for object in objects
-      counter += 1
-      @query += "("
-      content.clear
-      for column in columns_names
-        unless object.send(column.name).nil?
-          if column.number?
-            content<< object.send(column.name).to_s
-          else
-            content<< "'" + object.send(column.name).to_s.gsub(/'/,"\\\\'").gsub(/"/,'\\\\"').gsub(/\n/,"\\\\n").gsub(/\r/,"\\\\r") + "'"
-          end
-        else
-          content<< "NULL"
-        end
-      end
-      @query += content * ","
-      counter==objects.length ? @query += ");\n" : @query += "),\n"
-    end
-    return @query
-  end
-  
+    
 end

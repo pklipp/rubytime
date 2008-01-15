@@ -133,16 +133,11 @@ public
     # Use paginating find if :pagination_options are specified
     unless pagination_options.empty?
       pagination_options[:per_page]||= 30
-      pagination_options[:current]||= 0
+      pagination_options[:page]||= 1
 
-      activities = self.find(:all, :conditions=> self.filter_conditions(conditions), :page=>{ :current=> pagination_options[:page].to_i, :size=> pagination_options[:per_page] }, :order=> "date DESC")
-
-      pages = ActionController::Pagination::Paginator.new nil, activities.size, 
-              pagination_options[:per_page], pagination_options[:current]
-              
-      return [pages, activities.load_page]
+      return activities = self.paginate( :conditions=> self.filter_conditions(conditions), :page=> pagination_options[:page], :per_page=> pagination_options[:per_page], :order=> "date DESC, created_at DESC")
     else
-      return self.find(:all, :conditions=> self.filter_conditions(conditions), :order=> "date DESC")
+      return self.find(:all, :conditions=> self.filter_conditions(conditions), :order=> "date DESC, created_at DESC")
     end
   end
 
@@ -196,6 +191,23 @@ public
     weeks = self.find_by_sql( [query]+conditions_arr )
     
     {:activities=> activities, :grouped_roles=> grouped_roles, :years=> years, :weeks=> weeks}
+  end
+
+  #
+  # Gets activities for specified project in specified month of year
+  #
+  def self.project_activities( project_id, month, year )
+    query = "SELECT "\
+      + " ac.id, minutes, date, comments, user_id, role_id, invoice_id " \
+      + "FROM activities ac " \
+      + "LEFT JOIN users us ON (ac.user_id=us.id)" \
+      + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
+      + "WHERE project_id = ? " \
+      + " AND #{SqlFunction.get_year('date')}= ? " \
+      + " AND #{SqlFunction.get_month_equation('date', month)} " \
+      + "ORDER BY date"
+
+    Activity.find_by_sql( [query, project_id, month] )
   end
 
 end

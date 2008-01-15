@@ -44,6 +44,11 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password  
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
+  attr_protected :id, :salt
+
+  def self.search( text )
+    self.find(:all,:conditions => ["login LIKE ? OR name LIKE ?", "%{text}%", "%#{text}%"], :order => "is_inactive")
+  end
 
   # Checks if user has administrator privileges
   def is_admin?

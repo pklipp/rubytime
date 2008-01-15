@@ -34,9 +34,39 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name
   
   # Finds all active projects
-  def Project.find_active
+  def self.find_active
     Project.find(:all, :conditions => {:is_inactive => false}, 
       :order => "name")
+  end
+  
+  def self.search( options={} )
+    cond_str = "1 "
+    cond_arr = []
+    
+    unless options[:name].blank?
+        cond_str += " AND (projects.name LIKE ?" 
+        cond_str += " OR projects.description LIKE ? )"
+        2.times { cond_arr << "%#{options[:name]}%" }
+    end
+
+    unless options[:client_id].blank?
+      cond_str += " AND client_id =?"
+      cond_arr << options[:client_id]
+    end
+
+    self.find( :all, :conditions=> [cond_str] + cond_arr, :order=> "is_inactive" )
+  end
+
+  def self.report_by_role( project_id, from_date, to_date )
+      sql_str = "SELECT roles.name as role_name, sum(activities.minutes) as minutes " +
+      " FROM ((users left join activities on activities.user_id = users.id) LEFT JOIN projects on projects.id = activities.project_id) LEFT JOIN roles ON users.role_id = roles.id " +
+      " WHERE projects.id = ? AND " +
+      " activities.date <= ? AND " +        
+      " activities.date >= ? " + 
+      " GROUP BY roles.name"
+      sql_arr = [ project_id, to_date, from_date ]
+
+      @reports = self.find_by_sql( [sql_query] + sql_arr )
   end
   
   # Returns String
@@ -45,4 +75,5 @@ class Project < ActiveRecord::Base
   def active_text
     is_inactive? ? "NO" : "YES"
   end
+  
 end

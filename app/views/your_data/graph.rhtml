@@ -3,8 +3,8 @@
 <div class="fieldsets">
     <fieldset style="width: 640px">
         <legend>Graph for your activities</legend>
-<% if !params[:search].blank? 
-        tmp = Project.find(:first,:conditions => ["id = ?",params[:search]],:select => "name" )%>
+<% if !params[:search].blank? and !params[:search][:project_id].blank?
+        tmp = Project.find(:first,:conditions => ["id = ?",params[:search][:project_id]],:select => "name" )%>
         <p>Project: <b><%= tmp.name %></b></p>
 <% end 
 	   if session[:year] %>

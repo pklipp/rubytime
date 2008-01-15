@@ -9,7 +9,7 @@
         <%= link_to 'Change password', :action => 'edit_password', :id => @current_user %>
         </p>
         <hr/>
-        <%= start_form_tag :action => 'update_profile', :id => @current_user %>
+        <% form_tag :action => 'update_profile', :id => @current_user do -%>
         <div class="inputs">
 	        <label>Login: </label><b><%= @current_user.login %></b>
         </div>
@@ -22,7 +22,7 @@
 	        <br/><%= text_field 'user', 'email'  %>
         </div>
         <p><%= submit_tag 'Save' %></p>
-        <%= end_form_tag %>
+        <% end %>
    </fieldset>   
 </div>
 <!-- End of form -->

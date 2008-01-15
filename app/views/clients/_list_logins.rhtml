@@ -8,14 +8,14 @@
             <%= client_login.login %>
             <div id="client_login_<%= client_login.id %>_pass" style="display: none">
                 <% form_remote_tag(:url => { :action => "change_clients_login_password"}) do %>
-                <%= hidden_field_tag 'id', client_login.id %>
+                <%= hidden_field_tag 'client_login_id', client_login.id %>
                 <%= text_field_tag 'new_password', nil, :size => 30, :maxlength => 30 %>
                 <%= submit_tag "Change password" %>
                 <% end %>
             </div>            
         </td>
         <td><%= link_to_remote image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), 
-        {:url => { :action => "destroy_client_login", :id => client_login },  :confirm => 'Are you sure?'}, :class=>"nobg" %></td>
+        {:url => { :action => "destroy_client_login", :client_login_id => client_login },  :confirm => 'Are you sure?'}, :class=>"nobg" %></td>
         
         <td><%= 
             link_to_function(image_tag("edit.png", :alt=>"Change password", :title=>"Change password"), nil) do |page|                
