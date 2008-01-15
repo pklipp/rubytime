@@ -33,25 +33,22 @@ class ClientsLogin < ActiveRecord::Base
   
   attr_accessor :password, :password_confirmation
     
+  #
   # Tries to authorize client basing on login and password information
-  # On success returns object of +Client+ class, on failure returns +nil+ 
+  # On success returns object of +Client+ class, on failure returns +nil+
+  # 
   def self.authorize(login, password)
-    login_details = self.find_by_login_and_password( login, Digest::SHA1.hexdigest(password))
+    login_details = self.find_by_login_and_password_hash( login, Digest::SHA1.hexdigest(password))
     login_details ? login_details.client : nil 
   end
   
-  def password
-    return "" if @password.nil? and attributes['password'].nil?
-    @password
-  end
-
   def password= v
     @password = v
-    attributes['password']= v.nil? ? nil : Digest::SHA1.hexdigest(v)
+    self.password_hash = Digest::SHA1.hexdigest(v.to_s)
   end
   
   def password_equals? v
-    attributes['password'] == Digest::SHA1.hexdigest(v)
+    self.password_hash == Digest::SHA1.hexdigest(v)
   end
   
 end

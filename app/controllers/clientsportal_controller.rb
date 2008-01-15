@@ -88,7 +88,7 @@ class ClientsportalController < ApplicationController
     end
 
     #
-    # Showing client's seleted project activities. Client cannot see activities
+    # Showing calendar with project activities. Client cannot see activities
     # of other client's projectes.
     #
     def show_project_activities
@@ -96,7 +96,7 @@ class ClientsportalController < ApplicationController
       session[:year] = Time.now.year.to_s unless !session[:year].nil?
       session[:month] = Time.now.month.to_s unless !session[:month].nil?
 
-      @activities = Activity.project_activities( params[:project_id], session[:month], session[:year] )
+      @activities = Activity.project_activities( @project.id, session[:month], session[:year] )
       
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such project"
@@ -107,7 +107,8 @@ class ClientsportalController < ApplicationController
     # Showing details of selected activity.
     #
     def show_activity
-      @activity = @current_client.projects.activities.find( params[:id] ) #Activity.find( params[:id] )
+      @activity = Activity.find( params[:id] )
+      raise ActiveRecord::RecordNotFound unless @activity.project.client == @current_client 
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such activity"
       redirect_to :action => :index

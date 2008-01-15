@@ -33,40 +33,59 @@ class User < ActiveRecord::Base
   belongs_to :role
 
   validates_presence_of :login, 
-                        :name, 
-                        :password, 
+                        :name,  
                         :email, 
                         :role_id 
   validates_length_of :password, 
                       :minimum => 5,
-                      :message => "should be at least 5 characters long"                       
+                      :message => "should be at least 5 characters long",
+                      :allow_nil=> true
   validates_uniqueness_of :login, :email
   validates_confirmation_of :password  
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i 
 
   attr_protected :id, :salt
+  attr_accessor :password
 
+  #
+  # Initializes new object by creating new salt for storing encrypted passwords
+  #
+  def initialize( *args )
+    super( *args )
+    self.salt = self.class.create_new_salt
+  end
+
+  #
+  # Searches for users by login or name
+  # Active users are returned first
+  #
   def self.search( text )
     self.find(:all,:conditions => ["login LIKE ? OR name LIKE ?", "%{text}%", "%#{text}%"], :order => "is_inactive")
   end
 
+  #
   # Checks if user has administrator privileges
+  #
   def is_admin?
     self.role.is_admin?
   end
 
+  #
   # Tries to authorize user basing on login and password information
-  # On success returns object of +User+ class, on failure returns +nil+ 
+  # On success returns object of +User+ class, on failure returns +nil+
+  # 
   def self.authorize(login, password)
     unless ( user = User.find_by_login(login) ).nil?
-      return user if User.hashed_pass( password, user.salt ) == user.password
+      return user if User.hashed_pass( password, user.salt ) == user.password_hash
     end
 
     nil
   end  
     
+  #
   # Checks if the user has permissions to view specified controller and action 
   # If user has administrator role, he has all permissions
+  #
   def has_permissions_to?(controller, action)
     return true if self.is_admin?
     
@@ -78,21 +97,42 @@ class User < ActiveRecord::Base
     end
   end
   
-  # Returns hashed version of password from given password and salt.
+  #
+  # Updates user's password
+  #
+  def password= v
+    @password = v
+    self.password_hash = self.class.hashed_pass( v, self.salt )
+  end
+
+  #
+  # Checks if user password is the same as one passed as arg
+  #
+  def password_equals? p 
+    self.password_hash == self.class.hashed_pass( p.to_s, self.salt )
+  end
+  
+  #
+  # Returns hashed version of password from given password and salt
   #
   # This function uses +SHA1+ digest algorithm combined with 
   # password salt for additional protection.
+  #
   def self.hashed_pass(pass,salt)
-    string_to_hash = pass + "wibble" + salt
+    string_to_hash = pass.to_s + "wibble" + salt.to_s
     Digest::SHA1.hexdigest(string_to_hash)
   end
   
+  #
   # Generates new, random salt and returns it as string
+  #
   def self.create_new_salt
     self.object_id.to_s + rand.to_s
   end
   
-  # Finds all +active+ users sorted +in alphabetic order+
+  #
+  # Finds all +active+ users sorted in +alphabetic order+
+  #
   def User.find_active
     User.find(:all, :conditions => "is_inactive = 0",
       :order => "name")

@@ -4,7 +4,7 @@ pm:
   name: Alexander
   login: admin
   salt: salt
-  password: <%= User.hashed_pass("admin", "salt") %> # admin
+  password_hash: <%= User.hashed_pass("admin", "salt") %> # admin
   email: alex@a.com
   role_id: 1
   is_inactive: false
@@ -14,8 +14,8 @@ dev:
   name: Fox
   login: fox
   salt: salt
-  password: <%= User.hashed_pass("dev", "salt") %> # admin
+  password_hash: <%= User.hashed_pass("dev", "salt") %> # admin
   email: fox@a.com
   role_id: 2
   is_inactive: false
-  login_key: FoxFox
+

@@ -59,7 +59,7 @@ class ActivitiesController < ApplicationController
   end
   
   #
-  # Lists all current projects or specified by search conditions.
+  # Lists all current activities or specified by search conditions.
   #
   def list 
      if(params[:search].nil? and session[:month].nil? and session[:year].nil?)
@@ -72,7 +72,6 @@ class ActivitiesController < ApplicationController
         # Get client and his not issued invoices if client is selected
         @client_id = Project.find(params[:search][:project_id]).client_id unless params[:search][:project_id].blank?
         @invoices = Invoice.find(:all, :conditions => ["client_id = ? AND is_issued=0", @client_id], :order => "created_at DESC")
-      
     
         # Get list of activities meeting specified conditions
         @activities = Activity.list( params[:search] )

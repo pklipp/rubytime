@@ -33,6 +33,7 @@ private
       flash[:notice] = "No such client"
       redirect_to :action => :index
   end
+
 public
   #
   # Default action, render list action
@@ -144,15 +145,15 @@ public
   #
   def add_new_login
     assert_params_must_have :id
-    @result_text = "Client added!"
     
     # Try adding new client login to system, any exceptions will be presented to user
     begin
       @client_new_login           = ClientsLogin.new
       @client_new_login.login     = params[:new_login]
-      @client_new_login.password  = Digest::SHA1.hexdigest(params[:new_password])
+      @client_new_login.password  = params[:new_password]
       @client_new_login.client_id = params[:id]
       @client_new_login.save!
+      @result_text = "Client added!"
     rescue Exception => exc
       @result_text = "Error: #{exc.message}"      
     end    
@@ -192,7 +193,7 @@ public
   def change_clients_login_password
     begin
       clients_login           = ClientsLogin.find(params[:client_login_id])
-      clients_login.password  = Digest::SHA1.hexdigest(params[:new_password])
+      clients_login.password  = params[:new_password]
       clients_login.save!
       @result_text = "Client's login " + clients_login.login + " password changed!"
     rescue Exception => exc

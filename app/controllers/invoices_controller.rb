@@ -23,7 +23,7 @@
 # ************************************************************************
 
 class InvoicesController < ApplicationController
-  before_filter :authorize
+  before_filter :authorize, :load_invoice
   layout "main", :except => 'print'
 
   # Params filter provides reusable method prepare_search_dates
@@ -34,8 +34,19 @@ class InvoicesController < ApplicationController
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
+private
+  def load_invoice
+    @invoice = Invoice.find( params[:id] ) if params[:id]
+    
+  rescue ActiveRecord::RecordNotFound
+    flash[:notice] = "Invoice not found"
+    redirect_to :action => :index
+  end
+
+public
+
   #
-  # Default action.
+  # Default action. Rendering list of invoices.
   #
   def index
     list
@@ -63,11 +74,7 @@ class InvoicesController < ApplicationController
   # Shows invoice's details.
   # 
   def show
-    @invoice = Invoice.find(params[:id])
-    
-  rescue ActiveRecord::RecordNotFound
-    flash[:notice] = "Invoice not found"
-    redirect_to :action => :index
+    assert_params_must_have :id    
   end
 
   #
@@ -97,11 +104,7 @@ class InvoicesController < ApplicationController
   # Renders form for editing an invoice.
   #
   def edit
-    @invoice = Invoice.find(params[:id])
-
-  rescue ActiveRecord::RecordNotFound
-    flash[:notice] = "Invoice not found"
-    redirect_to :action => :index
+    assert_params_must_have :id
   end
 
   #
@@ -109,7 +112,8 @@ class InvoicesController < ApplicationController
   # This action is usually called from form created by +edit+ action
   #
   def update
-    @invoice            = Invoice.find(params[:id])
+    assert_params_must_have :id
+    
     @invoice.issued_at  = Time.now if !params[:invoice].nil? && params[:invoice][:is_issued]
     @invoice.user_id    = @current_user.id
 
@@ -119,17 +123,15 @@ class InvoicesController < ApplicationController
     else
       render :action => 'edit'
     end
-  
-  rescue ActiveRecord::RecordNotFound
-    flash[:notice] = "Invoice not found"
-    redirect_to :action => :index
+    
   end
 
   #
   # Makes invoice issued.
   #
   def issue
-    @invoice = Invoice.find(params[:id])
+    assert_params_must_have :id
+    
     unless @invoice.activities.empty?
       if @invoice.update_attributes({'is_issued' => 1, 'issued_at' => Time.now})
         flash[:notice] = 'Invoice has been issued.'
@@ -139,6 +141,7 @@ class InvoicesController < ApplicationController
     else
       flash[:notice] = 'No activities on this invoice! Cannot be issued!'
     end
+    
     redirect_to :action => :show, :id => @invoice
   end
   
@@ -146,7 +149,7 @@ class InvoicesController < ApplicationController
   # Adds activities to invoice.
   #
   def add_activities
-    @activities = Activity.find(:all, :conditions => ["invoice_id IS NULL AND id IN (?)",params[:id]])
+    @activities = Activity.find(:all, :conditions => ["invoice_id IS NULL AND id IN (?)",params[:activity_id]])
     @success = true
     @activities.each do |activity|
       @success = activity.update_attribute('invoice_id',params[:invoice_id])     
@@ -163,7 +166,9 @@ class InvoicesController < ApplicationController
   # Removess activities from invoice.
   #
   def remove_activities
-    @activities = Activity.find(:all, :conditions => ["id IN (?)",params[:id]])
+    assert_params_must_have :id
+    
+    @activities = Activity.find(:all, :conditions => ["id IN (?)",params[:activity_id]])
     @success = true
     @activities.each do |activity|
       @success = activity.update_attribute('invoice_id', nil)     
@@ -173,7 +178,8 @@ class InvoicesController < ApplicationController
     else
       flash[:notice] = 'Error with removing activities form invoice.'
     end
-    redirect_to :action => 'show', :id => params[:invoice_id]
+
+    redirect_to :action => 'show', :id => params[:id]
   end
   
   #

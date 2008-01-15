@@ -30,10 +30,13 @@ class LoginController < ApplicationController
   # This is a default way to authorize users in application
   #
   def login
+    # If it's GET request, render form
     if request.get?
       session[:user_id] = nil
       @log_user = User.new
-    else
+    
+    # Try logging in if POST request
+    elsif request.post?
       logged_in_user = User.authorize(params[:log_user][:login], params[:log_user][:password])      
       if logged_in_user.kind_of? User
         session[:user_id] = logged_in_user.id
