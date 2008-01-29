@@ -25,6 +25,7 @@ class Init < ActiveRecord::Migration
       t.column :role_id, :integer, :null => false
       t.column :is_inactive, :boolean, :default => false, :null => false
       t.column :salt, :string, :null => false
+      t.column :password_code,:string
     end
     add_index :users, :role_id
     add_index :users, :login, :unique => true

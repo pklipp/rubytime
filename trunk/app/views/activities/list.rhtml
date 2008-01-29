@@ -23,10 +23,10 @@
         <%= radio_button_tag("search[is_invoiced]","2",params[:search][:is_invoiced].to_i == 2,{:id => 'search_is_invoiced_2'}) %>invoiced
         </td></tr>
         <tr><td><label>From:</label></td>
-        <td><%= date_select 'dates', 'date_from', :include_blank => true  %></td></tr>
-        
+        <td><%= calendar_date_select_tag "date_from" %><%#= date_select 'dates', 'date_from', :include_blank => true  %></td></tr>
+      
         <tr><td><label>To:</label></td>
-        <td><%= date_select 'dates', 'date_to', :include_blank => true  %></td></tr>
+        <td><%= calendar_date_select_tag "date_to" %><%#= date_select 'dates', 'date_to', :include_blank => true  %></td></tr>
         
         <tr><td><label for="search_project_id">Project:</label></td>
         <td><select name="search[project_id]" id="search_project_id" style="width:200px">

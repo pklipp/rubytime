@@ -1,0 +1,32 @@
+<!-- List of details of chosen activity -->
+<div class="fieldsets" id="activity_data">
+<fieldset>
+    <legend>Activity</legend>
+       <p>
+	       <strong>Comments: <br/></strong>
+	       <%=simple_format @activity.comments %>
+       </p>
+
+       <p>
+	       <strong>Date: </strong>
+	       <%=@activity.date %>
+       </p>
+
+       <p>
+	       <strong>Hours: </strong>
+	       <%=h hour_format(@activity.minutes) %>
+       </p>
+       
+       <p>
+	       <strong>Invoiced: </strong><%= @activity.invoice_id ? ( @activity.invoice.is_issued ? "YES, invoice already issued"  : "YES, but not issued yet") : "NO" %>
+       </p>
+       
+       <% if @activity.invoice_id %>
+       <p>
+	       <strong>Invoice: </strong><%= link_to @activity.invoice.name, :controller => 'invoices', :action => 'show', :id => @activity.invoice.id  %>
+       </p>
+       <% end -%>
+       <a href="#" onclick="$('activity_data').hide();">Hide</a>
+</fieldset>
+</div>
+<!-- End of list -->

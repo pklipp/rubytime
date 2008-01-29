@@ -37,4 +37,12 @@ class LoginControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => "login"
     assert_nil session[:user_id]
   end
+  
+  def test_change_your_mail
+    get :login
+    assert_tag :tag => "form" , :content => / Enter e-mail/
+  end
+  
+  
+  
 end

@@ -154,10 +154,8 @@ public
   #
   def report_by_role    
     assert_params_must_have :id
-    @from_date  = Date.parse(params[:from_date])
-    @to_date    = Date.parse(params[:to_date])
-    
-    @reports    = Report.report_by_role( params[:id], params[:from_date], params[:to_date] )      
+    @reports = Activity.find :all, :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?',params[:id],params[:from_date],params[:to_date]],  :include => [:user,:project], :order => "users.role_id" , :joins => "left join roles on (users.role_id = roles.id )"   
   end
+  
   
 end

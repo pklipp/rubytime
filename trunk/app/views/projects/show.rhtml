@@ -28,12 +28,12 @@
             <tr>
                 <td>From (YYYY:MM:DD):</td>
                 <td>
-                    <input type="text" name="from_date" value="<%= params[:from_date] %>"/>
+                   <%= calendar_date_select_tag "from_date",DateTime.new(Time::now().year,Time::now().mon,1).strftime("%Y-%m-%d") %>     
                 </td>
             </tr>
             <tr>                
                 <td>To (YYYY:MM:DD):</td>
-                <td><input type="text" name="to_date" value="<%= params[:to_date] %>"/></td>
+                <td><%= calendar_date_select_tag "to_date",Date.today.strftime("%Y-%m-%d") %> </td>
             </tr>
         </table>        
         

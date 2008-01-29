@@ -2,16 +2,23 @@
     <fieldset>
         <legend> Client:</legend>
         <p class="p_new">
-            <%= link_to 'Change your individual password', :action => 'edit_client_password' %>
+            <%= link_to_remote 'Change your individual password',:update => 'change_password',:url => {:controller => :clientsportal,:action => :edit_client_password}, :complete => "new Effect.Highlight('time_period');", :before => "$('change_password_loader').show();" , :complete => "$('change_password_loader').hide();" %>
         </p>
         
         <hr/>
 
         <p><b>Name:</b> <%=h @client.name %></p>
-        <p><b>Active: </b><%= @client.active_text %></p>
         <p><b>Description:</b></p><%= simple_format @client.description %>
 
     </fieldset>
     <br/><br/>
+
+</div>
+
+<div id="change_password_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="change_password">
 
 </div>

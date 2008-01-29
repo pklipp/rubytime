@@ -62,7 +62,6 @@ class ClientsportalControllerTest < Test::Unit::TestCase
     assert_template 'show_profile'
     assert_not_nil assigns(:client)  
     assert_tag :tag => "p", :content => /Client nr 1/, :ancestor => {:tag => "fieldset"}
-    assert_tag :tag => "p", :content => /YES/, :descendant => {:tag => "b", :content => /Active:/}
     assert_tag :tag => "p", :content => /client1/, :descendant => {:tag => "b", :content => /Name:/}
   end
   
@@ -143,6 +142,55 @@ class ClientsportalControllerTest < Test::Unit::TestCase
     assert_equal assigns(:project).activities.size, 8    
   end
 
+  #TODO
+  
+ def test_show_activity_data
+    login_as_client
+    get :show_activity_data,:id => 1
+    assert_response :success
+    assert_template 'show_activity_data' 
+    assert_tag :tag => "legend", :content => /Activity/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "p", :content => /Comments/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "p", :content => /Date:/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "p", :content => /Hours:/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "p", :content => /Invoiced:/, :ancestor => {:tag => "fieldset"}
+  end
+  
+  
+  def test_show_activities
+    login_as_client
+    get :show_activites
+    assert_response :success  
+    assert_tag :tag => "legend", :content => /Your activities:/, :ancestor => {:tag => "fieldset"}
+  end
+  
+  def test_time_period
+    login_as_client
+    get :time_period, :id => 1
+    assert_tag :tag => "legend", :content => /Time period:/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "p", :content => /From:/
+    assert_tag :tag => "p", :content => /To:/
+    assert_tag :tag => 'input'  , :ancestor => {:tag => "form"}
+  end
+  
+  def edit_client_password
+    login_as_client
+    get :show_profile
+    assert_tag :tag => "div", :attributes => {:id => "fieldsets"}
+    get :edit_client_password
+    assert_tag :tag => "legned", :content => /Change your individual password/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "input",:ancestor => {:tag => "form"}
+  end
+  
+  def test_show_invoice
+    login_as_client
+    get :show_invoice, :id => 666
+    assert_redirected_to :action => :index
+  end
+  
+  
+  
+  
   # 
   # private methods
   #
@@ -168,4 +216,8 @@ class ClientsportalControllerTest < Test::Unit::TestCase
     assert_tag :tag => "table", :attributes => {:class => "standard"}, :children => {:count => number_of_invoices + 1, :only => {:tag => "tr"}}
   end      
 
+  
+  
+  
+  
 end

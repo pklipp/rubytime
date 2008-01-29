@@ -12,8 +12,19 @@
     
     </fieldset>
 </div>
+
+<div class="fieldsets">
+    <fieldset>
+        <legend>Logins</legend>
+        <div id="client_logins">
+            <%= render :partial => "list_logins" %>
+        </div>
+    </fieldset>
+</div>
+
 <p>
     <%= link_to 'Show', :action => 'show', :id => @client %>  | 
     <%= back_link(:span) %>
 </p>
+
 <!-- End of form -->

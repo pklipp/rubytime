@@ -81,7 +81,7 @@ class ClientsportalController < ApplicationController
     def show_project
       @project = @current_client.projects.find( params[:id] )
       @activities = @project.activities
-            
+      render :layout => false     
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such project"
       redirect_to :action => "index"
@@ -118,7 +118,7 @@ class ClientsportalController < ApplicationController
     # Showing client ISSUED ONLY invoices.
     #
     def show_invoices
-        @invoices = @current_client.invoices
+        @invoices = @current_client.invoices    
         render :action => "show_invoices"
     end
 
@@ -127,6 +127,7 @@ class ClientsportalController < ApplicationController
     #
     def show_invoice
       @invoice = @current_client.invoices.find( params[:id] )
+      render :layout => false 
     rescue
       flash[:notice] = "No such invoice"
       redirect_to :action => :index
@@ -137,8 +138,7 @@ class ClientsportalController < ApplicationController
     #
     def edit_client_password
       @clients_login = @current_client.clients_logins.find_by_login( session[:client_login] )
-      @clients_login.password = nil
-      @clients_login.password_confirmation = nil
+      render :layout => false
     rescue
       flash[:notice] = "No such client"
       redirect_to :action => :index
@@ -155,28 +155,35 @@ class ClientsportalController < ApplicationController
           flash[:error] = "We are sorry, but your login was removed by administrator"
           redirect_to :action => 'logout' and return            
         end
-        
-        # If passed wrong +old+ password - redirect back to edit form
-        unless @client_login.password_equals? params[:old_password]
-          flash[:error] = "Current password is typed incorrectly or new password doesn't match with confirmation"
-          redirect_to :action => 'edit_client_password' and return  
+#        unless @client_login.password_equals? params[:old_password]
+#          flash[:error] = "Current password is typed incorrectly"
+#          redirect_to :action => 'edit_client_password' and return  
+#        end
+        @client_login.force_checking_password = true
+        if @client_login.update_attributes(params[:client_login])
+          flash[:notice] = 'Individual password has been successfully updated'
+          redirect_to :action => 'show_profile'
+        else
+          render :action => :edit_client_password
         end
+      end
 
-        @client_login.password = params[:clients_login][:password]
-        @client_login.password_confirmation = params[:clients_login][:password_confirmation]
-
-        # Check if updated client login record can be saved - redirect back to edit form if not
-        unless @client_login.valid?
-          flash[:error] = "Password doesn't match or some other error occured"
-          @client_login.password, @client_login.password_confirmation = [nil,nil]
-          redirect_to :action => 'edit_client_password' and return
-        end
-
-        # Should be secure to save it at this point
-        @client_login.save!
-        
-        flash[:notice] = 'Individual password has been successfully updated'
-        redirect_to :action => 'show_profile'
+    def show_activites
+      @activities = @current_client
     end
-
+    
+    def time_period
+      render :layout => false ;
+    end
+    
+    def report_by_role
+      @reports = Activity.find :all, :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?',params[:id],params[:from_date],params[:to_date]],  :include => [:user,:project], :order => "users.role_id" , :joins => "left join roles on (users.role_id = roles.id )"
+      render :layout => false ;
+    end
+    
+    def show_activity_data
+      @activity = Activity.find(params[:id])
+      render :layout => false ;
+    end
+    
 end
