@@ -30,7 +30,11 @@ test:
   password:
   encoding: utf8
   socket: /var/run/mysqld/mysqld.sock
-
+#test:
+#  adapter: sqlite3
+#  database: db/test.sqlite3
+#  timeout: 5000
+  
 production:
   adapter: mysql
   database: rubytime_production

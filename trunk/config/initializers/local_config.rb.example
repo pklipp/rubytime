@@ -1,16 +1,19 @@
 MAIL_FROM = "@llp.pl"
 SERVER_URL = "localhost:3000"
 
+#tls support for gmail
+#require 'tlsmail'
+#Net::SMTP.enable_tls(OpenSSL::SSL::VERIFY_NONE)
+
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.raise_delivery_errors = true
 ActionMailer::Base.smtp_settings  = { 
   :address => "smtp.gmail.com",
-  :port => 587,
+  :port => 587, #25
   :domain => "llp.pl",
   :user_name => "@llp.pl",
   :password => "pass", 
   :authentication => :plain
 }
 
-# action_mailer_tls plugin for supporting TLS
 
