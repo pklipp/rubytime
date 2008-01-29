@@ -152,7 +152,7 @@ public
     begin
       @client_new_login           = ClientsLogin.new
       @client_new_login.login     = params[:new_login]
-      @client_new_login.password  = params[:new_password]
+      @client_new_login.password  = Digest::SHA1.hexdigest(params[:new_password])
       @client_new_login.client_id = params[:id]
       @client_new_login.save!
       @result_text = "Client added!"
@@ -195,7 +195,7 @@ public
   def change_clients_login_password
     begin
       clients_login           = ClientsLogin.find(params[:client_login_id])
-      clients_login.password  = params[:new_password]
+      clients_login.password  = Digest::SHA1.hexdigest(params[:new_password])
       clients_login.save!
       @result_text = "Client's login " + clients_login.login + " password changed!"
     rescue Exception => exc
