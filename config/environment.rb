@@ -58,7 +58,14 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+  
+
+  
 end
+
+#Config for Calendar plugin
+CalendarDateSelect.format = :hyphen_ampm
 
 RUBYTIME_VERSION = 2.0
 require 'extensions.rb'
+

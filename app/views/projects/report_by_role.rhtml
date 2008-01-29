@@ -1,21 +1,46 @@
-<% if !@reports.nil? %>
-<div style="width: 50%; margin-left: auto; margin-right: auto;">
+<div class="fieldsets">
+    <fieldset>
+        <legend>Report by role</legend>
+<% if !@reports.nil? && (@reports.length != 0)%>
+<div style="margin-left: auto; margin-right: auto;">
     <h1><%= @project.name %></h1>
-    <h3>report by role</h3>
     <h4>from <%= params[:from_date] %> to <%= params[:to_date] %></h4>
     <table class="standard">
         <tr>
             <th>Role name</th>
+            <th>Name </th> 
             <th>Time spent</th>
         </tr>
-        <% for report in @reports %>
+        <% minutes = 0
+        last_role = @reports[0].user.role.name
+        for entry in @reports 
+        minutes += entry.minutes.to_i %>
+         <%if last_role != entry.user.role.name %>
+            <td colspan="1"></td>
+            <th style="text-align: right">Sum:</th>
+            <th><%= hour_format(minutes) %></th>
+            <% minutes = entry.minutes.to_i %>
+            <% last_role = entry.user.role.name %>
+         <% end %>
         <tr>
-            <td><%= report[0] %></td>
-            <td><%= report[1] %></td>
+            <td><%= entry.user.role.name %></td>
+            <td><%= entry.user.name %></td>
+            <td><%= hour_format(entry.minutes) %></td>
+            <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),:update => 'comments',:url => {:controller => :activities,:action => :show_activity_data , :id => entry.id} %></td>
         </tr>
         <% end %>
+            <td colspan="1"></td>
+            <th style="text-align: right">Sum:</th>
+            <th><%= hour_format(minutes) %></th>
+
     </table>
 </div>
 <% end %>
+</fieldset>
+</div>
+
+<div id="comments">
+  
+</div>
 
 <%= back_link %>

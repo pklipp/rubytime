@@ -192,4 +192,13 @@ class ActivitiesController < ApplicationController
       :filename => 'report.csv')
   end
 
+  
+  #used by remote call
+  def show_activity_data
+    @activity = Activity.find(params[:id])
+    render :layout => false
+  end
+  
 end
+
+

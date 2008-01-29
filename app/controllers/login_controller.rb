@@ -63,10 +63,51 @@ class LoginController < ApplicationController
     render :template => "layouts/credits"
   end
   
-  def remember_password
-    user = User.find_by_email('krzysztof.knapik@llp.pl')
-    a = Notifier.deliver_remember_password(user)
-    render :text => "Mail was sent. \n" + a.to_s
+  
+   def change_password
+    begin
+    @pass_change_user = User.find(:first,:conditions => ["password_code = ?",params[:code]])
+    rescue
+      redirect_to :action => :login
+    end  
+    if request.post?
+       if params[:user][:password] != params[:user][:password2] 
+         flash[:notice]="Passwords do not match"
+         redirect_to :action => :change_password, :code => params[:code]
+       elsif params[:user][:password].length < 5
+          flash[:notice]="Password must be at least 5 chars long"
+          redirect_to :action => :change_password, :code => params[:code]
+       elsif
+          #save new password
+          @pass_change_user = User.find(:first,:conditions => ["password_code = ?",params[:code]])
+          @pass_change_user.salt = User.create_new_salt
+          @pass_change_user.password = User.hashed_pass(params[:user][:password], @pass_change_user.salt)
+          @pass_change_user.save!
+          #clear and redirect
+          flash[:notice]="Password changed"
+          redirect_to :action => :login
+       end  
+    end    
+  end
+  
+  def forgot_password
+    if params[:forgot_pass][:email].nil?
+      flash[:notice]= "E-mail box can't be blank" 
+      redirect_to :action => :login
+    elsif
+    user = User.find(:first,:conditions => ["email = ? ",params[:forgot_pass][:email] ])
+      user.password_code = String.random
+      #Save code
+      user.save
+      #send email with link
+      Notifier.deliver_forgot_password(user)
+      #redirect
+      flash[:notice]="Check your mail" 
+      redirect_to :action => :login
+    else
+      flash[:notice]="No such mail in database"
+      redirect_to :action => :login   
+    end
   end
   
 end

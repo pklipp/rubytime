@@ -79,6 +79,8 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert assigns(:activity).valid?
   end
 
+  
+  
 #  def test_edit
 #    get :edit, :id => 1
 #

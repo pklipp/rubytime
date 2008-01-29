@@ -1,5 +1,9 @@
-<h2>Logged in successfully!</h2>
-
-Welcome!<br/>
-Client: <b><%= @client_name %></b><br/>
-logged as: <b><%= session[:client_login] %></b>
+<div class="fieldsets">
+    <fieldset>
+        <legend>Logged in successfully!</legend>
+        <p>Welcome!</p>
+        <p>Client: <b><%= @client_name %></b></p>
+        <p>logged as: <b><%= session[:client_login] %></b></p>
+    </fieldset>
+    <br/><br/>
+</div>

@@ -34,6 +34,9 @@
     <%= stylesheet_link_tag 'rubytime' %>
     <%= javascript_include_tag :defaults %>
 
+        <%# includes for calendar %>
+        <%= calendar_date_select_includes "red" %>
+
 </head>
 <body>
 <div id="banner">
@@ -64,7 +67,10 @@
       <%= image_tag("invoices.png", :size => "32x32", :alt => "Invoices", :style => "vertical-align: middle") %>
       <%= link_to("Invoices", :controller => "clientsportal", :action => "show_invoices") %>
     </div>   
-    			
+    <div class="menu-icon">
+      <%= image_tag("activities.png", :size => "32x32", :alt => "Activities", :style => "vertical-align: middle") %>
+      <%= link_to("Activities", :controller => "clientsportal", :action => "show_activites") %>
+    </div>
           <br/>
 	  <hr />
 	  <br/>             

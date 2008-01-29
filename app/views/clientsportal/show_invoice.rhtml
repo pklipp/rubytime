@@ -1,14 +1,19 @@
 <!-- List of details of chosen invoice -->
+<% if !@invoice.nil? %>
+
+
+  
 <div class="fieldsets">
     <fieldset>
         <legend>Invoice</legend>
+
         <p><b>Name: </b><%= @invoice.name %></p>
 
         <p><b>Client: </b><%= @invoice.client.name %></p>
-        <!--<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>-->
-        <!--<p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %></p>-->
+        <%#<!--<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %><!--</p>-->
+        <%#<!--<p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %><!--</p>-->
         <% if @invoice.is_issued -%>
-        <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+        <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") unless @invoice.issued_at.nil?  %></p>
         <% end -%>
         <p><b>Created by: </b><%= @invoice.user.name %></p>
     </fieldset>
@@ -61,3 +66,5 @@
 
     </fieldset>
 </div>
+
+  <%end%>

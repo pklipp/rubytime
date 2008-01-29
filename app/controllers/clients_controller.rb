@@ -101,7 +101,9 @@ public
 
     if @client.update_attributes(params[:client])
       if (!params[:new_password].nil? && params[:new_password] != "")
-        @client.update_attribute( :password, Digest::SHA1.hexdigest(params[:new_password]) )
+        @clients_login = ClientsLogin.find(:first, :conditions => ['login = ? ',@client["name"]])
+        @clients_login.password = Digest::SHA1.hexdigest(params[:new_password])
+        @clients_login.save!
       end
       flash[:notice] = 'Client has been successfully updated'
       redirect_to :action => 'show', :id => @client

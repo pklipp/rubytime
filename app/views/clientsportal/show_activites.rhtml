@@ -1,0 +1,39 @@
+
+
+
+<div class="fieldsets">
+    <fieldset>
+        <legend>Your activities:</legend>
+        <table class="standard">
+        <tr>
+        <th> Name</th>
+        </tr>
+        <% @current_client.projects.each do |project|%>
+        <tr>
+          
+        <td><%=h project.name %></td>
+        
+        <td>
+        <%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),:update => 'time_period',:url => {:controller => :clientsportal,:action => :time_period,:id => project.id}, :complete => "new Effect.Highlight('time_period');", :before => "$('time_period_loader').show();" , :complete => "$('time_period_loader').hide();" %><br />
+        </td>
+        
+        </tr>
+        <% end %>
+        </table>
+
+
+
+
+
+    </fieldset>
+</div>
+
+<div id="time_period_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div class="fieldsets" id="time_period">
+
+</div>
+
+<!-- End of form -->

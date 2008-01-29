@@ -30,7 +30,7 @@ class Client < ActiveRecord::Base
     has_many :clients_logins, :dependent => :destroy
 
     # validators
-    validates_presence_of :name, :description
+    validates_presence_of :name
     validates_uniqueness_of :name
 
     #
@@ -54,5 +54,6 @@ class Client < ActiveRecord::Base
     def self.search( text )
       Client.find(:all,:conditions => ["name LIKE ? OR description LIKE ?", "%#{text}%", "%#{text}%"], :order => "is_inactive")
     end
+    
 
 end

@@ -9,7 +9,7 @@
                 <% if params[:controller]!='clients' -%>
                 <th>Client</th>
                 <%end-%>
-                <th> Inactive</th>
+
             </tr>
 
             <% for project in @projects %>
@@ -20,10 +20,11 @@
             <% if params[:controller]!='clients' -%>
             <td><%= h truncate(project.client.name,20) %></td>
             <%end-%>
-            <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
 
-            <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"),
-                {:action => 'show_project', :id => project}, :class=>"nobg" %>
+
+            <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),:update => 'show_details',
+                :url => {:action => 'show_project', :id => project}, :class=>"nobg", 
+                :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %>
             </td>
             <td>
                 <%= link_to image_tag("activities.png", :alt=>"Show activities", :title=>"Show activities"),
@@ -33,4 +34,11 @@
         <% end %>
     </table>
 </fieldset>
+</div>
+
+<div id="show_details_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="show_details">
 </div>

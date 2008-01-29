@@ -1,4 +1,6 @@
 MAIL_FROM = "@llp.pl"
+SERVER_URL = "localhost:3000"
+
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.raise_delivery_errors = true
 ActionMailer::Base.smtp_settings  = { 

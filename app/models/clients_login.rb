@@ -23,32 +23,40 @@
 # ************************************************************************
 
 class ClientsLogin < ActiveRecord::Base
-  
+  attr_accessor :new_password, :force_checking_password
   belongs_to :client
   
   validates_presence_of :login, :client_id
   validates_uniqueness_of :login
-  validates_length_of :password, :minimum => 5, :allow_nil=> true
-  validates_confirmation_of :password
+  validates_presence_of :new_password, :if => Proc.new{|u| u.force_checking_password==true}
+  validates_length_of :new_password, :minimum => 5, :allow_blank=> true
+  validates_confirmation_of :new_password
   
-  attr_accessor :password, :password_confirmation
+  after_validation :encrypt_password
+  before_save :encrypt_password
     
-  #
   # Tries to authorize client basing on login and password information
-  # On success returns object of +Client+ class, on failure returns +nil+
-  # 
+  # On success returns object of +Client+ class, on failure returns +nil+ 
   def self.authorize(login, password)
-    login_details = self.find_by_login_and_password_hash( login, Digest::SHA1.hexdigest(password))
+    login_details = self.find_by_login_and_password( login, Digest::SHA1.hexdigest(password))
     login_details ? login_details.client : nil 
   end
   
-  def password= v
-    @password = v
-    self.password_hash = Digest::SHA1.hexdigest(v.to_s)
+#  def password
+#    return "" if @password.nil? and attributes['password'].nil?
+#    @password
+#  end
+#
+
+  def encrypt_password
+    return if new_password.blank?
+    self.password = Digest::SHA1.hexdigest(new_password)
+    self.new_password = nil
+    self.new_password_confirmation = nil
   end
   
-  def password_equals? v
-    self.password_hash == Digest::SHA1.hexdigest(v)
+  def password_equals? var
+    password == Digest::SHA1.hexdigest(var)
   end
   
 end
