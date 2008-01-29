@@ -1,6 +1,6 @@
 class RenamePasswordColumn < ActiveRecord::Migration
   def self.up
-    rename_column :clients_logins, :password, :password_hash
+    #rename_column :clients_logins, :password, :password_hash
     rename_column :users, :password, :password_hash
   end
 

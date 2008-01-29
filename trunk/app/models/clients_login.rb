@@ -59,4 +59,5 @@ class ClientsLogin < ActiveRecord::Base
     password == Digest::SHA1.hexdigest(var)
   end
   
+  
 end
