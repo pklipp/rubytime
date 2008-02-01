@@ -34,7 +34,7 @@ class Init < ActiveRecord::Migration
     #Creates table clients.
     create_table :clients, :force => true do |t|
       t.column :name, :string, :null => false
-      t.column :description, :text, :null => false
+      t.column :description, :text, :null => true
       t.column :is_inactive, :boolean, :default => false, :null => false
     end
     add_index :clients, :name, :unique => true
