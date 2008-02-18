@@ -49,60 +49,60 @@
 
 <div id="sub-menu">
     <% if @current_client != nil %>
-    <p>
-        Welcome: <b><%= session[:client_login] %></b>
-    </p>
+        <p>
+            Welcome: <b><%= session[:client_login] %></b>
+        </p>
     <% end %>
 
-    <% if (@current_client !=nil && !@current_client.is_inactive) %>
-    <div class="menu-icon ">				
-      <%= image_tag("profile.png", :size => "32x32", :alt => "Profile", :style => "vertical-align: middle") %>
-      <%= link_to("Your profile", :controller => "clientsportal", :action => "show_profile") %>
-    </div>       
-    <div class="menu-icon ">				
-      <%= image_tag("projects.png", :size => "32x32", :alt => "Projects", :style => "vertical-align: middle") %>
-      <%= link_to("Projects", :controller => "clientsportal", :action => "show_projects") %>
-    </div>       
-    <div class="menu-icon ">				
-      <%= image_tag("invoices.png", :size => "32x32", :alt => "Invoices", :style => "vertical-align: middle") %>
-      <%= link_to("Invoices", :controller => "clientsportal", :action => "show_invoices") %>
+    <% if (@current_client != nil && !@current_client.is_inactive) %>
+        <div class="menu-icon ">				
+            <%= image_tag("profile.png", :size => "32x32", :alt => "Profile", :style => "vertical-align: middle") %>
+            <%= link_to("Your profile", :controller => "clientsportal", :action => "show_profile") %>
+        </div>       
+        <div class="menu-icon ">				
+            <%= image_tag("projects.png", :size => "32x32", :alt => "Projects", :style => "vertical-align: middle") %>
+            <%= link_to("Projects", :controller => "clientsportal", :action => "show_projects") %>
+        </div>       
+        <div class="menu-icon ">				
+            <%= image_tag("invoices.png", :size => "32x32", :alt => "Invoices", :style => "vertical-align: middle") %>
+            <%= link_to("Invoices", :controller => "clientsportal", :action => "show_invoices") %>
+        </div>   
+        <div class="menu-icon">
+            <%= image_tag("activities.png", :size => "32x32", :alt => "Activities", :style => "vertical-align: middle") %>
+            <%= link_to("Activities", :controller => "clientsportal", :action => "show_activities") %>
+        </div>
+        <br/>
+	      <hr />
+	      <br/>
+    <% end %>
+
+    <div class="menu-icon ">
+        <%= image_tag("help.png", :size => "32x32", :alt => "Help", :style => "vertical-align: middle") %>
+        <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">Help</a>
     </div>   
-    <div class="menu-icon">
-      <%= image_tag("activities.png", :size => "32x32", :alt => "Activities", :style => "vertical-align: middle") %>
-      <%= link_to("Activities", :controller => "clientsportal", :action => "show_activites") %>
-    </div>
-          <br/>
-	  <hr />
-	  <br/>             
-                 
-    <% end %>
 
-          <div class="menu-icon ">				
-            <%= image_tag("help.png", :size => "32x32", :alt => "Help", :style => "vertical-align: middle") %>
-            <a href="http://clients.llp.pl/doku.php?id=rubytimetracker:ruby_time_tracker_support">Help</a>
-          </div>   
-          
     <% if @current_client %>
-          <div class="menu-icon ">				
-            <%= image_tag("logout.png", :size => "32x32", :alt => "Logout", :style => "vertical-align: middle") %>
-	    <%= link_to("Logout" ,:controller => "clientsportal", :action => "login") %>
-          </div>     
+        <div class="menu-icon ">
+        <%= image_tag("logout.png", :size => "32x32", :alt => "Logout", :style => "vertical-align: middle") %>
+	      <%= link_to("Logout" ,:controller => "clientsportal", :action => "login") %>
+        </div>
     <% end %>
     <!-- Current Version Number -->    
-        <p>v.<%= RUBYTIME_VERSION %></p>
+    <p>v.<%= RUBYTIME_VERSION %></p>
 </div>
 
 <div id="content">
-    <% if flash[:notice]%>
-    <p class="flashNotice"><%= flash[:notice] %></p>
-    <%end%>
-    <% if flash[:warning]%>
-    <p class="flashWarning"><%= flash[:warning] %></p>
-    <%end%>
-    <% if flash[:error]%>
-    <p class="flashError"><%= flash[:error] %></p>
-    <%end%>
-    <%= @content_for_layout %>
+    <% if flash[:notice] %>
+        <p class="flashNotice"><%= flash[:notice] %></p>
+    <% end %>
+    <% if flash[:warning] %>
+        <p class="flashWarning"><%= flash[:warning] %></p>
+    <% end %>
+    <% if flash[:error] %>
+        <p class="flashError"><%= flash[:error] %></p>
+    <% end %>
+
+    <%= yield %>
 </div>
 
 </body>

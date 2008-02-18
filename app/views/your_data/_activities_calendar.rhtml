@@ -4,6 +4,21 @@
         <%= render :partial => '/activities/calendar_without_unselect' %>
     </fieldset>
 
+    <% if @current_user && @current_user.is_admin? %>
+        <br/>
+        <fieldset>
+            <legend>Select developer</legend>
+            <% form_tag :action => 'activities_calendar' do %>
+                <table><tr>
+                    <td>Developer:</td>
+                    <td><%= select_tag 'user_id', options_from_collection_for_select(User.find(:all, :order => 'name'),
+                            :id, :name, params[:user_id] ? params[:user_id].to_i : @current_user.id) %></td>
+                    <td><%= submit_tag 'Show' %></td>
+                </tr></table>
+            <% end %>
+        </fieldset>
+    <% end %>
+
     <br/><br/>
 
 <%= calendar(:year => session[:year].to_i, :month => session[:month].to_i, :first_day_of_week => 1, :table_class=>"calendarView") do |d|

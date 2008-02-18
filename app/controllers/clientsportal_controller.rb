@@ -75,7 +75,7 @@ class ClientsportalController < ApplicationController
     end
 
     #
-    # Showing client's selected project details. Client cannot see not his/her's
+    # Showing client's selected project details. Client cannot see not his/her
     # projects.
     #
     def show_project
@@ -89,7 +89,7 @@ class ClientsportalController < ApplicationController
 
     #
     # Showing calendar with project activities. Client cannot see activities
-    # of other client's projectes.
+    # of other client's projects.
     #
     def show_project_activities
       @project =  @current_client.projects.find( params[:project_id] )
@@ -168,7 +168,7 @@ class ClientsportalController < ApplicationController
         end
       end
 
-    def show_activites
+    def show_activities
       @activities = @current_client
     end
     
