@@ -24,7 +24,7 @@
 <%= link_to_function "&raquo; Change client's password",  visual_effect(:toggle_blind, "client_change_pass", :duration => 0.5) %>
 
 <div id="client_change_pass" class="inputs" style="display: none;">
-    <label for="new_client_password">New password:</label>
+    <label for="new_password">New password:</label>
 		<br />
     <%= text_field_tag 'new_password', nil, :size => 50, :maxlength => 50 %>    
 </div>   

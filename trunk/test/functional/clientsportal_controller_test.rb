@@ -159,7 +159,7 @@ class ClientsportalControllerTest < Test::Unit::TestCase
   
   def test_show_activities
     login_as_client
-    get :show_activites
+    get :show_activities
     assert_response :success  
     assert_tag :tag => "legend", :content => /Your activities:/, :ancestor => {:tag => "fieldset"}
   end

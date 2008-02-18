@@ -4,5 +4,6 @@ class ChangeClientsDescriptionDefault < ActiveRecord::Migration
   end
 
   def self.down
+    change_column :clients, :description, :text, :null => true
   end
 end

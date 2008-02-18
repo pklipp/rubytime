@@ -76,12 +76,16 @@ public
   #
   # Shows list of current user's activities, all or filtered by search conditions
   #
-  def activities_list
-    if params[:search].nil? and session[:month].nil? and session[:month].nil?
-      @activities = Activity.list( {:user_id=> @current_user.id}, {:page=> params[:page], :per_page => 10}) 
+  def activities_list(developer_id = nil)
+    if developer_id.nil? or not @current_user.is_admin?
+      developer_id = @current_user.id
+    end
+    if params[:search].nil? and session[:month].nil? and session[:year].nil?
+      @activities = Activity.list( {:user_id => developer_id}, {:page => params[:page], :per_page => 10})
     else
       prepare_search_dates
-      @activities = Activity.list( params[:search] )
+      params[:search][:user_id] = developer_id
+      @activities = Activity.list(params[:search])
     end
   end
 
@@ -89,9 +93,9 @@ public
   # Shows activities grid for choosen year & month (like calendar)
   #
   def activities_calendar
-    session[:year] ||= Time.now.year.to_s 
-    session[:month] ||= Time.now.month.to_s 
-    activities_list
+    session[:year] ||= Time.now.year.to_s
+    session[:month] ||= Time.now.month.to_s
+    activities_list(params[:user_id])
   end
 
   #

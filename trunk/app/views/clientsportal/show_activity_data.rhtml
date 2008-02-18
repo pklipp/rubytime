@@ -22,11 +22,12 @@
        </p>
        
        <% if @activity.invoice_id %>
-       <p>
-	       <strong>Invoice: </strong><%= link_to @activity.invoice.name, :controller => 'invoices', :action => 'show', :id => @activity.invoice.id  %>
-       </p>
+        <p>
+	        <strong>Invoice: </strong><%= link_to @activity.invoice.name, :controller => 'invoices', :action => 'show', :id => @activity.invoice.id  %>
+        </p>
        <% end -%>
-       <a href="#" onclick="new Effect.Fade('activity_data');">Hide</a>
+
+       <%= link_to_function "Hide", visual_effect(:fade, 'activity_data') %>
 </fieldset>
 </div>
 <!-- End of list -->

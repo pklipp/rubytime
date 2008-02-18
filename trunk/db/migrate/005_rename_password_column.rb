@@ -6,6 +6,6 @@ class RenamePasswordColumn < ActiveRecord::Migration
 
   def self.down
     rename_column :users, :password_hash, :password
-    rename_column :clients_logins, :password_hash, :password
+    #rename_column :clients_logins, :password_hash, :password
   end
 end
