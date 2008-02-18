@@ -12,7 +12,7 @@
                 <table><tr>
                     <td>Developer:</td>
                     <td><%= select_tag 'user_id', options_from_collection_for_select(User.find(:all, :order => 'name'),
-                            :id, :name, params[:user_id] ? params[:user_id].to_i : @current_user.id) %></td>
+                            :id, :name, @calendar_user_id) %></td>
                     <td><%= submit_tag 'Show' %></td>
                 </tr></table>
             <% end %>
