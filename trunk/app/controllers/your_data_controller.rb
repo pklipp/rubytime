@@ -76,15 +76,16 @@ public
   #
   # Shows list of current user's activities, all or filtered by search conditions
   #
-  def activities_list(developer_id = nil)
-    if developer_id.nil? or not @current_user.is_admin?
-      developer_id = @current_user.id
+  def activities_list
+    if session[:calendar_user_id].nil? or not @current_user.is_admin?
+      session[:calendar_user_id] = @current_user.id
     end
+    @calendar_user_id = session[:calendar_user_id]
     if params[:search].nil? and session[:month].nil? and session[:year].nil?
-      @activities = Activity.list( {:user_id => developer_id}, {:page => params[:page], :per_page => 10})
+      @activities = Activity.list( {:user_id => @calendar_user_id}, {:page => params[:page], :per_page => 10})
     else
       prepare_search_dates
-      params[:search][:user_id] = developer_id
+      params[:search][:user_id] = @calendar_user_id
       @activities = Activity.list(params[:search])
     end
   end
@@ -95,7 +96,8 @@ public
   def activities_calendar
     session[:year] ||= Time.now.year.to_s
     session[:month] ||= Time.now.month.to_s
-    activities_list(params[:user_id])
+    session[:calendar_user_id] = params[:user_id].to_i unless params[:user_id].nil?
+    activities_list
   end
 
   #
