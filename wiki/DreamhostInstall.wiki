@@ -4,22 +4,22 @@
 
 ===make a svn checkout===
 
-'type "svn checkout http://rubytime.googlecode.com/svn/trunk/ rubytime  '
+type "svn checkout http://rubytime.googlecode.com/svn/trunk/ rubytime
  
 ===then you will have to make some config files===
 
-'create /config/database.yml
+create /config/database.yml
 !HINT see database.yml.example for example config
 and
  
 create /config/initializers/local_config.rb
 !HINT see local_config.rb.example  
 
-make sure that  you have your email account for the site notifier eg "noerply@mydomain.com"'
+make sure that  you have your email account for the site notifier eg "noerply@mydomain.com"
  
 ===nice :) now migrations===
 
-'run " rake db:migrate "'
+run " rake db:migrate "
  
 ===type "chmod u+x dispatch.fcgi" for 'fast cgi'===
  
