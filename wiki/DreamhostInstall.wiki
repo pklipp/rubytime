@@ -1,21 +1,26 @@
 #Installing on Dreamhost
+
+----
+
+===make a svn checkout===
+
+'type "svn checkout http://rubytime.googlecode.com/svn/trunk/ rubytime  '
  
-1)make a svn checkout  
-type "svn checkout http://rubytime.googlecode.com/svn/trunk/ rubytime  
- 
-2)then you will have to make some config files
-create /config/database.yml
+===then you will have to make some config files===
+
+'create /config/database.yml
 !HINT see database.yml.example for example config
 and
  
 create /config/initializers/local_config.rb
 !HINT see local_config.rb.example  
 
-make sure that  you have your email account for the site notifier eg "noerply@mydomain.com"
+make sure that  you have your email account for the site notifier eg "noerply@mydomain.com"'
  
-3)nice :) now migrations
-run " rake db:migrate "
+===nice :) now migrations===
+
+'run " rake db:migrate "'
  
-4)type "chmod u+x dispatch.fcgi" for 'fast cgi'
+===type "chmod u+x dispatch.fcgi" for 'fast cgi'===
  
-5)have fun
+===have fun===
