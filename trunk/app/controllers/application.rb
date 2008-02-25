@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
     # Check user permissions
     unless @current_user.has_permissions_to?(params[:controller], params[:action])
       # user is not allowed to view the page. Show proper info
-      render :inline => "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
+      render :partial => "/users/no_permissions", :layout => "main" and return false
     end
   end
 

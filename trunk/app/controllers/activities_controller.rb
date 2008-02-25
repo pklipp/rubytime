@@ -89,43 +89,43 @@ class ActivitiesController < ApplicationController
   end
   
   # Fills form with details of activities to update
-#  def edit
-#    begin
-#      @activity = Activity.find(params[:id])
-#      @projects = Project.find(:all)
-#    rescue
-#      flash[:notice] = "No such activity"
-#      redirect_to :action => :index
-#    else
-#      @selected = {'project_id' => ''}
-#      if (@activity.project)
-#	@selected['project_id']=@activity.project.id.to_i
-#      end
-#    end
-#  end
-#  
+  def edit
+    begin
+      @activity = Activity.find(params[:id])
+      @projects = Project.find(:all)
+    rescue
+      flash[:notice] = "No such activity"
+      redirect_to :action => :index
+    else
+      @selected = {'project_id' => ''}
+      if (@activity.project)
+	@selected['project_id']=@activity.project.id.to_i
+      end
+    end
+  end
+  
 #  # Updates activity
-#  def update
-#    begin
-#      @activity = Activity.find(params[:id])
-#      @projects = Project.find(:all)
-#    rescue
-#      flash[:notice] = "No such activity"
-#      redirect_to :action => :index
-#    else
-#      @selected = {'project_id' => ''}
-#      if (@activity.project)
-#        @selected['project_id']=@activity.project.id.to_i
-#      end
-#      params[:activity]['minutes']= Activity.convert_duration(params[:activity]['minutes'])
-#      if @activity.update_attributes(params[:activity])
-#        flash[:notice] = 'Activity has been successfully updated'
-#        redirect_to :action => 'show', :id => @activity
-#      else
-#        render :action => 'edit'
-#      end
-#    end
-#  end
+  def update
+    begin
+      @activity = Activity.find(params[:id])
+      @projects = Project.find(:all)
+    rescue
+      flash[:notice] = "No such activity"
+      redirect_to :action => :index
+    else
+      @selected = {'project_id' => ''}
+      if (@activity.project)
+        @selected['project_id']=@activity.project.id.to_i
+      end
+      params[:activity]['minutes']= Activity.convert_duration(params[:activity]['minutes'])
+      if @activity.update_attributes(params[:activity])
+        flash[:notice] = 'Activity has been successfully updated'
+        redirect_to :action => 'show', :id => @activity
+      else
+        render :action => 'edit'
+      end
+    end
+  end
   
   #
   # Removes activity. Not allowed.

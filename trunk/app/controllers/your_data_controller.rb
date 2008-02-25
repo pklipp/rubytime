@@ -39,11 +39,10 @@ private
   # Loads project if params[:id] is given. This method should be called in before_filter.
   #
   def load_activity
-    @activity = Activity.find( params[:id] ) if params[:id]
-
+    @activity = Activity.find(params[:id]) if params[:id]
   rescue ActiveRecord::RecordNotFound
     flash[:notice] = "No such activity"
-    redirect_to :action => :index    
+    redirect_to :action => :index
   end
 
 public
@@ -105,6 +104,7 @@ public
   #
   def show_activity
     assert_params_must_have :id
+    render :partial => "/users/no_permissions", :layout => "main" and return false unless @activity.viewable_by? @current_user
   end
 
   #
@@ -170,12 +170,7 @@ public
   #
   def edit_activity
     assert_params_must_have :id
-
-    # do not allow editing of other's or invoiced activities 
-    if @activity.user_id != @current_user.id or @activity.invoice_id
-        render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
-    end
-    
+    render :partial => "/users/no_permissions", :layout => "main" and return false unless @activity.editable_by? @current_user
     @projects = Project.find_active
   end
 
@@ -184,13 +179,8 @@ public
   #
   def update_activity
     assert_params_must_have :id
+    render :partial => "/users/no_permissions", :layout => "main" and return false unless @activity.editable_by? @current_user
 
-    # do not allow editing of other's or invoiced activities 
-    if @activity.user_id != @current_user.id or @activity.invoice_id
-      render :inline=> "<div id=\"errorNotice\">You have no permisions to view this page!</div>", :layout => "main" and return false
-      return
-    end
-    
     @projects = Project.find_active
     # convert hours format to minutes
     params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
