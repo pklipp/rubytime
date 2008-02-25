@@ -1,34 +1,23 @@
 <!-- Partial form: Add/Edit client-->
 <div class="inputs">
-<label for="client_name">Name:</label>
-<br/>
-<%= text_field 'client', 'name', :size => 50, :maxlength => 50 %>
+  <label for="client_name">Name:</label>
+  <br/>
+  <%= text_field 'client', 'name', :size => 50, :maxlength => 50 %>
 </div>
 
 <br/>
 
 <div class="inputs">
-<label for="client_description">Description:</label>
-<br/>
-<%= text_area 'client', 'description', :cols => 50, :rows => 15 %>
+  <label for="client_description">Description:</label>
+  <br/>
+  <%= text_area 'client', 'description', :cols => 50, :rows => 15 %>
 </div>
-<%if (params[:action]=="edit" || params[:action]=="update") %>
-<!-- Allowed only for editing project -->
 
-<div class="inputs">
+<% if ['edit', 'update'].include? params[:action] %>
+  <!-- Allowed only for editing project -->
+  <div class="inputs">
     <%= check_box 'client', 'is_inactive'%>
-		<br/>
     <label for="client_is_inactive">is inactive</label>
-</div>
-
-<%= link_to_function "&raquo; Change client's password",  visual_effect(:toggle_blind, "client_change_pass", :duration => 0.5) %>
-
-<div id="client_change_pass" class="inputs" style="display: none;">
-    <label for="new_password">New password:</label>
-		<br />
-    <%= text_field_tag 'new_password', nil, :size => 50, :maxlength => 50 %>    
-</div>   
-
-<%end%>
+  </div>
+<% end %>
 <!-- End of partial form-->
-

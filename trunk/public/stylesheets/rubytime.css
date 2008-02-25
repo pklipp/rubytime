@@ -504,7 +504,7 @@ table.standard th, table.calendar td.selected, table.calendar th {
 }
 
 td.client_login_password {
-    border: 1px solid #ffffcc;
+    border: 1px solid #c0c0c0;
     background-color: #ffffcc;
 }
 

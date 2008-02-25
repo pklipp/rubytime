@@ -16,34 +16,7 @@
         </p>
     </fieldset>
     <br /><br />
-    <fieldset>
-        <legend>Client's logins</legend>
-        <p class="p_new">
-            <%= link_to_function [image_tag("add.png", :class=>"newitem", :alt=>"Add login", :title=>"Add login"), 'Add login'], visual_effect(:toggle_blind, "client_change_pass", :duration => 0.5), :class=>"newitem" %>
-        </p>      
-        <div id="client_login_result_text"></div>
-        <div id="client_change_pass" class="inputs" style="display: none;">
-            <% form_remote_tag(:update => "client-logins",  :url => { :action => "add_new_login"}) do %>
-            <%= hidden_field_tag 'id', @client.id %>
-            <table>
-                <tr>            
-                    <td><label for="new_client_password">New login:</label></td>
-                    <td><%= text_field_tag 'new_login', nil, :size => 50, :maxlength => 50 %></td>
-                </tr>
-                <tr>
-                    <td><label for="new_client_password">New password:</label></td>
-                    <td><%= text_field_tag 'new_password', nil, :size => 50, :maxlength => 50 %></td>
-                </tr>
-                <tr>
-                    <td><%= submit_tag "Add it" %></td>
-                </tr>        
-            </table>
-            <% end %>
-        </div>   
-        <div id="client_logins">
-            <%= render :partial => "list_logins" %>
-        </div>
-    </fieldset>
+    <%= render :partial => "client_logins" %>
     <br /><br />
     <fieldset>
         <legend>Project of this client:</legend>

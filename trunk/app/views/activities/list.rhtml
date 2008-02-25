@@ -13,7 +13,7 @@
 
 <% form_tag({:action => 'search', :id => @activity}) do %>
         <% params[:search]||= {} %>
-		<fieldset>
+		<fieldset style="width: 530px;">
         <legend>Search</legend>
 
         <table><tbody>
@@ -46,12 +46,12 @@
         <%= options_for_select({ "choose" => "" }) %>
         <%= options_for_select(User.find_active.collect {|u| [ u.name, u.id ] }, params[:search][:user_id].to_i ) %>
         </select></td></tr>
-        <tr><td><label for="search_details">Details:</label></td>
-		<td><%= check_box_tag 'search[details]', "1" , params[:search][:details] %></td>
-		</tr>
- 		
-        <tr><td colspan="2" style="text-align:center">
+
+        <tr><td colspan="2">
+        <br />
         <%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %>&nbsp;&nbsp;<%= submit_tag 'Export to CSV' %>
+        &nbsp;&nbsp;<%= check_box_tag 'search[details]', "1", params[:search][:details] %>
+        <label for="search_details">Show comments in CSV</label>
         </td></tr>
         </tbody></table>
         </fieldset>

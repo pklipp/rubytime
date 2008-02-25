@@ -1,34 +1,40 @@
+<script type="text/javascript">
+<!--
+function switchStyle(client_id) {
+  elem = $('client_login_' + client_id + '_td');
+  cls = 'client_login_password';
+  if (elem.hasClassName(cls)) {
+    elem.removeClassName(cls);
+  } else {
+    elem.addClassName(cls);
+  }
+}
+-->
+</script>
+
 <table class="standard" id="table_list_logins">
     <tr>
-        <th>Login</th>            
+        <th>Login</th>
     </tr>
     <% for client_login in @client.clients_logins %>
     <tr>
         <td id="client_login_<%= client_login.id %>_td" style="width:100%" >
             <%= client_login.login %>
             <div id="client_login_<%= client_login.id %>_pass" style="display: none">
-                <% form_remote_tag(:url => { :action => "change_clients_login_password"}) do %>
-                <%= hidden_field_tag 'client_login_id', client_login.id %>
-                <%= text_field_tag 'new_password', nil, :size => 30, :maxlength => 30 %>
-                <%= submit_tag "Change password" %>
+                <% form_remote_tag :url => {:action => "change_clients_login_password"},
+                    :success => "switchStyle(#{client_login.id}); $('new_password_#{client_login.id}').value = ''; " +
+                    visual_effect(:toggle_blind, "client_login_#{client_login.id}_pass", :duration => 0.5) do %>
+                  <%= hidden_field_tag 'client_login_id', client_login.id, :id => "client_login_id_#{client_login.id}" %>
+                  <%= text_field_tag 'new_password', nil, :size => 30, :maxlength => 30, :id => "new_password_#{client_login.id}" %>
+                  <%= submit_tag "Change password" %>
                 <% end %>
-            </div>            
+            </div>
         </td>
         <td><%= link_to_remote image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), 
         {:url => { :action => "destroy_client_login", :client_login_id => client_login },  :confirm => 'Are you sure?'}, :class=>"nobg" %></td>
         
-        <td><%= 
-            link_to_function(image_tag("edit.png", :alt=>"Change password", :title=>"Change password"), nil) do |page|                
-                js =  "if ($(&quot;client_login_" + client_login.id.to_s + "_td&quot;).className == &quot;client_login_password&quot;)" 
-                js += "  $(&quot;client_login_" + client_login.id.to_s + "_td&quot;).className = &quot;&quot;;"
-                js += "else"
-                js += "  $(&quot;client_login_" + client_login.id.to_s + "_td&quot;).className = &quot;client_login_password&quot;;"
-                page << js
-                    
-                #   page[("client_login_" + client_login.id.to_s + "_td")].className = ( 1== 1) ? "client_login_password" : ""
-                page.visual_effect :toggle_blind, ("client_login_" + client_login.id.to_s + "_pass"), :duration => 0.5           
-            end            
-        %>
+        <td><%= link_to_function image_tag("edit.png", :alt => "Change password", :title => "Change password"), "switchStyle(#{client_login.id}); " +
+                visual_effect(:toggle_blind, "client_login_#{client_login.id}_pass", :duration => 0.5) %></td>
     </tr>
     <% end %>
 </table>
