@@ -212,4 +212,16 @@ public
     Activity.find_by_sql( [query, project_id, year] )
   end
 
+  def invoiced?
+    self.invoice
+  end
+
+  def viewable_by?(other_user)
+    self.user.id == other_user.id || other_user.is_admin?
+  end
+
+  def editable_by?(other_user)
+    viewable_by?(other_user) and not invoiced?
+  end
+
 end

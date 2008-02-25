@@ -18,7 +18,7 @@ class AdminControllerTest < Test::Unit::TestCase
     login_as :dev
     get :index
     assert_response :success
-    assert_tag :content => "You have no permisions to view this page!" 
+    assert_tag :content => /You have no permissions to view this page!/
   end
 
   def test_export_db
