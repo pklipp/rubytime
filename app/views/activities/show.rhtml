@@ -4,17 +4,17 @@
     <legend>Activity</legend>
        <p>
 	       <strong>Comments: <br/></strong>
-	       <%=simple_format @activity.comments %>
+	       <%= simple_format(h(@activity.comments)) %>
        </p>
 
        <p>
 	       <strong>Date: </strong>
-	       <%=@activity.date %>
+	       <%= @activity.date %>
        </p>
 
        <p>
 	       <strong>Hours: </strong>
-	       <%=h hour_format(@activity.minutes) %>
+	       <%= hour_format(@activity.minutes) %>
        </p>
        
        <p>

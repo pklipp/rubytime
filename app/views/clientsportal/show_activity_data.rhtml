@@ -4,7 +4,7 @@
     <legend>Activity</legend>
        <p>
 	       <strong>Comments: <br/></strong>
-	       <%=simple_format @activity.comments %>
+	       <%= simple_format(h(@activity.comments)) %>
        </p>
 
        <p>
