@@ -4,9 +4,9 @@
         <input type="hidden" name="id" value="<%= params[:id] %>" />
 
             <p>From: <%= calendar_date_select_tag "from_date",DateTime.new(Time::now().year,Time::now().mon,1).strftime("%Y-%m-%d") %>
-                <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></a></p>
+                <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></p>
             <p>To:   <%= calendar_date_select_tag "to_date",Date.today.strftime("%Y-%m-%d") %> 
-                <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></a></p>
+                <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></p>
            
        
         

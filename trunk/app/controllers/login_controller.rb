@@ -62,40 +62,36 @@ class LoginController < ApplicationController
   def credits
     render :template => "layouts/credits"
   end
-  
-  
-   def change_password
-    begin
-    @pass_change_user = User.find(:first,:conditions => ["password_code = ?",params[:code]])
-    rescue
-      redirect_to :action => :login
-    end  
+
+
+  def change_password
+    @pass_change_user = User.find(:first, :conditions => ["password_code = ?", params[:code]])
+    redirect_to :action => :login unless @pass_change_user
     if request.post?
-       if params[:user][:password] != params[:user][:password2] 
-         flash[:notice]="Passwords do not match"
-         redirect_to :action => :change_password, :code => params[:code]
-       elsif params[:user][:password].length < 5
-          flash[:notice]="Password must be at least 5 chars long"
-          redirect_to :action => :change_password, :code => params[:code]
-       elsif
-          #save new password
-          @pass_change_user = User.find(:first,:conditions => ["password_code = ?",params[:code]])
-          @pass_change_user.salt = User.create_new_salt
-          @pass_change_user.password = User.hashed_pass(params[:user][:password], @pass_change_user.salt)
-          @pass_change_user.save!
-          #clear and redirect
-          flash[:notice]="Password changed"
-          redirect_to :action => :login
-       end  
-    end    
+      if params[:user][:password] != params[:user][:password2] 
+        flash[:notice]="Passwords do not match"
+        redirect_to :action => :change_password, :code => params[:code]
+      elsif params[:user][:password].length < 5
+        flash[:notice]="Password must be at least 5 chars long"
+        redirect_to :action => :change_password, :code => params[:code]
+      elsif
+        #save new password
+        @pass_change_user = User.find(:first, :conditions => ["password_code = ?", params[:code]])
+        @pass_change_user.salt = User.create_new_salt
+        @pass_change_user.password = params[:user][:password]
+        @pass_change_user.save!
+        #clear and redirect
+        flash[:notice] = "Password changed"
+        redirect_to :action => :login
+      end
+    end
   end
-  
+
   def forgot_password
     if params[:forgot_pass][:email].nil?
-      flash[:notice]= "E-mail box can't be blank" 
+      flash[:notice] = "E-mail box can't be blank" 
       redirect_to :action => :login
-    elsif
-    user = User.find(:first,:conditions => ["email = ? ",params[:forgot_pass][:email] ])
+    elsif user = User.find(:first, :conditions => ["email = ? ", params[:forgot_pass][:email]])
       user.password_code = String.random
       #Save code
       user.save
