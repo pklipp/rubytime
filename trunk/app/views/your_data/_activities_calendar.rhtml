@@ -28,12 +28,8 @@
        @activities.each do |e|          
           if e.date == d
              cell_text << "<b>" << hour_format(e.minutes) << "</b> "
-             if e.comments.length > 10
-                cell_text << e.comments[0..12] << "..."
-             else
-                cell_text << e.comments
-             end
-             cell_text << "<a href='/your_data/show_activity/" << e.id.to_s << "' class='item-more'> &raquo;</a><br/>"
+             cell_text << truncate(h(e.comments), 20)
+             cell_text << link_to(' &raquo;', {:action => 'show_activity', :id => e.id}, :class => 'item-more') << '<br />'
              total_day_minutes += e.minutes
           end
        end
