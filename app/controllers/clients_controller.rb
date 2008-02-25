@@ -100,11 +100,6 @@ public
     assert_params_must_have :id
 
     if @client.update_attributes(params[:client])
-      if (!params[:new_password].nil? && params[:new_password] != "")
-        @clients_login = ClientsLogin.find(:first, :conditions => ['login = ? ',@client["name"]])
-        @clients_login.password = Digest::SHA1.hexdigest(params[:new_password])
-        @clients_login.save!
-      end
       flash[:notice] = 'Client has been successfully updated'
       redirect_to :action => 'show', :id => @client
     else
@@ -172,22 +167,25 @@ public
   # RJS action 
   #
   def destroy_client_login    
-    clients_login = ClientsLogin.find(params[:client_login_id])
-    @client = Client.find(clients_login.client.id)
-    
-    if clients_login.destroy
-      @result_text  = "Client's login " + clients_login.login + " removed!"
-    else 
-      @result_text  = "Error occured while deleting client\'s login"
+    begin
+      clients_login = ClientsLogin.find(params[:client_login_id])
+      @client = Client.find(clients_login.client.id)
+      if clients_login.destroy
+        @result_text  = "Client's login #{clients_login.login} removed!"
+      else
+        @result_text  = "Error occured while deleting client's login"
+      end
+    rescue Exception => e
+      @result_text  = "Error occured while deleting client's login: #{e}"
     end
-        
+
     render :update do |page|
-      page.replace_html "client_logins", :partial => "list_logins"
+      page.replace_html "client_logins", :partial => "list_logins" unless @result_text =~ /^Error/
       page['client_login_result_text'].innerHTML = @result_text
       page.visual_effect :highlight, "client_login_result_text"
     end
   end
-  
+
   #
   # Enables administrator to change client login details
   # RJS action
