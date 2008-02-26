@@ -66,9 +66,7 @@ class ClientsportalController < ApplicationController
     def show_projects
       @client = @current_client
       @projects = @client.projects
-
       render :action => "show_projects"
-            
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such client"
       redirect_to :action => :index
@@ -108,7 +106,8 @@ class ClientsportalController < ApplicationController
     #
     def show_activity
       @activity = Activity.find( params[:id] )
-      raise ActiveRecord::RecordNotFound unless @activity.project.client == @current_client 
+      raise ActiveRecord::RecordNotFound unless @activity.project.client == @current_client
+      render :layout => false if params[:embed]
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such activity"
       redirect_to :action => :index
@@ -118,8 +117,8 @@ class ClientsportalController < ApplicationController
     # Showing client ISSUED ONLY invoices.
     #
     def show_invoices
-        @invoices = @current_client.invoices    
-        render :action => "show_invoices"
+      @invoices = @current_client.invoices.find_all_by_is_issued(true)
+      render :action => "show_invoices"
     end
 
     #

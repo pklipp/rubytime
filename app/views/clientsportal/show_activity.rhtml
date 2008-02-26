@@ -1,15 +1,15 @@
 <!-- List of details of chosen activity -->
 <div class="fieldsets">
 <fieldset>
-    <legend>Activity</legend>
+  <legend>Activity</legend>
 
-            <p><b>Project: </b> <%= h @activity.project.name %></p>
-            <p><b>Date: </b> <%= @activity.date.strftime('%A %d/%m/%Y') %></p>
-            <p><b>Hours: </b> <%= hour_format(@activity.minutes) %></p>
-            <p><b>Comment: </b> <%= simple_format(h(@activity.comments)) %></p>
+  <p><b>Project: </b> <%= h @activity.project.name %></p>
+  <p><b>Date: </b> <%= @activity.date.strftime('%A %d/%m/%Y') %></p>
+  <p><b>Hours: </b> <%= hour_format(@activity.minutes) %></p>
+  <p><b>Comment: </b> <%= simple_format(h(@activity.comments)) %></p>
 
-    <p class="p_edit_back">
-    <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
-    </p>
+  <% if request.env['HTTP_REFERER'] and not params[:embed] %>
+    <p class="p_edit_back"><%= link_to 'Back', request.env['HTTP_REFERER'] %></p>
+  <% end %>
 </fieldset>
 <!-- End of list -->

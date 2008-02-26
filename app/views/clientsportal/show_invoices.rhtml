@@ -11,18 +11,15 @@
             </tr>
 
             <% for invoice in @invoices %>
-            <% if invoice.is_issued %>
-            <tr>
+              <tr>
                 <td><%=h invoice.name %></td>
                 <td align="center"><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
-                <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),
-                    :url => {:action => 'show_invoice', :id => invoice}, :class=>"nobg",
-                    :update => 'single_invoice',:before => "$('show_invoices_loader').show();" , :complete => "$('show_invoices_loader').hide();"
-                    %>
-                  
+                <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"),
+                    :url => {:action => 'show_invoice', :id => invoice}, :class => "nobg",
+                    :update => 'single_invoice', :before => "$('show_invoices_loader').show();",
+                    :complete => "$('show_invoices_loader').hide();" %>
                 </td>
-            </tr>
-            <% end %>
+              </tr>
             <% end %>
         </table>
 

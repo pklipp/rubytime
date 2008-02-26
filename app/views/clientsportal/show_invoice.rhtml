@@ -10,8 +10,6 @@
         <p><b>Name: </b><%= @invoice.name %></p>
 
         <p><b>Client: </b><%= @invoice.client.name %></p>
-        <%#<!--<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %><!--</p>-->
-        <%#<!--<p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %><!--</p>-->
         <% if @invoice.is_issued -%>
         <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") unless @invoice.issued_at.nil?  %></p>
         <% end -%>
@@ -40,13 +38,15 @@
             for activity in @activities
             minutes_sum+=activity.minutes %>
             <tr>
-                <td><%= link_to activity.project.name, :action => 'show_project', :id => activity.project %></td>
+                <td><%= link_to_remote activity.project.name, :update => 'show_details',
+                        :url => {:action => 'show_project', :id => activity.project}, :class => "nobg",
+                        :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %></td>
                 <td><%= activity.user.login %> (<%= activity.user.role.short_name.upcase %>)</td>
                 <td style="text-align: center"><%= h activity.date %></td>
                 <td style="text-align: right"> <%= hour_format(activity.minutes) %></td>
-                <td><%= link_to image_tag("show.png", :alt => "Show", :title => "Show"),
-                    {:action => "show_activity", :id => activity}, :class => "nobg" %>
-                </td>
+                <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"), :update => 'show_details',
+                        :url => {:action => 'show_activity', :id => activity, :embed => true}, :class => "nobg",
+                        :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %></td>
             </tr>
             <% end %>
 
@@ -67,4 +67,11 @@
     </fieldset>
 </div>
 
-  <%end%>
+<div id="show_details_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="show_details">
+</div>
+
+<%end%>
