@@ -12,9 +12,9 @@
                         <%= radio_button("search", "is_issued","2",{:id => 'search_is_issued_2'}) %>issued
                 </td></tr>
                 <tr><td><label>From:</label></td>
-                <td><%= date_select 'search', 'date_from', :include_blank => true  %></td></tr>
+                <td><%= calendar_date_select_tag "search[date_from]", params[:search][:date_from] %></td></tr>
                 <tr><td><label>To:</label></td>
-                <td><%= date_select 'search', 'date_to', :include_blank => true  %></td></tr>
+                <td><%= calendar_date_select_tag "search[date_to]", params[:search][:date_to] %></td></tr>
                 <tr><td><label for="search_client_id">Client:</label></td>
                     <td><%= select("search","client_id", Client.find(:all,:order=>"name").collect{|c| [c.name , c.id ] }, {:include_blank => true, :style => "width:200px"}) %>
                 </td></tr>

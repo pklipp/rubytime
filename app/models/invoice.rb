@@ -84,9 +84,39 @@ private
 
 public
 
-  # TODO
-  def self.search( conditions={} )
-    
+  def self.search(conditions = {})
+    conditions_string = '1'
+    conditions_hash = {}
+
+    case conditions[:is_issued].to_i
+      when 1: conditions_string << ' AND is_issued = false'
+      when 2: conditions_string << ' AND is_issued = true'
+    end
+
+    unless conditions[:name].blank?
+      conditions_string << ' AND invoices.name LIKE :inv_name'
+      conditions_hash[:inv_name] = "%" + conditions[:name] + "%"
+    end
+
+    unless conditions[:client_id].blank?
+      conditions_string << ' AND invoices.client_id = :client_id'
+      conditions_hash[:client_id] = conditions[:client_id]
+    end
+
+    unless conditions[:date_from].blank?
+      conditions_string << ' AND invoices.created_at >= :date_from'
+      conditions_hash[:date_from] = conditions[:date_from]
+    end
+
+    unless conditions[:date_to].blank?
+      conditions_string << ' AND invoices.created_at <= :date_to'
+      conditions_hash[:date_to] = conditions[:date_to]
+    end
+
+    self.find :all,
+      :conditions => [conditions_string, conditions_hash],
+      :include => :client,
+      :order => "created_at DESC"
   end
   
 end
