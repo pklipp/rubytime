@@ -1,7 +1,7 @@
 <!-- Partial form: Edit activity -->
 <div class="inputs">
     <label>Project:</label><br/>
-        <%= select('activity','project_id',Project.find(:all, :conditions => ["is_inactive = ?",false]).collect {|p| [ p.name, p.id ] } ) %>	
+        <%= select('activity', 'project_id', Project.find(:all).collect {|p| [ p.name, p.id ] } ) %>	
 </div>
 <div class="inputs">
     <label for="activity_comments">Comments:</label><br/>

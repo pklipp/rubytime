@@ -70,11 +70,23 @@ class Project < ActiveRecord::Base
 #   end
 
   def create_report_by_role(from_date, to_date)
+    conditions_string = 'projects.id = ?'
+    conditions_array = [self.id]
+    unless from_date.blank?
+      conditions_string << ' AND activities.date >= ?'
+      conditions_array << from_date
+    end
+    unless to_date.blank?
+      conditions_string << ' AND activities.date <= ?'
+      conditions_array << to_date
+    end
+
     activities = Activity.find :all,
-        :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?', self.id, from_date, to_date],
-        :include => [:user, :project],
-        :order => "users.role_id",
-        :joins => "left join roles on (users.role_id = roles.id)"
+      :conditions => [conditions_string, *conditions_array],
+      :include => [:user, :project],
+      :order => "users.role_id",
+      :joins => "left join roles on (users.role_id = roles.id)"
+
     reports = []
     unless activities.blank?
       minutes_sum = 0
