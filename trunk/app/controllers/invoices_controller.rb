@@ -58,6 +58,7 @@ public
   #
   def list
     @invoices = Invoice.paginate(:per_page => 10, :page => params[:page] || 1)
+    params[:search] ||= {}
   end
   
   #
@@ -65,9 +66,9 @@ public
   #
   def search
     prepare_search_dates if params[:search]
-    @invoices = Invoice.search( params[:search] )      
-
-    render :partial => '/invoices/list'  
+    params[:search] ||= {}
+    @invoices = Invoice.search(params[:search])
+    render :partial => '/invoices/list'
   end
 
   #
