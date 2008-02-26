@@ -57,7 +57,7 @@ public
   # Lists all invoices using pagination
   #
   def list
-    @invoices = Invoice.paginate(:per_page => 10, :page => params[:page] || 1)
+    @invoices = Invoice.paginate(:per_page => 10, :page => params[:page] || 1, :order => 'created_at DESC')
     params[:search] ||= {}
   end
   
