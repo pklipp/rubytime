@@ -126,7 +126,7 @@ class ClientsportalController < ApplicationController
     #
     def show_invoice
       @invoice = @current_client.invoices.find( params[:id] )
-      render :layout => false 
+      render :layout => false if params[:embed]
     rescue
       flash[:notice] = "No such invoice"
       redirect_to :action => :index

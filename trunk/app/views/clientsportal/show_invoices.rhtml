@@ -15,7 +15,7 @@
                 <td><%=h invoice.name %></td>
                 <td align="center"><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
                 <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"),
-                    :url => {:action => 'show_invoice', :id => invoice}, :class => "nobg",
+                    :url => {:action => 'show_invoice', :id => invoice, :embed => true}, :class => "nobg",
                     :update => 'single_invoice', :before => "$('show_invoices_loader').show();",
                     :complete => "$('show_invoices_loader').hide();" %>
                 </td>
