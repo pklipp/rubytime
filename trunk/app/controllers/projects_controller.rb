@@ -154,26 +154,7 @@ public
   #
   def report_by_role
     assert_params_must_have :id
-    activities = Activity.find :all,
-        :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?', params[:id], params[:from_date], params[:to_date]],
-        :include => [:user, :project],
-        :order => "users.role_id",
-        :joins => "left join roles on (users.role_id = roles.id)"
-    @reports = []
-    unless activities.blank?
-      minutes_sum = 0
-      last_role = activities.first.user.role
-      for act in activities
-        if act.user.role != last_role
-          @reports << minutes_sum
-          last_role = act.user.role
-          minutes_sum = 0
-        end
-        @reports << act
-        minutes_sum += act.minutes
-      end
-      @reports << minutes_sum
-    end
+    @reports = @project.create_report_by_role(params[:from_date], params[:to_date])
   end
 
 end

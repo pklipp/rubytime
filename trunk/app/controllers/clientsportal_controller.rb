@@ -173,17 +173,22 @@ class ClientsportalController < ApplicationController
     end
     
     def time_period
-      render :layout => false ;
+      render :layout => false
     end
-    
+
     def report_by_role
-      @reports = Activity.find :all, :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?',params[:id],params[:from_date],params[:to_date]],  :include => [:user,:project], :order => "users.role_id" , :joins => "left join roles on (users.role_id = roles.id )"
-      render :layout => false ;
+      assert_params_must_have :id
+      @project = Project.find(params[:id])
+      @reports = @project.create_report_by_role(params[:from_date], params[:to_date])
+      render :layout => false
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = "No such project"
+      redirect_to :action => :index
     end
-    
+
     def show_activity_data
       @activity = Activity.find(params[:id])
-      render :layout => false ;
+      render :layout => false
     end
     
 end

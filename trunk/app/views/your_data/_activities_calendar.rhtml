@@ -5,18 +5,7 @@
     </fieldset>
 
     <% if @current_user && @current_user.is_admin? %>
-        <br/>
-        <fieldset>
-            <legend>Select developer</legend>
-            <% form_tag :action => 'activities_calendar' do %>
-                <table><tr>
-                    <td>Developer:</td>
-                    <td><%= select_tag 'user_id', options_from_collection_for_select(User.find(:all, :order => 'name'),
-                            :id, :name, @calendar_user_id) %></td>
-                    <td><%= submit_tag 'Show' %></td>
-                </tr></table>
-            <% end %>
-        </fieldset>
+        <%= render :partial => 'user_selection' %>
     <% end %>
 
     <br/><br/>
