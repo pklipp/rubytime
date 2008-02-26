@@ -104,12 +104,12 @@ public
     end
 
     unless conditions[:date_from].blank?
-      conditions_string << ' AND invoices.created_at >= :date_from'
+      conditions_string << ' AND date(invoices.created_at) >= :date_from'
       conditions_hash[:date_from] = conditions[:date_from]
     end
 
     unless conditions[:date_to].blank?
-      conditions_string << ' AND invoices.created_at <= :date_to'
+      conditions_string << ' AND date(invoices.created_at) <= :date_to'
       conditions_hash[:date_to] = conditions[:date_to]
     end
 
