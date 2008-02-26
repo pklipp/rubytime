@@ -14,6 +14,10 @@
         <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") unless @invoice.issued_at.nil?  %></p>
         <% end -%>
         <p><b>Created by: </b><%= @invoice.user.name %></p>
+
+        <% if request.env['HTTP_REFERER'] and not params[:embed] %>
+          <p class="p_edit_back"><%= link_to 'Back', request.env['HTTP_REFERER'] %></p>
+        <% end %>
     </fieldset>
 
     <br/><br/>
