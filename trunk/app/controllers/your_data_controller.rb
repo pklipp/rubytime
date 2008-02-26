@@ -170,7 +170,7 @@ public
   def edit_activity
     assert_params_must_have :id
     render :partial => "/users/no_permissions", :layout => "main" and return false unless @activity.editable_by? @current_user
-    @projects = Project.find_active
+    @projects = Project.find(:all)
   end
 
   #
@@ -180,7 +180,7 @@ public
     assert_params_must_have :id
     render :partial => "/users/no_permissions", :layout => "main" and return false unless @activity.editable_by? @current_user
 
-    @projects = Project.find_active
+    @projects = Project.find(:all)
     # convert hours format to minutes
     params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
 

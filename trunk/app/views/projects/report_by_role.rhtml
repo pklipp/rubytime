@@ -1,10 +1,15 @@
 <div class="fieldsets">
   <fieldset>
     <legend>Report by role</legend>
-    <% unless @reports.empty? %>
-      <div style="margin-left: auto; margin-right: auto;">
-        <h1><%= @project.name %></h1>
-        <h4>from <%= params[:from_date] %> to <%= params[:to_date] %></h4>
+    <div style="margin-left: auto; margin-right: auto;">
+      <h1><%= @project.name %></h1>
+      <% unless (params[:from_date].blank? and params[:to_date].blank?) %>
+        <h4>from <%= params[:from_date].blank? ? "the beginning" : params[:from_date] %>
+            <%= params[:to_date].blank? ? "" : "to #{params[:to_date]}" %></h4>
+      <% end %>
+      <% if @reports.empty? %>
+        <p>No activities found in the specified time range.</p>
+      <% else %>
         <table class="standard">
           <tr>
             <th>Role name</th>
@@ -27,8 +32,8 @@
             </tr>
           <% end %>
         </table>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </fieldset>
 </div>
 
