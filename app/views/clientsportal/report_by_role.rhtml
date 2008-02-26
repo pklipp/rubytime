@@ -1,48 +1,41 @@
 <div class="fieldsets">
-    <fieldset>
-        <legend>Report by role</legend>
-<% if !@reports.nil? && (@reports.length != 0)%>
-<div style="margin-left: auto; margin-right: auto;">
-    <h1><%= @reports[0].project.name %></h1>
-    <h4>from <%= params[:from_date] %> to <%= params[:to_date] %></h4>
-    <table class="standard">
-        <tr>
+  <fieldset>
+    <legend>Report by role</legend>
+    <% unless @reports.empty? %>
+      <div style="margin-left: auto; margin-right: auto;">
+        <h1><%= @project.name %></h1>
+        <h4>from <%= params[:from_date] %> to <%= params[:to_date] %></h4>
+        <table class="standard">
+          <tr>
             <th>Role name</th>
-            <th>Name </th> 
+            <th>Name</th>
             <th>Time spent</th>
-        </tr>
-        <% minutes = 0
-        last_role = @reports[0].user.role.name
-        for entry in @reports 
-        minutes += entry.minutes.to_i %>
-         <%if last_role != entry.user.role.name %>
-            <td colspan="1"></td>
-            <th style="text-align: right">Sum:</th>
-            <th><%= hour_format(minutes) %></th>
-            <% minutes = entry.minutes.to_i %>
-            <% last_role = entry.user.role.name %>
-         <% end %>
-        <tr>
-            <td><%= entry.user.role.name %></td>
-            <td><%= entry.user.name %></td>
-            <td><%= hour_format(entry.minutes) %></td>
-            <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),:update => 'comments',:url => {:action => :show_activity_data , :id => entry.id}, :loaded => "new Effect.Highlight('comments');", :before => "$('loader').show();", :complete => "$('loader').hide();" %></td>
-        </tr>
-        <% end %>
-            <td colspan="1"></td>
-            <th style="text-align: right">Sum:</th>
-            <th><%= hour_format(minutes) %></th>
-
-    </table>
-</div>
-<% end %>
-</fieldset>
+          </tr>
+          <% for entry in @reports %>
+            <tr>
+            <% if entry.is_a? Integer %>
+              <td><br /></td>
+              <th style="text-align: right">Sum:</th>
+              <th><%= hour_format(entry) %></th>
+            <% else %>
+              <td><%= entry.user.role.name %></td>
+              <td><%= entry.user.name %></td>
+              <td><%= hour_format(entry.minutes) %></td>
+              <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"), :update => 'comments',
+                      :url => {:action => :show_activity_data, :id => entry.id}, :loaded => visual_effect(:highlight, 'comments'),
+                      :before => "$('loader').show();", :complete => "$('loader').hide();" %></td>
+            <% end %>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    <% end %>
+  </fieldset>
 </div>
 
 <div id="loader" style="display:none">
  <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
 </div>
-
 
 <div id="comments">
  

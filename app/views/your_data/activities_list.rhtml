@@ -7,9 +7,13 @@
 	</fieldset>
 <!-- End of form -->
 
-<br/><br/>
+<% if @current_user && @current_user.is_admin? %>
+    <%= render :partial => 'user_selection' %>
+<% end %>
 
-<!-- Form: serach activities -->
+<br/>
+
+<!-- Form: search activities -->
 
 <% form_tag({:action => 'search', :id => @activity}) do %>
     <fieldset>

@@ -57,23 +57,47 @@ class Project < ActiveRecord::Base
     self.find( :all, :conditions=> [cond_str] + cond_arr, :order=> "is_inactive" )
   end
 
-  def self.report_by_role( project_id, from_date, to_date )
-      sql_str = "SELECT roles.name as role_name, sum(activities.minutes) as minutes " +
-      " FROM ((users left join activities on activities.user_id = users.id) LEFT JOIN projects on projects.id = activities.project_id) LEFT JOIN roles ON users.role_id = roles.id " +
-      " WHERE projects.id = ? AND " +
-      " activities.date <= ? AND " +        
-      " activities.date >= ? " + 
-      " GROUP BY roles.name"
-      sql_arr = [ project_id, to_date, from_date ]
+#   def self.report_by_role( project_id, from_date, to_date )
+#       sql_str = "SELECT roles.name as role_name, sum(activities.minutes) as minutes " +
+#       " FROM ((users left join activities on activities.user_id = users.id) LEFT JOIN projects on projects.id = activities.project_id) LEFT JOIN roles ON users.role_id = roles.id " +
+#       " WHERE projects.id = ? AND " +
+#       " activities.date <= ? AND " +        
+#       " activities.date >= ? " + 
+#       " GROUP BY roles.name"
+#       sql_arr = [ project_id, to_date, from_date ]
+# 
+#       @reports = self.find_by_sql( [sql_query] + sql_arr )
+#   end
 
-      @reports = self.find_by_sql( [sql_query] + sql_arr )
+  def create_report_by_role(from_date, to_date)
+    activities = Activity.find :all,
+        :conditions => ['projects.id = ? and activities.date >= ? and activities.date <= ?', self.id, from_date, to_date],
+        :include => [:user, :project],
+        :order => "users.role_id",
+        :joins => "left join roles on (users.role_id = roles.id)"
+    reports = []
+    unless activities.blank?
+      minutes_sum = 0
+      last_role = activities.first.user.role
+      for act in activities
+        if act.user.role != last_role
+          reports << minutes_sum
+          last_role = act.user.role
+          minutes_sum = 0
+        end
+        reports << act
+        minutes_sum += act.minutes
+      end
+      reports << minutes_sum
+    end
+    reports
   end
-  
+
   # Returns String
   # * -YES- if project is active
   # * -NO- if project is not active
   def active_text
     is_inactive? ? "NO" : "YES"
   end
-  
+
 end
