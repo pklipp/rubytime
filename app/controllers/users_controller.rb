@@ -103,6 +103,11 @@ public
   def update
     assert_params_must_have :id
 
+    if @user == @current_user
+      # don't allow to deactivate the current user
+      params[:user].delete(:is_inactive)
+    end
+
     @selected = {'role_id' => ''}
     if (@user.role)
       @selected['role_id']=@user.role.id.to_i
