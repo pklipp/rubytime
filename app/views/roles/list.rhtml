@@ -15,15 +15,20 @@
         </tr>
   
         <% for role in @roles %>
-        <tr>
-            <td><%= h role.name %></td>
-            <td style="text-align: center"><%= h role.short_name.upcase %></td>
-            <td style="text-align: center"><% if role.is_admin? %>X<% end %>
-            </td>
-            
-            <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:action => 'show', :id => role}, :class=>"nobg" %></td>
-        <td><%= link_to image_tag("edit.png", :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => role}, :class=>"nobg" %></td>
-        </tr>
+          <tr>
+              <td><%= h role.name %></td>
+              <td style="text-align: center"><%= h role.short_name.upcase %></td>
+              <td style="text-align: center"><% if role.is_admin? %>X<% end %></td>
+  
+              <td><%= link_to image_tag("show.png", :alt => "Show", :title => "Show"), {:action => 'show', :id => role}, :class => "nobg" %></td>
+              <td><%= link_to image_tag("edit.png", :alt => "Edit", :title => "Edit"), {:action => 'edit', :id => role}, :class => "nobg" %></td>
+              <td>
+                <% if role.users.empty? %>
+                  <%= link_to image_tag("remove.png", :alt => "Remove", :title => "Remove"), {:action => 'confirm_destroy', :id => role},
+                      :confirm => 'Are you sure?', :class => "nobg" %>
+                <% end %>
+              </td>
+          </tr>
         <% end %>
         </table>
     </fieldset>

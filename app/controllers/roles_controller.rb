@@ -98,6 +98,9 @@ public
   def update
     assert_params_must_have :id
 
+    # don't allow to change admin status if the role has any users assigned
+    params[:role].delete(:is_admin) unless @role.users.empty?
+
     if @role.update_attributes(params[:role])
       flash[:notice] = 'Role has been successfully updated'
       redirect_to :action => 'show', :id => @role
@@ -106,12 +109,36 @@ public
     end
     
   end
-  
+
+  def confirm_destroy
+    assert_params_must_have :id
+    unless @role.users.empty?
+      flash[:error] = "You can't delete a role that has users assigned to it."
+      redirect_to :action => 'list'
+    end
+  end
+
   #
   # Removes role. Not allowed.
   #
   def destroy
-    # Role.find(params[:id]).destroy
+    assert_params_must_have :id
+
+    unless @role.users.empty?
+      flash[:error] = "You can't delete a role that has users assigned to it."
+      return redirect_to :action => 'list'
+    end
+
+    if params[:name_confirmation] == @role.name
+      if @role.destroy
+        flash[:notice] = 'Role has been deleted'
+      else
+        flash[:error] = 'Error occured while deleting role'
+      end
+    else
+      flash[:error] = 'The role has not been deleted, since the name was different'
+    end
+
     redirect_to :action => 'list'
   end
 end
