@@ -56,25 +56,21 @@
                     </b>
                 </p>
                 
-                <% unless @current_user.is_inactive %>
+                <div class="menu-icon ">				                
+                    <%= link_to([ image_tag("activities-big.png", :size => "32x32", :alt => "Your Data", :style => "vertical-align: middle;"), " Your activities"] ,:controller => "your_data", :action => "activities_list") %>
+                </div>
                 
-                    <div class="menu-icon ">				                
-                        <%= link_to([ image_tag("projects.png", :size => "32x32", :alt => "Your Data", :style => "vertical-align: middle;"), " Your data"] ,:controller => "your_data", :action => "activities_list") %>
-                    </div>
-                    
-						        <div class="menu-icon ">				
-                        <%= link_to([image_tag("calendar.png", :size => "32x32", :alt => "Calendar", :style => "vertical-align: middle;"), " Calendar"], :controller => "your_data", :action => "activities_calendar") %>
-                    </div>
-						        
-                    <div class="menu-icon ">				
-                        <%= link_to([image_tag("new-activity.png", :size => "32x32", :alt => "New activity", :style => "vertical-align: middle;"), " Enter activity"] ,:controller => "your_data", :action => "new_activity") %>
-                    </div>      
-						        
-						        <div class="menu-icon ">				                
-                        <%= link_to([ image_tag("profile.png", :size => "32x32", :alt => "Profile", :style => "vertical-align: middle;"), " Your profile"] ,:controller => "your_data", :action => "edit_profile") %>
-                    </div>
-
-                <% end %>
+						    <div class="menu-icon ">				
+                    <%= link_to([image_tag("calendar.png", :size => "32x32", :alt => "Calendar", :style => "vertical-align: middle;"), " Calendar"], :controller => "your_data", :action => "activities_calendar") %>
+                </div>
+						    
+                <div class="menu-icon ">				
+                    <%= link_to([image_tag("new-activity.png", :size => "32x32", :alt => "New activity", :style => "vertical-align: middle;"), " Enter activity"] ,:controller => "your_data", :action => "new_activity") %>
+                </div>      
+						    
+						    <div class="menu-icon ">				                
+                    <%= link_to([ image_tag("profile.png", :size => "32x32", :alt => "Profile", :style => "vertical-align: middle;"), " Your profile"] ,:controller => "your_data", :action => "edit_profile") %>
+                </div>
 
                 <br/>
                 <hr />

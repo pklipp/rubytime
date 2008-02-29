@@ -39,11 +39,15 @@ class LoginController < ApplicationController
     elsif request.post?
       logged_in_user = User.authorize(params[:log_user][:login], params[:log_user][:password])      
       if logged_in_user.kind_of? User
-        session[:user_id] = logged_in_user.id
-        redirect_to(:controller => "your_data")
+        if logged_in_user.is_inactive?
+          flash[:error] = "Your account is currently inactive"
+        else
+          session[:user_id] = logged_in_user.id
+          redirect_to(:controller => "your_data")
+        end
       else
         session[:user_id] = nil
-        flash[:notice] = "Invalid user/password combination"
+        flash[:error] = "Invalid user/password combination"
       end
     end
   end
