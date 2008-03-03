@@ -93,15 +93,16 @@ public
   #
   def create
     @project = Project.new(params[:project])
+    @project.client_id = params[:project][:client_id]
     @selected['client_id'] = @project.client.id if @project.client
-    
+
     if @project.save
       flash[:notice] = 'Project has been successfully created'
       redirect_to :action => 'list'
     else
       render :action => 'new'
     end
-    
+
   end
   
   #
@@ -116,7 +117,7 @@ public
   #
   def update
     assert_params_must_have :id
-        
+
     if @project.update_attributes(params[:project])
       flash[:notice] = 'Project has been successfully updated'
       redirect_to :action => 'show', :id => @project

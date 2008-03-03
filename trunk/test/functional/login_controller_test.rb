@@ -33,7 +33,7 @@ class LoginControllerTest < Test::Unit::TestCase
     post(:login, :log_user => {:login=> "wrong_login1111", :password => "wrong password"})
     assert_response :success
     assert_template "login"
-    assert_not_nil flash[:notice]
+    assert_not_nil flash[:error]
     assert_nil session[:user_id]
   end
 

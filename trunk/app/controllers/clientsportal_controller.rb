@@ -30,12 +30,16 @@ class ClientsportalController < ApplicationController
         else
             logged_in_client = ClientsLogin.authorize(params[:log_client][:login], params[:log_client][:password])
             if logged_in_client.kind_of? Client
-                session[:client_id] = logged_in_client.id
-                session[:client_login] = params[:log_client][:login] 
-                redirect_to(:action => "index")
+                if logged_in_client.is_inactive?
+                    flash[:error] = "Your account is currently inactive"
+                else
+                    session[:client_id] = logged_in_client.id
+                    session[:client_login] = params[:log_client][:login]
+                    redirect_to(:action => "index")
+                end
             else
                 session[:client_id] = nil
-                flash[:notice] = "Invalid client login/password combination"
+                flash[:error] = "Invalid client login/password combination"
             end
         end
     end

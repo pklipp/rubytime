@@ -105,7 +105,7 @@ public
 
     if @user == @current_user
       # don't allow to deactivate the current user
-      params[:user].delete(:is_inactive)
+      params[:user].delete(:is_inactive) if params[:user]
     end
 
     @selected = {'role_id' => ''}
