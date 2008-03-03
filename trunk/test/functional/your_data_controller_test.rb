@@ -27,7 +27,7 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'activities_list'
     assert_not_nil assigns(:activities)
-    assert_equal 6, assigns(:activities).length
+    assert_equal 7, assigns(:activities).length
     #chronological order
     assert descending?(assigns(:activities), :date), "Activities should be ascending"
     

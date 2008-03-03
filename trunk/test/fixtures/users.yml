@@ -19,3 +19,32 @@ dev:
   role_id: 2
   is_inactive: false
 
+john:
+  id: 3
+  name: John Smith
+  login: john
+  salt: johnsalt
+  password_hash: <%= User.hashed_pass("jjjj", "johnsalt") %>
+  email: john@a.com
+  role_id: 2
+  is_inactive: false
+
+kate:
+  id: 4
+  name: Kate Brown
+  login: kate
+  salt: 12345
+  password_hash: <%= User.hashed_pass("pass", "12345") %>
+  email: kate@a.com
+  role_id: 2
+  is_inactive: true
+
+bob:
+  id: 5
+  name: Bob O'Neill
+  login: bob
+  salt: 54321
+  password_hash: <%= User.hashed_pass("kashglsidjncvlasji", "54321") %>
+  email: bob@a.com
+  role_id: 2
+  is_inactive: false

@@ -13,7 +13,7 @@ class ClientTest < Test::Unit::TestCase
   end
   
   def test_clients_count
-    assert_equal 3, Client.count
+    assert_equal 5, Client.count
   end
   
   def test_client_content
@@ -26,5 +26,17 @@ class ClientTest < Test::Unit::TestCase
     cs = Client.find_active
     cs.each{|c| assert !c.is_inactive}
   end
-  
+
+  def test_search
+    found = Client.search("name")
+    assert_equal 3, found.size
+    assert_equal [false] * 2 + [true], found.collect {|cl| cl.is_inactive?}
+  end
+
+  def test_search_2
+    found = Client.search("ent")
+    assert_equal 5, found.size
+    assert_equal [false] * 3 + [true] * 2, found.collect {|cl| cl.is_inactive?}
+  end
+
 end
