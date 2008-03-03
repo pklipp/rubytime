@@ -99,7 +99,7 @@ public
     assert_params_must_have :id
 
     # don't allow to change admin status if the role has any users assigned
-    params[:role].delete(:is_admin) unless @role.users.empty?
+    params[:role].delete(:is_admin) unless params[:role].nil? or @role.users.empty?
 
     if @role.update_attributes(params[:role])
       flash[:notice] = 'Role has been successfully updated'

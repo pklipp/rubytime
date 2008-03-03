@@ -29,10 +29,12 @@ class Project < ActiveRecord::Base
   has_many :activities, :dependent => :destroy
   belongs_to :client
   has_many :users, :through => :activities
-  
+
   validates_presence_of :name, :description, :client_id
   validates_uniqueness_of :name
-  
+
+  attr_protected :client_id
+
   # Finds all active projects
   def self.find_active
     Project.find(:all, :conditions => {:is_inactive => false}, 

@@ -37,14 +37,13 @@ class ClientsportalControllerTest < Test::Unit::TestCase
   def test_login_with_invalid_client
     post :login, {:log_client => {:login => "wrongclient", :password => "wrongpassword"}}
     assert_response :success
-    assert_equal "Invalid client login/password combination", flash[:notice]
+    assert_equal "Invalid client login/password combination", flash[:error]
   end
   
   def test_login_with_inactive_client
     post :login, {:log_client => {:login => "client3", :password => "pass-client3"}}
-    follow_redirect
     assert_response :success
-    assert_tag :tag => "div", :attributes => {:id => "errorNotice"}, :content => /Your account is not active. Please contact to administrator./
+    assert_equal "Your account is currently inactive", flash[:error]
   end
   
   def test_index_with_valid_client
