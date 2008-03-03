@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ActivityTest < Test::Unit::TestCase
-  fixtures :activities
+  fixtures :activities, :users
 
   def setup
     @activity = Activity.find :first
@@ -15,4 +15,35 @@ class ActivityTest < Test::Unit::TestCase
     assert_equal nil, Activity.convert_duration("x")
     assert_equal nil, Activity.convert_duration("1m")
   end
+
+  def test_viewable_by_admin
+    admin = users(:pm)
+    assert Activity.find(:all).all? {|act| act.viewable_by?(admin)}
+  end
+
+  def test_viewable_by_dev
+    dev = users(:dev)
+    assert_equal 3, Activity.find(:all).find_all {|act| act.viewable_by?(dev)}.size
+  end
+
+  def test_editable_by_admin
+    admin = users(:pm)
+    assert_equal 8, Activity.find(:all).find_all {|act| act.editable_by?(admin)}.size
+  end
+
+  def test_editable_by_dev
+    dev = users(:dev)
+    assert_equal 2, Activity.find(:all).find_all {|act| act.editable_by?(dev)}.size
+  end
+
+  def test_project_activities
+    acts = Activity.project_activities(1, 8, 2006)
+    assert_equal 4, acts.size
+    acts.each do |a|
+      assert_equal Activity, a.class
+      assert_equal 2006, a.date.year
+      assert_equal 8, a.date.month
+    end
+  end
+
 end

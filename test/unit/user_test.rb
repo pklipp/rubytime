@@ -7,11 +7,6 @@ class UserTest < Test::Unit::TestCase
     @user = User.find :first
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert_kind_of User,  @user
-  end
-
   def test_authorize
     assert_nil User.authorize("", "")
     assert_nil User.authorize("wrong!!", "wrong")
@@ -23,5 +18,46 @@ class UserTest < Test::Unit::TestCase
     assert_equal u.login, "fox"
     assert_equal u.role.name, "Developer"
   end
-  
+
+  def test_email_formats
+    good = ["jozek@onet.pl", "jan.kowalski@gmail.com", "george_w_bush@whitehouse.gov", "a.b.c@mail.test-site.test-domain.pl", "ME@MYSERVER.ORG"]
+    bad = ["jozek@onet.p", "@home", "root@localhost", "test", "tooshort@pl", "user@test_site.pl", "one@two@three"]
+    good.each {|email| assert check_email_format(email), "Email address #{email} should be accepted"}
+    bad.each {|email| assert !check_email_format(email), "Email address #{email} should not be accepted"}
+  end
+
+  def test_hashed_pass
+    assert_equal "a7faba4b6f65e5ed718914e6cfa701becc402a55", User.hashed_pass("mypassword", "12345")
+  end
+
+  def test_create_new_salt_should_be_random
+    s1 = User.create_new_salt
+    s2 = User.create_new_salt
+    assert_not_equal s1, s2
+  end
+
+  def test_find_active
+    assert_equal %w(admin bob fox john), User.find_active.collect(&:login)
+  end
+
+  def test_password_equals
+    @user.salt = User.create_new_salt
+    @user.password = "boss"
+    assert @user.password_equals?("boss")
+  end
+
+  def test_search
+    found = User.search("l")
+    assert_equal 2, found.size
+    assert found.include?(users(:bob))
+    assert found.include?(users(:pm))
+  end
+
+  private
+
+  def check_email_format(email)
+    @user.email = email
+    @user.valid?
+  end
+
 end

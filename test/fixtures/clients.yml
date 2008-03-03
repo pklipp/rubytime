@@ -13,3 +13,14 @@ inactive_client:
   name: client3-name
   description: Client nr 3
   is_inactive: 1
+
+big:
+  id: 4
+  name: Big Company
+  description: Our best client
+
+test:
+  id: 5
+  name: Test client
+  description: Just for testing
+  is_inactive: 1
