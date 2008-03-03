@@ -37,7 +37,7 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_find_active
-    assert_equal %w(admin bob fox john), User.find_active.collect(&:login)
+    assert_equal %w(admin bob fox john admin2), User.find_active.collect(&:login)
   end
 
   def test_password_equals
