@@ -137,12 +137,12 @@ public
     @user.password = params[:user][:password]
     @user.password_confirmation = params[:user][:password_confirmation]
 
-    if(@user.valid?)
+    if @user.valid?
       if @user.save
-        flash[:notice] = "Password has been succesfully updated "
-        redirect_to :action => :index   
+        flash[:notice] = "Password has been successfully updated"
+        redirect_to :action => :index
       else
-        flash[:notice] = "Updating error"
+        flash[:error] = "Updating error"
         @user.password = nil
         @user.password_confirmation = nil
         render :action => 'edit_password'
@@ -151,7 +151,7 @@ public
       @user.password = nil
       @user.password_confirmation = nil
       render :action => 'edit_password'
-    end 
+    end
   end
 
   #

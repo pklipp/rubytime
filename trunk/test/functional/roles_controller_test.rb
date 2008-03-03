@@ -75,18 +75,39 @@ class RolesControllerTest < Test::Unit::TestCase
     assert_redirected_to :action => 'show', :id => 1
   end
 
-  def test_destroy
+  def test_destroy_doesnt_delete_role_with_users
     roles_count = Role.count
-    assert_not_nil Role.find(1)
+    assert_nothing_raised {Role.find(1)}
 
     post :destroy, :id => 1
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    #roles destroy not allowed yet
     assert_equal roles_count, Role.count
-#    assert_raise(ActiveRecord::RecordNotFound) {
-#      Role.find(1)
-#    }
+    assert_nothing_raised {Role.find(1)}
+  end
+
+  def test_destroy_doesnt_delete_role_without_confirmation
+    roles_count = Role.count
+    assert_nothing_raised {Role.find(3)}
+
+    post :destroy, :id => 3
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+
+    assert_equal roles_count, Role.count
+    assert_nothing_raised {Role.find(3)}
+  end
+
+  def test_destroy_deletes_role_without_users
+    roles_count = Role.count
+    assert_nothing_raised {Role.find(3)}
+
+    post :destroy, :id => 3, :name_confirmation => "Accountant"
+    assert_response :redirect
+    assert_redirected_to :action => 'list'
+
+    assert_equal roles_count - 1, Role.count
+    assert_raise(ActiveRecord::RecordNotFound) {Role.find(3)}
   end
 end

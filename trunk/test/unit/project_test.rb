@@ -32,7 +32,7 @@ class ProjectTest < Test::Unit::TestCase
     assert_equal 3, Project.search({:name => "cool"}).size
     assert_equal 2, Project.search({:name => "t2"}).size
     assert_equal 1, Project.search({:name => "t2", :client_id => 1}).size
-    assert Project.search({:name => "t2", :client_id => 1})[0].is_a?(Project)
+    assert_kind_of Project, Project.search({:name => "t2", :client_id => 1})[0]
   end
 
   def test_create_report_by_role

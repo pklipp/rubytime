@@ -40,7 +40,7 @@ class ActivityTest < Test::Unit::TestCase
     acts = Activity.project_activities(1, 8, 2006)
     assert_equal 4, acts.size
     acts.each do |a|
-      assert_equal Activity, a.class
+      assert_kind_of Activity, a
       assert_equal 2006, a.date.year
       assert_equal 8, a.date.month
     end

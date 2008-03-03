@@ -7,11 +7,6 @@ class ClientTest < Test::Unit::TestCase
     @client = Client.find :first
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert_kind_of Client,  @client
-  end
-  
   def test_clients_count
     assert_equal 5, Client.count
   end

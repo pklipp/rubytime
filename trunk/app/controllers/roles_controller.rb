@@ -126,7 +126,7 @@ public
 
     unless @role.users.empty?
       flash[:error] = "You can't delete a role that has users assigned to it."
-      return redirect_to :action => 'list'
+      return redirect_to(:action => 'list')
     end
 
     if params[:name_confirmation] == @role.name
