@@ -186,10 +186,8 @@ class ClientsportalControllerTest < Test::Unit::TestCase
     get :show_invoice, :id => 666
     assert_redirected_to :action => :index
   end
-  
-  
-  
-  
+
+
   # 
   # private methods
   #

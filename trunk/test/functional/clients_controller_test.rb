@@ -158,4 +158,45 @@ class ClientsControllerTest < Test::Unit::TestCase
     get :list
     assert_tag :tag => "a", :attributes => { :href => "/clients/new" }
   end
+
+  def test_add_new_login
+    client = clients(:big)
+    post :add_new_login, :id => client.id, :new_login => 'ceo', :new_password => 'pizza'
+
+    client.reload
+    assert_equal 1, client.clients_logins.size
+    assert_equal 'ceo', client.clients_logins[0].login
+    assert client.clients_logins[0].password_equals?('pizza')
+
+    assert_match /client added/i, assigns(:result_text)
+  end
+
+  def test_destroy_client_login
+    client = clients(:test)
+    login = clients_logins(:test2)
+    assert client.clients_logins.include?(login)
+    assert_equal 2, client.clients_logins.size
+    post :destroy_client_login, :client_login_id => login.id
+
+    client.reload
+    assert_equal 1, client.clients_logins.size
+    assert !client.clients_logins.include?(login)
+
+    assert_match /removed/i, assigns(:result_text)
+  end
+
+  def test_change_clients_login_password
+    client = clients(:test)
+    login = clients_logins(:test2)
+    assert client.clients_logins.include?(login)
+    post :change_clients_login_password, :client_login_id => login.id, :new_password => 'passpass'
+
+    client.reload
+    login.reload
+    assert_equal 2, client.clients_logins.size
+    assert client.clients_logins.include?(login)
+    assert login.password_equals?('passpass')
+
+    assert_match /password changed/i, assigns(:result_text)
+  end
 end

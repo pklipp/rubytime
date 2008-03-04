@@ -37,6 +37,15 @@ class LoginControllerTest < Test::Unit::TestCase
     assert_nil session[:user_id]
   end
 
+  def test_login_inactive_user
+    post :login, :log_user => {:login => 'kate', :password => 'pass'}
+    assert_response :success
+    assert_template "login"
+    assert_not_nil flash[:error]
+    assert_match /inactive/, flash[:error]
+    assert_nil session[:user_id]
+  end
+
   def test_logout
     login_as :pm
     assert_not_nil session[:user_id]
