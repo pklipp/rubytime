@@ -29,8 +29,10 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:activities)
     assert_equal 7, assigns(:activities).length
     #chronological order
-    assert descending?(assigns(:activities), :date), "Activities should be ascending"
-    
+    assert descending?(assigns(:activities), :date), "Activities should be in descending order"
+  end
+
+  def test_activities_list_with_yead_and_month
     #with session conditions
     @request.session[:year] = 2006.to_s
     @request.session[:month] = 8.to_s
@@ -39,7 +41,14 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert_equal Activity.count(:conditions => "#{SqlFunction.get_month_equation('date', 8)} AND #{SqlFunction.get_year('date')} = '2006' " +
       " AND user_id = #{users(:pm).id}"), assigns(:activities).size
     #chronological order
-    assert descending?(assigns(:activities), :date), "Activities should be ascending"
+    assert descending?(assigns(:activities), :date), "Activities should be in descending order"
+  end
+
+  def test_activities_list_with_search_params
+    get :activities_list, :search => {:date_from => "2000-01-01", :date_to => "2004-04-04", :user_id => 1}
+    assert_not_nil assigns(:activities)
+    assert_equal 2, assigns(:activities).size
+    assert descending?(assigns(:activities), :date), "Activities should be in descending order"
   end
 
   def test_show_activity
@@ -50,6 +59,14 @@ class YourDataControllerTest < Test::Unit::TestCase
 
     assert_not_nil assigns(:activity)
     assert assigns(:activity).valid?
+  end
+
+  def test_show_activity_doesnt_show_other_users_activities
+    login_as :dev
+    get :show_activity, :id => 1
+
+    assert_response :success
+    assert_template '/users/_no_permissions'
   end
 
   def test_new_activity
