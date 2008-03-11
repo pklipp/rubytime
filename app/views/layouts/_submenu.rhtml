@@ -3,12 +3,7 @@
 <% if (!@current_user.nil? && !@current_user.is_inactive)  %>
     <ul>
         <li>&nbsp;</li>
-				<!--
-				<li>  
-        <%= link_to("Your data",{:controller => "your_data", :action => 'activities_list'},
-                          :class=> ( (params[:controller]=="your_data" ) ?  "active" : nil) ) %>
-        </li> -->
-        
+
         <% if @current_user.has_permissions_to?("clients", "list") %>
         <li>
         <%= link_to("Clients",
