@@ -1,0 +1,71 @@
+!!! XML
+!!! Strict
+%html{"xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en"}
+  %head
+    /
+      :plain
+        # ************************************************************************
+        # Time Tracker
+        # Copyright (c) 2006 Lunar Logic Polska sp. z o.o.
+        # 
+        # Permission is hereby granted, free of charge, to any person obtaining a 
+        # copy of this software and associated documentation files (the 
+        # "Software"), to deal in the Software without restriction, including 
+        # without limitation the rights to use, copy, modify, merge, publish, 
+        # distribute, sublicense, and/or sell copies of the Software, and to 
+        # permit persons to whom the Software is furnished to do so, subject to 
+        # the following conditions:
+        # 
+        # The above copyright notice and this permission notice shall be included 
+        # in all copies or substantial portions of the Software.
+        # 
+        # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+        # OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+        # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+        # IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+        # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+        # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+        # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        # ************************************************************************
+    %title
+    %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=UTF-8"}
+    %meta{:name => "author", :content => "Lunar Logic Polska"}
+    = stylesheet_link_tag 'rubytime'
+    = javascript_include_tag :defaults
+    = calendar_date_select_includes
+  %body
+    #banner= image_tag "rubytimelogo.png", :alt => "RubyTime logo"
+    #top-menu= render :partial => 'layouts/submenu'
+    #sub-menu
+      - unless @current_client.nil?
+        %p
+          Welcome
+          %span.bold= session[:client_login]
+      - unless (@current_client.nil? || @current_client.is_inactive)
+        %div.menu-icon
+          = link_to(image_tag("projects.png") + "Projects", :controller => "clientsportal", :action => "show_projects")
+        %div.menu-icon  
+          = link_to(image_tag("profile.png") + "Your profile", :controller => "clientsportal", :action => "show_profile")
+        %div.menu-icon
+          = link_to(image_tag("invoices.png") + "Invoices", :controller => "clientsportal", :action => "show_invoices")
+        %div.menu-icon
+          = link_to(image_tag("activities-big.png", :alt => "Activities") + "Activities", :controller => "clientsportal", :action => "show_activities")
+        %br
+        %hr
+        %br
+      - unless @current_client.nil?
+        %div.menu-icon
+          = link_to([image_tag("logout.png"), " Logout"] ,:controller => "login",:action => "login")
+        %br
+        %hr
+        %br
+      %p= link_to "Credits", :controller => 'login', :action => 'credits'
+      %p= RUBYTIME_VERSION
+    #content
+      - if flash[:notice]
+        %p.flashNotice= flash[:notice]
+      - if flash[:warning]
+        %p.flashWarning= flash[:warning]
+      - if flash[:error]
+        %p.flashError= flash[:error]
+      = yield 

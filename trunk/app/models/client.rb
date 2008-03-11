@@ -44,7 +44,11 @@ class Client < ActiveRecord::Base
     # Returns text 'NO' or 'YES' based on if user is active
     #
     def active_text
-        is_inactive ? "NO" : "YES"
+       is_inactive ? "NO" : "YES"
+    end
+    
+    def is_active
+      !is_inactive
     end
 
     #
