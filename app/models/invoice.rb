@@ -88,9 +88,9 @@ public
     conditions_string = '1'
     conditions_hash = {}
 
-    case conditions[:is_issued].to_i
-      when 1: conditions_string << ' AND is_issued = false'
-      when 2: conditions_string << ' AND is_issued = true'
+    if conditions[:is_issued].to_i > 0
+      conditions_hash[:is_issued] = (conditions[:is_issued].to_i == 2) ? true : false
+      conditions_string << ' AND is_issued = :is_issued'
     end
 
     unless conditions[:name].blank?

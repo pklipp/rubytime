@@ -29,7 +29,8 @@ class User < ActiveRecord::Base
   
   has_many :activities, :dependent => :destroy
   has_many :projects, :through => :activities, :group => "project_id"
-  
+#  has_one :rss_feed, :as => :owner, :dependent => :destroy
+
   belongs_to :role
 
   validates_presence_of :login, 
@@ -60,7 +61,7 @@ class User < ActiveRecord::Base
   # Active users are returned first
   #
   def self.search( text )
-    self.find(:all,:conditions => ["login LIKE ? OR name LIKE ?", "%{text}%", "%#{text}%"], :order => "is_inactive")
+    self.find(:all, :conditions => ["login LIKE ? OR name LIKE ?", "%#{text}%", "%#{text}%"], :order => "is_inactive")
   end
 
   #
@@ -134,8 +135,7 @@ class User < ActiveRecord::Base
   # Finds all +active+ users sorted in +alphabetic order+
   #
   def User.find_active
-    User.find(:all, :conditions => "is_inactive = 0",
-      :order => "name")
+    User.find_all_by_is_inactive(false, :order => "name")
   end
 
 end

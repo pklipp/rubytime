@@ -44,11 +44,11 @@ class Client < ActiveRecord::Base
     # Returns text 'NO' or 'YES' based on if user is active
     #
     def active_text
-       is_inactive ? "NO" : "YES"
+       is_inactive? ? "NO" : "YES"
     end
-    
-    def is_active
-      !is_inactive
+
+    def is_active?
+      !is_inactive?
     end
 
     #
@@ -58,6 +58,6 @@ class Client < ActiveRecord::Base
     def self.search( text )
       Client.find(:all,:conditions => ["name LIKE ? OR description LIKE ?", "%#{text}%", "%#{text}%"], :order => "is_inactive")
     end
-    
+
 
 end

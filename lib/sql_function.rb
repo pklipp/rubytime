@@ -33,7 +33,7 @@ module SqlFunction
         return "strftime(\"%W\",#{param})"
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="sqlite3" 
         return "strftime(\"%W\",#{param})"
-      #Postgres not testet yet!
+      # Postgresql not tested yet!
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="postgres" 
         return "EXTRACT(WEEK FROM #{param})"
       else
@@ -48,7 +48,7 @@ module SqlFunction
         return "strftime(\"%m\",#{param})"
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="sqlite3" 
         return "strftime(\"%m\",#{param})"
-      #Postgres not testet yet!
+      # Postgresql not tested yet!
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="postgres" 
         return "EXTRACT(MONTH FROM #{param})"
       else
@@ -64,7 +64,7 @@ module SqlFunction
         return "strftime(\"%Y\",#{param})"
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="sqlite3" 
         return "strftime(\"%Y\",#{param})"
-      #Postgres not testet yet!
+      # Postgresql not tested yet!
       elsif ActiveRecord::Base.configurations[RAILS_ENV]['adapter']=="postgres" 
         return "EXTRACT(YEAR FROM #{param})"
       else

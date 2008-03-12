@@ -37,7 +37,7 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_find_active
-    assert_equal %w(admin bob fox john admin2), User.find_active.collect(&:login)
+    assert_equal %w(admin admin2 bob brown fox john), User.find_active.collect(&:login).sort
   end
 
   def test_password_equals
@@ -51,6 +51,11 @@ class UserTest < Test::Unit::TestCase
     assert_equal 2, found.size
     assert found.include?(users(:bob))
     assert found.include?(users(:pm))
+
+    found = User.search("bro")
+    assert_equal 2, found.size
+    assert found.include?(users(:kate))
+    assert found.include?(users(:brown))
   end
 
   private
