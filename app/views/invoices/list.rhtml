@@ -7,9 +7,9 @@
         <legend>Search</legend>
         <table><tbody>
                 <tr><td colspan="2">
-                        <%= radio_button("search", "is_issued","0", {:id => 'search_is_issued_0', :checked => "checked"}) %>all
-                        <%= radio_button("search", "is_issued","1",{:id => 'search_is_issued_1'}) %>unissued
-                        <%= radio_button("search", "is_issued","2",{:id => 'search_is_issued_2'}) %>issued
+                        <%= radio_button "search", "is_issued", "0", :id => 'search_is_issued_0', :checked => "checked" %><label for="search_is_issued_0">all</label>
+                        <%= radio_button "search", "is_issued", "1", :id => 'search_is_issued_1' %><label for="search_is_issued_1">unissued</label>
+                        <%= radio_button "search", "is_issued", "2", :id => 'search_is_issued_2' %><label for="search_is_issued_2">issued</label>
                 </td></tr>
                 <tr><td><label>From:</label></td>
                 <td><%= calendar_date_select_tag "search[date_from]", params[:search][:date_from] %></td></tr>

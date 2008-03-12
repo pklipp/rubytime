@@ -5,7 +5,7 @@
     <fieldset>
         <legend>Search clients</legend>
         <% form_remote_tag :update => 'clients_list', :url => {:controller => 'clients', :action => 'search'} do%>
-        <p><label>Name or description:</label></p>
+        <p><label for="search">Name or description:</label></p>
         <p><%= text_field_tag("search", value = params[:search], :size => 32) %></p>
         <p><%= submit_tag 'Search'%></p>
         <% end %>

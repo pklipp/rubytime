@@ -1,6 +1,6 @@
 <!-- Partial form: Add/Edit user -->
 <div class="inputs">
-    <label>Login: </label>
+    <label for="user_login">Login: </label>
     <% if(params[:action]=="new" || params[:action]=="create" ) %>
         <br/><%= text_field('user', 'login', :size => 32, :maxlength => 32) %>
     <% else %>

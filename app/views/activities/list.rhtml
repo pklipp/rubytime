@@ -18,9 +18,9 @@
 
         <table><tbody>
         <tr><td colspan="2">
-        <%= radio_button_tag("search[is_invoiced]","0",params[:search][:is_invoiced].to_i == 0,{:id => 'search_is_invoiced_0'}) %>all
-        <%= radio_button_tag("search[is_invoiced]","1",params[:search][:is_invoiced].to_i == 1,{:id => 'search_is_invoiced_1'}) %>uninvoiced
-        <%= radio_button_tag("search[is_invoiced]","2",params[:search][:is_invoiced].to_i == 2,{:id => 'search_is_invoiced_2'}) %>invoiced
+        <%= radio_button_tag "search[is_invoiced]", "0", params[:search][:is_invoiced].to_i == 0, :id => 'search_is_invoiced_0' %><label for="search_is_invoiced_0">all</label>
+        <%= radio_button_tag "search[is_invoiced]", "1", params[:search][:is_invoiced].to_i == 1, :id => 'search_is_invoiced_1' %><label for="search_is_invoiced_1">uninvoiced</label>
+        <%= radio_button_tag "search[is_invoiced]", "2", params[:search][:is_invoiced].to_i == 2, :id => 'search_is_invoiced_2' %><label for="search_is_invoiced_2">invoiced</label>
         </td></tr>
         <tr><td><label>From:</label></td>
         <td><%= calendar_date_select_tag "search[date_from]", params[:search][:date_from] %></td></tr>
@@ -51,7 +51,7 @@
         <br />
         <%= submit_tag 'Search' %>&nbsp;&nbsp;<%= submit_tag 'Generate graph' %>&nbsp;&nbsp;<%= submit_tag 'Export to CSV' %>
         &nbsp;&nbsp;<%= check_box_tag 'search[details]', "1", params[:search][:details] %>
-        <label for="search_details">Show comments in CSV</label>
+        <label for="search[details]">Show comments in CSV</label>
         </td></tr>
         </tbody></table>
         </fieldset>
