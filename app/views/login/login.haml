@@ -31,6 +31,6 @@
 %script{:type => "text/javascript"}
   :plain
     // <![CDATA[
-    $('forgot_pass_link').observe('click', function(){$('forgot_pass').show();$('forgot_pass_link').hide();return false;});
-    $('forgot_pass_cancel').observe('click', function(){$('forgot_pass_link').show();$('forgot_pass').hide();return false;});
+    $('forgot_pass_link').onclick = function(){$('forgot_pass').show();$('forgot_pass_link').hide();return false;};
+    $('forgot_pass_cancel').onclick = function(){$('forgot_pass_link').show();$('forgot_pass').hide();return false;};
     // ]]>
