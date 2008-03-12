@@ -76,8 +76,10 @@ public
   # Shows list of current user's activities, all or filtered by search conditions
   #
   def activities_list
-    session[:calendar_user_id] = params[:user_id].to_i if params[:user_id] and @current_user.is_admin?
+    session[:calendar_user_id] = params[:user_id].to_i if params[:user_id]
+    session[:calendar_user_id] = @current_user.id unless @current_user.is_admin?
     session[:calendar_user_id] ||= @current_user.id
+
     @calendar_user_id = session[:calendar_user_id]
 
     if params[:search].nil? and session[:month].nil? and session[:year].nil?
