@@ -58,27 +58,27 @@ private
     cond_str = " 1 "
 
     unless options[:role_id].blank?
-      role = ActiveRecord::Base.sanitize(options[:role_id])
+      role = quote_bound_value(options[:role_id])
       cond_str += " AND ((SELECT role_id FROM users WHERE users.id = user_id) = #{role}) "
     end
 
     unless options[:user_id].blank?
-      user = ActiveRecord::Base.sanitize(options[:user_id])
+      user = quote_bound_value(options[:user_id])
       cond_str += " AND user_id = #{user} "
     end
 
     unless options[:project_id].blank?
-      project = ActiveRecord::Base.sanitize(options[:project_id])
+      project = quote_bound_value(options[:project_id])
       cond_str += " AND project_id = #{project} "
     end
 
     unless options[:date_from].blank?
-      date_from = ActiveRecord::Base.sanitize(options[:date_from])
+      date_from = quote_bound_value(options[:date_from])
       cond_str += " AND date >= #{date_from} "
     end
 
     unless options[:date_to].blank?
-      date_to = ActiveRecord::Base.sanitize(options[:date_to])
+      date_to = quote_bound_value(options[:date_to])
       cond_str += " AND date <= #{date_to} "
     end
 
@@ -89,7 +89,7 @@ private
 
     if options[:date_from].blank? and options[:date_to].blank?
       unless options[:default_year].blank?
-        default_year = ActiveRecord::Base.sanitize(options[:default_year])
+        default_year = quote_bound_value(options[:default_year])
         cond_str += " AND #{SqlFunction.get_year('date')} = #{default_year} "
       end
       unless options[:default_month].blank?
@@ -131,16 +131,17 @@ public
   # +per_page+:: How many results per page should be returned
   # +current+:: Current page number
   #
-  def self.list( conditions={}, pagination_options={} )
+  def self.list(conditions={}, pagination_options={})
 
     # Use paginating find if :pagination_options are specified
     unless pagination_options.empty?
-      pagination_options[:per_page]||= 30
-      pagination_options[:page]||= 1
+      pagination_options[:per_page] ||= 30
+      pagination_options[:page] ||= 1
 
-      return activities = self.paginate( :conditions=> self.filter_conditions(conditions), :page=> pagination_options[:page], :per_page=> pagination_options[:per_page], :order=> "date DESC, created_at DESC")
+      return self.paginate(:conditions => self.filter_conditions(conditions), :page => pagination_options[:page],
+        :per_page => pagination_options[:per_page], :order=> "date DESC, created_at DESC")
     else
-      return self.find(:all, :conditions=> self.filter_conditions(conditions), :order=> "date DESC, created_at DESC")
+      return self.find(:all, :conditions => self.filter_conditions(conditions), :order=> "date DESC, created_at DESC")
     end
   end
 
@@ -155,45 +156,45 @@ public
   # +grouped_roles+::
   # +years+::
   # +weeks+:: 
-  def self.for_graph( conditions={} )
+  def self.for_graph(conditions={})
     sqlweek = SqlFunction.get_week('date')
     sqlyear = SqlFunction.get_year('date')
-    conditions_str, *conditions_arr = self.filter_conditions( conditions )
+    conditions_str = self.filter_conditions(conditions)
 
     query = "SELECT "\
-        + " SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
+        + "SUM(minutes) AS minutes, #{sqlyear} AS year, #{sqlweek} AS week, user_id, role_id, MAX(date) AS maxdate " \
         + "FROM activities ac " \
-        + "LEFT JOIN users us ON (ac.user_id=us.id)" \
-        + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
-        + "WHERE #{conditions_str}" \
-        + " GROUP BY year, week, role_id " \
-        + " ORDER BY year, week, role_id "
-    activities = self.find_by_sql( [query]+conditions_arr )
+        + "LEFT JOIN users us ON (ac.user_id=us.id) " \
+        + "LEFT JOIN roles ro ON (us.role_id=ro.id) " \
+        + "WHERE #{conditions_str} " \
+        + "GROUP BY year, week, role_id " \
+        + "ORDER BY year, week, role_id "
+    activities = self.find_by_sql(query)
 
-    query = "SELECT  SUM(minutes) AS minutes,  role_id, ro.short_name FROM activities ac "\
+    query = "SELECT SUM(minutes) AS minutes,  role_id, ro.short_name FROM activities ac "\
         + "LEFT JOIN users us ON (ac.user_id=us.id) "\
         + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
         + "WHERE #{conditions_str}" \
-        + " GROUP BY  role_id  ORDER BY role_id "
-    grouped_roles = self.find_by_sql( [query]+conditions_arr )
-    
-    query = "SELECT min( #{sqlyear} ) minyear, max( #{sqlyear} ) maxyear "\
+        + "GROUP BY role_id ORDER BY role_id "
+    grouped_roles = self.find_by_sql(query)
+
+    query = "SELECT min(#{sqlyear}) minyear, max(#{sqlyear}) maxyear "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
-            + "WHERE #{conditions_str}"         
-    years = self.find_by_sql( [query]+conditions_arr )
-    
-    query = "SELECT #{sqlyear} AS year, min( #{sqlweek} ) AS minweek, max( #{sqlweek} ) AS maxweek, COUNT(*)AS no_of_years "\
+            + "WHERE #{conditions_str} "
+    years = self.find_by_sql(query)
+
+    query = "SELECT #{sqlyear} AS year, min(#{sqlweek}) AS minweek, max(#{sqlweek}) AS maxweek, COUNT(*) AS no_of_years "\
             + "FROM activities ac "\
             + "LEFT JOIN users us ON (ac.user_id=us.id) "\
             + "LEFT JOIN roles ro ON (us.role_id=ro.id) "\
-            + "WHERE #{conditions_str}"\
-            + " GROUP BY year"\
-            + " ORDER BY year"
-    weeks = self.find_by_sql( [query]+conditions_arr )
-    
-    {:activities=> activities, :grouped_roles=> grouped_roles, :years=> years, :weeks=> weeks}
+            + "WHERE #{conditions_str} "\
+            + "GROUP BY year "\
+            + "ORDER BY year "
+    weeks = self.find_by_sql(query)
+
+    {:activities => activities, :grouped_roles => grouped_roles, :years => years, :weeks => weeks}
   end
 
   #
