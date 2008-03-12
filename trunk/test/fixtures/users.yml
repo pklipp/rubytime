@@ -57,3 +57,10 @@ admin2:
   password_hash: <%= User.hashed_pass("zxczxczxc", "1232345") %>
   email: admin2@a.com
   role_id: 1
+
+brown:
+  id: 7
+  name: bbb
+  login: brown
+  role_id: 2
+  email: brown@a.com

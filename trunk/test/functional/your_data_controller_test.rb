@@ -32,7 +32,7 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert descending?(assigns(:activities), :date), "Activities should be in descending order"
   end
 
-  def test_activities_list_with_yead_and_month
+  def test_activities_list_with_year_and_month
     #with session conditions
     @request.session[:year] = 2006.to_s
     @request.session[:month] = 8.to_s

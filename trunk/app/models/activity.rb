@@ -51,52 +51,53 @@ private
   # +default_month+:: If date_from and date_to is not selected, use this month
   #
   def self.filter_conditions( options={} )
-    cond_str, cond_arr = [ " 1 ", [] ];
-    options||= {}
-        
+
+    # warning: conditions have to be put in a single string, not an array of string and parameters for it,
+    # otherwise the '%' sign returned by SqlFunction (only for SQLite database) can confuse the sanitize() method
+
+    cond_str = " 1 "
+
     unless options[:role_id].blank?
-      cond_str+= " AND ((SELECT role_id FROM users WHERE users.id=user_id)=?)"
-      cond_arr<< options[:role_id]
+      role = ActiveRecord::Base.sanitize(options[:role_id])
+      cond_str += " AND ((SELECT role_id FROM users WHERE users.id = user_id) = #{role}) "
     end
 
     unless options[:user_id].blank?
-      cond_str+= " AND user_id=?"
-      cond_arr<< options[:user_id]
+      user = ActiveRecord::Base.sanitize(options[:user_id])
+      cond_str += " AND user_id = #{user} "
     end
-    
+
     unless options[:project_id].blank?
-      cond_str+= " AND project_id=?"
-      cond_arr<< options[:project_id]
+      project = ActiveRecord::Base.sanitize(options[:project_id])
+      cond_str += " AND project_id = #{project} "
     end
 
     unless options[:date_from].blank?
-      cond_str+= " AND date >= ?"
-      cond_arr<< options[:date_from]
+      date_from = ActiveRecord::Base.sanitize(options[:date_from])
+      cond_str += " AND date >= #{date_from} "
     end
-      
+
     unless options[:date_to].blank?
-      cond_str+= " AND date <= ?"
-      cond_arr<< options[:date_to]
+      date_to = ActiveRecord::Base.sanitize(options[:date_to])
+      cond_str += " AND date <= #{date_to} "
     end
 
-    if options[:is_invoiced].to_i > 0
-      if options[:is_invoiced].to_i == 1
-        cond_str+= " AND invoice_id IS  NULL "
-      elsif options[:is_invoiced].to_i == 2
-        cond_str+= " AND invoice_id IS NOT NULL "
-      end        
-    end 
+    case options[:is_invoiced].to_i
+      when 1: cond_str += " AND invoice_id IS NULL "
+      when 2: cond_str += " AND invoice_id IS NOT NULL "
+    end
 
-    if ( options[:date_from].blank? and options[:date_to].blank? )
+    if options[:date_from].blank? and options[:date_to].blank?
       unless options[:default_year].blank?
-        cond_str+= " AND #{SqlFunction.get_year('date')}=" + ActiveRecord::Base.sanitize(options[:default_year])
+        default_year = ActiveRecord::Base.sanitize(options[:default_year])
+        cond_str += " AND #{SqlFunction.get_year('date')} = #{default_year} "
       end
       unless options[:default_month].blank?
-        cond_str+= " AND #{SqlFunction.get_month_equation('date', options[:default_month])} "
-      end  
+        cond_str += " AND #{SqlFunction.get_month_equation('date', options[:default_month])} "
+      end
     end
- 
-    return [cond_str] + cond_arr
+
+    cond_str
   end
 
 
@@ -131,7 +132,7 @@ public
   # +current+:: Current page number
   #
   def self.list( conditions={}, pagination_options={} )
-     
+
     # Use paginating find if :pagination_options are specified
     unless pagination_options.empty?
       pagination_options[:per_page]||= 30
@@ -199,13 +200,14 @@ public
   # Gets activities for specified project in specified month of year
   #
   def self.project_activities( project_id, month, year )
+    month, year = month.to_i, year.to_i
     query = "SELECT "\
-      + " ac.id, minutes, date, comments, user_id, role_id, invoice_id " \
+      + "ac.id, minutes, date, comments, user_id, role_id, invoice_id " \
       + "FROM activities ac " \
-      + "LEFT JOIN users us ON (ac.user_id=us.id)" \
-      + "LEFT JOIN roles ro ON (us.role_id=ro.id)" \
+      + "LEFT JOIN users us ON (ac.user_id = us.id)" \
+      + "LEFT JOIN roles ro ON (us.role_id = ro.id)" \
       + "WHERE project_id = ? " \
-      + " AND #{SqlFunction.get_year('date')}= ? " \
+      + " AND #{SqlFunction.get_year('date')} = '?' " \
       + " AND #{SqlFunction.get_month_equation('date', month)} " \
       + "ORDER BY date"
 

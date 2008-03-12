@@ -37,7 +37,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     @request.session[:month] = 8.to_s
     get :list
     assert_not_nil assigns(:activities)
-    assert_equal Activity.count(:conditions => "#{SqlFunction.get_month_equation('date', 8)}  AND #{SqlFunction.get_year('date')} = '2006'"), assigns(:activities).size
+    assert_equal Activity.count(:conditions => "#{SqlFunction.get_month_equation('date', 8)} AND #{SqlFunction.get_year('date')} = '2006'"), assigns(:activities).size
 
     assert descending?(assigns(:activities), :date) 
   end
