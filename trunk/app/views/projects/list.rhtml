@@ -5,9 +5,9 @@
     <fieldset>
         <legend>Search projects</legend>
         <% form_remote_tag({:update => 'projects_list', :url => {:controller => 'projects', :action => 'search'}}) do%>
-            <p><label>Name or description:</label><br />
+            <p><label for="search_name">Name or description:</label><br />
             <%= text_field('search','name',:size => 32)%></p>
-            <p><label>Client:</label><br />
+            <p><label for="search_client_id">Client:</label><br />
             <%= select('search','client_id',Client.find_active.collect{|p| [ p.name, p.id ] }, {:include_blank => true })%></p>
             <p><%= submit_tag 'Search'%></p>
         <% end %>
