@@ -64,3 +64,5 @@ brown:
   login: brown
   role_id: 2
   email: brown@a.com
+  salt: salt
+  password_hash: <%= User.hashed_pass("password", "salt") %>
