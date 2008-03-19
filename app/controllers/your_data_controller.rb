@@ -22,12 +22,13 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # ************************************************************************
 class YourDataController < ApplicationController
-  
+
   include ActionView::Helpers::JavaScriptHelper
   include ApplicationHelper
-  
+
   helper :sparklines
-  before_filter :authorize, :load_activity
+  before_filter :authorize, :load_activity, :except => :rss
+  before_filter :authorize_to_feed, :only => :rss
   layout "main", :except => :graph_xml
 
   # Activity filter provides reusable method prepare_search_dates
@@ -43,6 +44,38 @@ private
   rescue ActiveRecord::RecordNotFound
     flash[:notice] = "No such activity"
     redirect_to :action => :index
+  end
+
+  def authorize_to_feed
+    assert_params_must_have :id
+
+    begin
+      @feed = RssFeed.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render :text => "Feed id not found" and return false
+    end
+
+    if request.format == 'text/html'
+      return false unless authorize
+      if @feed.owner != @current_user
+        render :text => "Access to feed denied" and return false
+      end
+    end
+
+    case @feed.authentication
+      when 'key'
+        if params[:key] != @feed.secret_key
+          render :text => "Access to feed denied" and return false
+        else
+          return true
+        end
+      when 'http'
+        authenticate_or_request_with_http_basic do |login, pass|
+          user = User.authorize(login, pass) and !user.is_inactive? and @feed.owner == user
+        end
+      else
+        false
+    end
   end
 
 public
@@ -69,7 +102,7 @@ public
       else
         activities_list
         render :action => 'activities_list'
-    end        
+    end
   end
 
   #
@@ -230,12 +263,12 @@ public
   #
   def update_password
     assert_params_must_have :old_password
-    
+
     # Check if old password matches
     unless @current_user.password_equals?( params[:old_password] )
       @current_user.errors.add(:current_password, "is typed incorrectly")
       @user = @current_user
-      render :action => 'edit_password' and return          
+      render :action => 'edit_password' and return
     end
 
     # Load instance variables
@@ -258,7 +291,7 @@ public
   #
   # Generetes data for statictics graph
   #
-  def graph        
+  def graph
     prepare_search_dates
     @activities = Activity.for_graph( params[:search].merge({:user_id=> @current_user.id}) )[:activities]
     session[:graph] = params[:search]
@@ -291,6 +324,72 @@ public
     for act in @activities
         minyear_id = act.year.to_i - @years[0].minyear.to_i
         @t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
+    end
+  end
+
+  def edit_rss_feed
+    @feed = @current_user.rss_feed || @current_user.create_rss_feed
+  end
+
+  def update_rss_feed
+    assert_params_must_have :authentication
+
+    @feed = @current_user.rss_feed || @current_user.create_rss_feed
+    @feed.authentication = params[:authentication] unless params[:authentication].blank?
+    @feed.generate_random_key if @feed.authentication == 'key' && (@feed.secret_key.nil? || params[:regenerate_key] == '1')
+
+    elements = params.reject {|k, v| v.blank?}.keys.collect(&:to_s)
+    @feed.elements.clear
+    for el in elements
+      element_type, element_id = el.split(/_/)
+      begin
+        model_class = Kernel.const_get(element_type.capitalize)
+        record = model_class.find(element_id.to_i)
+        @feed.elements.create(element_type.to_sym => record)
+      rescue
+        # either the class name or element id was incorrect - this shouldn't normally happen
+      end
+    end
+
+    if @feed.save
+      flash[:notice] = 'Your RSS feed has been successfully updated'
+      redirect_to :action => 'edit_rss_feed'
+    else
+      flash[:error] = 'An error occured while updating the feed'
+      render :action => 'edit_rss_feed'
+    end
+  end
+
+  def rss
+    activities = Activity.find :all,
+      :joins => "INNER JOIN users ON (users.id = activities.user_id) " +
+        "INNER JOIN roles ON (roles.id = users.role_id) " +
+        "LEFT JOIN rss_feed_elements AS fp ON (fp.project_id = activities.project_id AND fp.rss_feed_id = #{@feed.id}) " +
+        "LEFT JOIN rss_feed_elements AS fu ON (fu.user_id = activities.user_id AND fu.rss_feed_id = #{@feed.id}) " +
+        "LEFT JOIN rss_feed_elements AS fr ON (fr.role_id = roles.id AND fr.rss_feed_id = #{@feed.id}) ",
+      :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
+          Time.now.midnight - 2.weeks, Time.now.midnight]
+
+    @days = activities.group_by {|act| act.created_at.to_date}
+    @pub_dates = {}
+
+    @days.each do |day, day_activities|
+      projects = day_activities.group_by {|act| act.project}
+      projects.each do |project, project_activities|
+        roles = project_activities.group_by {|act| act.user.role}
+        roles.each do |role, role_activities|
+          users = role_activities.group_by {|act| act.user}
+          roles[role] = users
+        end
+        projects[project] = roles
+      end
+      @pub_dates[day] = day_activities.collect(&:created_at).max
+      @days[day] = projects
+    end
+
+    respond_to do |format|
+      format.html # render html template
+      format.rss {render :layout => false}
     end
   end
 

@@ -1,0 +1,12 @@
+pmfeed:
+  id: 1
+  owner_id: 1
+  owner_type: User
+  authentication: key
+  secret_key: 1234512345
+
+admin2feed:
+  id: 2
+  owner_id: 6
+  owner_type: User
+  authentication: http
