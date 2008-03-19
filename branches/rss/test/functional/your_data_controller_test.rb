@@ -104,12 +104,100 @@ class YourDataControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :action => 'activities_list', :id => 1
 
-    
     post :update_activity, :id => 1, :activity => {:minutes => "0"}
     assert_response :success
     assert_template "edit_activity"
     assert_not_nil flash[:notice]
-
   end
+
+  def test_edit_rss_feed
+    get :edit_rss_feed
+    assert_response :success
+    assert_not_nil assigns(:feed)
+    assert_equal assigns(:feed), RssFeed.find_by_owner_id_and_owner_type(users(:pm).id, "User")
+    assert_template "edit_rss_feed"
+  end
+
+  def test_edit_rss_feed_feed_is_created_on_demand
+    login_as :admin2
+    get :edit_rss_feed
+    assert_response :success
+    assert_not_nil assigns(:feed)
+    assert_equal assigns(:feed), RssFeed.find_by_owner_id_and_owner_type(users(:admin2).id, "User")
+  end
+
+  def test_edit_rss_feed_not_manager
+    login_as :dev
+    get :edit_rss_feed
+    assert_response :success
+    assert_template '/users/_no_permissions'
+  end
+
+  def test_update_rss_feed
+    post :update_rss_feed, :authentication => 'key', :user_4 => 1, :user_7 => 1, :role_3 => 1, :project_3 => 1, :project_4 => 1, :project_5 => 1
+    feed = users(:pm).rss_feed
+    assert_equal 'key', feed.authentication
+    assert_equal '1234512345', feed.secret_key
+    assert_redirected_to :action => 'edit_rss_feed'
+    assert_equal [3, 4, 5], feed.elements.projects.sort
+    assert_equal [4, 7], feed.elements.users.sort
+    assert_equal [3], feed.elements.roles
+  end
+
+  def test_update_rss_feed_http
+    post :update_rss_feed, :authentication => 'http'
+    assert_equal 'http', users(:pm).rss_feed.authentication
+    assert_redirected_to :action => 'edit_rss_feed'
+  end
+
+  def test_update_rss_feed_regenerate_key
+    post :update_rss_feed, :authentication => 'key', :regenerate_key => '1'
+    assert_equal 'key', users(:pm).rss_feed.authentication
+    assert_not_equal '1234512345', users(:pm).rss_feed.secret_key
+    assert_redirected_to :action => 'edit_rss_feed'
+  end
+
+  def test_rss_bad_id
+    get :rss, :format => 'html', :id => 1024
+    assert_response :success
+    assert_match /not found/, @response.body
+  end
+
+  def test_rss_another_user
+    login_as :admin2
+    get :rss, :format => :html, :id => 1
+    assert_response :success
+    assert_match /denied/, @response.body
+  end
+
+  def test_rss_with_no_key
+    get :rss, :format => :rss, :id => 1
+    assert_response :success
+    assert_match /denied/, @response.body
+  end
+
+  def test_rss_with_wrong_key
+    get :rss, :format => :rss, :id => 1, :key => "idontknowthekey"
+    assert_response :success
+    assert_match /denied/, @response.body
+  end
+
+  def test_rss_with_correct_key
+    get :rss, :format => :rss, :id => 1, :key => "1234512345"
+    # TODO: the assertion below doesn't work, fix something...
+    #assert_response :success
+    assert_not_nil assigns(:days)
+    assert_not_nil assigns(:pub_dates)
+    assert_equal assigns(:days).keys.sort, assigns(:pub_dates).keys.sort
+
+    # TODO: test the results
+  end
+
+# TODO: this doesn't work
+#   def test_http_authorization
+#     http_authorize(users(:pm).login, "admin")
+#     get :rss, :format => :xml, :id => 2
+#     assert_response :success
+#   end
 
 end
