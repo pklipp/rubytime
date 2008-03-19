@@ -28,7 +28,6 @@ class Init < ActiveRecord::Migration
     end
     add_index :users, :role_id
     add_index :users, :login, :unique => true
-    User.create(:login => 'admin', :name => 'admin', :email => 'admin@test.site.com', :role_id => 1, :password => '7be43c1935a3d4ccd904a062a0e8925fb986829f', :salt => '287560120.570862222928554', :is_inactive => false)
     
     #Creates table clients.
     create_table :clients, :force => true do |t|
