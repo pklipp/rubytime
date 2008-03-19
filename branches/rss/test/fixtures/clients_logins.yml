@@ -1,0 +1,28 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one_cl:
+  id: 1
+  login: client1
+  password: <%= Digest::SHA1.hexdigest("pass-client1") %>
+  client_id: 1
+two_cl:
+  id: 2
+  login: client2
+  password: <%= Digest::SHA1.hexdigest("pass-client2") %>
+  client_id: 2
+three_cl:
+  id: 3
+  login: client3
+  password: <%= Digest::SHA1.hexdigest("pass-client3") %>
+  client_id: 3
+
+test1:
+  id: 4
+  login: test1
+  password: <%= Digest::SHA1.hexdigest("pass1") %>
+  client_id: 5
+
+test2:
+  id: 5
+  login: test2
+  password: <%= Digest::SHA1.hexdigest("pass2") %>
+  client_id: 5

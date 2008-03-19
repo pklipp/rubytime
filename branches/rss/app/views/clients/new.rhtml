@@ -1,0 +1,16 @@
+<!-- Form: Add client -->
+<%= error_messages_for 'client' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>New client</legend>
+
+        <% form_tag({:action => 'create'}) do %>
+        <%= render_partial 'form' %>
+        <p><%= submit_tag "Create" %></p>
+        <% end %>
+    
+</fieldset>
+<%= back_link %>
+</div>
+<!-- End of form -->
+

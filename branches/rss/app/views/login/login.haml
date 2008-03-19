@@ -1,0 +1,36 @@
+= error_messages_for 'log_user'
+%div.fieldsets
+  %fieldset
+    %legend Log in
+    - form_tag({:action => 'login'}) do
+      %div
+        %p
+          %label{:for => "log_user_login"} Login:
+          %br
+          = text_field("log_user","login", :size => 20) 
+        %p
+          %label{:for => "log_user_password"} Password:
+          %br
+          = password_field("log_user","password", :size => 20)   
+        %p
+          = submit_tag 'Login'
+        %p
+          %a#forgot_pass_link{:href => "#"} Forgot Password?
+    #forgot_pass{:style => "display:none"}
+      - form_tag :action => :forgot_password do
+        %p
+          %label{:for => "forgot_pass_email"} Enter e-mail:
+          = text_field("forgot_pass","email", :size => 20)       
+          = submit_tag 'Send'
+          %a#forgot_pass_cancel{:href => "#"} Cancel
+          
+%br
+%p
+  = link_to "&raquo; Client's portal", {:controller => "clientsportal", :action => "login"}, :class => "clientsportal-link"
+
+%script{:type => "text/javascript"}
+  :plain
+    // <![CDATA[
+    $('forgot_pass_link').onclick = function(){$('forgot_pass').show();$('forgot_pass_link').hide();return false;};
+    $('forgot_pass_cancel').onclick = function(){$('forgot_pass_link').show();$('forgot_pass').hide();return false;};
+    // ]]>

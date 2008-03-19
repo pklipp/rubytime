@@ -1,0 +1,18 @@
+<div class="fieldsets">
+<!-- List of activities -->
+<%- unless @activities.blank? -%>    
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        Activities List
+        <% else %>
+        Activities List - search result
+        <% end %>
+        </legend>
+        <%= render :partial => "activities/list" %>
+    </fieldset>
+<%- else -%>
+<p id="errorNotice">No activities found</p>
+<%- end -%>
+<!-- End of list --> 
+</div>

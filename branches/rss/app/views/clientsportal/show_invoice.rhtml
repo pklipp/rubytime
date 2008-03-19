@@ -1,0 +1,81 @@
+<!-- List of details of chosen invoice -->
+<% if !@invoice.nil? %>
+
+
+  
+<div class="fieldsets">
+    <fieldset>
+        <legend>Invoice</legend>
+
+        <p><b>Name: </b><%= @invoice.name %></p>
+
+        <p><b>Client: </b><%= @invoice.client.name %></p>
+        <% if @invoice.is_issued -%>
+        <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") unless @invoice.issued_at.nil?  %></p>
+        <% end -%>
+        <p><b>Created by: </b><%= @invoice.user.name %></p>
+
+        <% if request.env['HTTP_REFERER'] and not params[:embed] %>
+          <p class="p_edit_back"><%= link_to 'Back', request.env['HTTP_REFERER'] %></p>
+        <% end %>
+    </fieldset>
+
+    <br/><br/>
+
+    <fieldset>
+        <legend>Activities on this invoice</legend>
+
+        <% unless @invoice.activities.empty? -%>
+        <% @activities = @invoice.activities -%>
+
+        <table class="standard" id="activities_list">
+
+            <tr>
+                <th> Project</th>
+                <th> Person</th>
+                <th> Date</th>
+                <th> Hours</th>
+                <td>&nbsp;</td>
+            </tr>
+
+            <% minutes_sum=0
+            for activity in @activities
+            minutes_sum+=activity.minutes %>
+            <tr>
+                <td><%= link_to_remote activity.project.name, :update => 'show_details',
+                        :url => {:action => 'show_project', :id => activity.project}, :class => "nobg",
+                        :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %></td>
+                <td><%= activity.user.login %> (<%= activity.user.role.short_name.upcase %>)</td>
+                <td style="text-align: center"><%= h activity.date %></td>
+                <td style="text-align: right"> <%= hour_format(activity.minutes) %></td>
+                <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"), :update => 'show_details',
+                        :url => {:action => 'show_activity', :id => activity, :embed => true}, :class => "nobg",
+                        :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %></td>
+            </tr>
+            <% end %>
+
+            <tr>
+                <td colspan="2"></td>
+                <th style="text-align: right">Sum:</th>
+                <th><%= hour_format(minutes_sum) %></th>
+                <td style="text-align:right"></td>
+                <td style="text-align:center">
+                </td>
+            </tr>
+        </table>
+
+        <% else -%>
+        <p>No activities on this invoice yet!</p>
+        <% end -%>
+
+    </fieldset>
+</div>
+
+<div id="show_details_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="show_details">
+</div>
+
+<%end%>

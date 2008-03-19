@@ -1,0 +1,28 @@
+<!-- client lLogin form -->
+
+<%= error_messages_for 'log_user' %>
+
+<div class="fieldsets">
+    <fieldset>
+        <legend>Client log in</legend>
+
+        <% form_tag({:action => 'login'}) do %>
+        <p>Login:<br/>
+        <%= text_field("log_client", "login", :size => 20)
+        %>
+        </p>
+
+        <p>Password:<br/>
+        <%= password_field("log_client", "password", :size => 20)
+        %>
+        </p>
+
+        <p>
+        <input type="submit" value=" Login " />
+        </p>
+        <% end %>
+    </fieldset>
+</div>
+<br/><br/>
+<%= link_to "&raquo; Developers' portal", {:controller => "login", :action => "login"}, :class => "clientsportal-link" %>
+<!-- end of client login form -->

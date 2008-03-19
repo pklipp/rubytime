@@ -1,0 +1,11 @@
+%fieldset
+  %legend
+    - if params[:search].nil?
+      List of projects
+    - else
+      List of projects: Search result
+  %p.p_new
+    = link_to [image_tag("add.png", :class=>"newitem", :alt=>"New project", :title=>"New project"), "New project"], {:action => 'new'}, :class=>"newitem"
+  %hr
+  = render :partial => 'list2'
+  = paginate_me @projects 

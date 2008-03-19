@@ -1,0 +1,82 @@
+<div class="fieldsets">
+
+<!-- Form: Filter activities by date -->
+	<fieldset>
+	<legend>Filter by date</legend>
+    <%= render :partial => '/activities/calendar' %>
+	</fieldset>
+<!-- End of form -->
+
+<% if @current_user && @current_user.is_admin? %>
+    <%= render :partial => 'user_selection' %>
+<% end %>
+
+<br/>
+
+<!-- Form: search activities -->
+
+<% form_tag({:action => 'search', :id => @activity}) do %>
+    <fieldset>
+        <legend>Search</legend>
+        <p>
+        <label for="search">Project:</label>
+        <select name="search[project_id]" id="search">
+        <%= options_for_select({ "--all--" => "" }) %>
+        <%= options_for_select(Project.find(:all).collect{|p| [ p.name, p.id ] }, params[:search]? params[:search][:project_id].to_i : nil ) %>
+        </select>
+        &nbsp;&nbsp;<%= submit_tag 'Search' %>
+        &nbsp;&nbsp;<%= submit_tag 'Generate graph' %>
+        </p>
+    </fieldset>
+<% end %>
+<!-- End of form -->
+
+<br/><br/>
+
+<!-- List of activieties of logged user -->
+<% if !@activities.blank? %>
+    <fieldset>
+        <legend>
+        <% if params[:search].nil? %>
+        Your Activities
+        <% else %>
+        Your Activities: Search result
+        <% end %>
+        </legend>
+        
+        <table class="standard">
+        <tr>
+            <th>Project</th>
+            <th>Date</th>
+            <th>Hours</th>
+            <th>Comment</th>
+        </tr>
+
+        <% minutes_sum=0 	 
+        for activity in @activities  
+        minutes_sum+=activity.minutes %>
+        <tr>
+            <td><%= truncate(activity.project.name, 15) %></td>
+            <td><%= activity.date.strftime('%d/%m/%y %a') %></td>
+            <td style="text-align:right"><%= hour_format(activity.minutes) %></td>
+            <td><%= truncate(h(activity.comments), 15)%></td>
+            <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:action => "show_activity", :id => activity}, :class=>"nobg"%>				</td>
+        </tr>
+        <% end %>
+        <tr>
+            <td></td>
+            <th style="text-align:right">Sum:</th>
+            <th><%= hour_format(minutes_sum) %></th>
+        </tr>
+        </table>
+        
+        <%= paginate_me @activities %> 
+    </fieldset>
+    
+    <% else %>
+    <p id="errorNotice">No activities found</p>
+    <% end %>
+<!-- End of list -->
+
+<%= back_link %>
+</div>

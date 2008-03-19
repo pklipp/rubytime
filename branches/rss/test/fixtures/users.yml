@@ -1,0 +1,68 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+pm:
+  id: 1 
+  name: Alexander
+  login: admin
+  salt: salt
+  password_hash: <%= User.hashed_pass("admin", "salt") %> # admin
+  email: alex@a.com
+  role_id: 1
+  is_inactive: false
+
+dev:
+  id: 2 
+  name: Fox
+  login: fox
+  salt: salt
+  password_hash: <%= User.hashed_pass("dev", "salt") %> # admin
+  email: fox@a.com
+  role_id: 2
+  is_inactive: false
+
+john:
+  id: 3
+  name: John Smith
+  login: john
+  salt: johnsalt
+  password_hash: <%= User.hashed_pass("jjjj", "johnsalt") %>
+  email: john@a.com
+  role_id: 2
+  is_inactive: false
+
+kate:
+  id: 4
+  name: Kate Brown
+  login: kate
+  salt: 12345
+  password_hash: <%= User.hashed_pass("pass", "12345") %>
+  email: kate@a.com
+  role_id: 2
+  is_inactive: true
+
+bob:
+  id: 5
+  name: Bob O'Neill
+  login: bob
+  salt: 54321
+  password_hash: <%= User.hashed_pass("kashglsidjncvlasji", "54321") %>
+  email: bob@a.com
+  role_id: 2
+  is_inactive: false
+
+admin2:
+  id: 6
+  name: Other Admin
+  login: admin2
+  salt: 1232345
+  password_hash: <%= User.hashed_pass("zxczxczxc", "1232345") %>
+  email: admin2@a.com
+  role_id: 1
+
+brown:
+  id: 7
+  name: bbb
+  login: brown
+  role_id: 2
+  email: brown@a.com
+  salt: salt
+  password_hash: <%= User.hashed_pass("password", "salt") %>

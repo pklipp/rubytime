@@ -1,0 +1,55 @@
+<div class="fieldsets">
+    
+    <!-- Form: search -->
+    
+    <% form_remote_tag({:update => "invoices_list", :url => { :controller => 'invoices', :action => 'search' }}) do %>
+    <fieldset>
+        <legend>Search</legend>
+        <table><tbody>
+                <tr><td colspan="2">
+                        <%= radio_button "search", "is_issued", "0", :id => 'search_is_issued_0', :checked => "checked" %><label for="search_is_issued_0">all</label>
+                        <%= radio_button "search", "is_issued", "1", :id => 'search_is_issued_1' %><label for="search_is_issued_1">unissued</label>
+                        <%= radio_button "search", "is_issued", "2", :id => 'search_is_issued_2' %><label for="search_is_issued_2">issued</label>
+                </td></tr>
+                <tr><td><label>From:</label></td>
+                <td><%= calendar_date_select_tag "search[date_from]", params[:search][:date_from] %></td></tr>
+                <tr><td><label>To:</label></td>
+                <td><%= calendar_date_select_tag "search[date_to]", params[:search][:date_to] %></td></tr>
+                <tr><td><label for="search_client_id">Client:</label></td>
+                    <td><%= select("search","client_id", Client.find(:all,:order=>"name").collect{|c| [c.name , c.id ] }, {:include_blank => true, :style => "width:200px"}) %>
+                </td></tr>
+                <tr><td><label for="search_name">Invoice name:</label></td>
+                    <td><%= text_field "search","name" %>
+                </td></tr>
+                <tr><td colspan="2" style="text-align: center;">
+                        <%= submit_tag 'Search' %>
+                </td></tr>
+        </tbody></table>
+    </fieldset>
+    <% end %>
+    
+    <!-- End of form -->
+    
+    <br/><br/>
+    
+    <!-- List of activities -->
+    <%if !@invoices.blank? %>    
+        <div id="invoices_list">
+            <%= render :partial => "list" %>
+        </div> 
+    <% else -%>
+        <p id="errorNotice">No invoices found</p>
+        <%- if params[:search].nil? -%>
+            <p><%= link_to 'New invoice', :action => 'new' %></p>
+        <%- end -%>
+    <%end%> 
+    
+    <!-- End of list --> 
+    
+    <br/><br/>
+    
+  	<%= back_link %>  
+</div>   
+
+
+

@@ -1,0 +1,27 @@
+<!-- Partial form: Add/Edit project -->
+<div class="inputs">
+    <label for="project_name">Name:</label><br/>
+    <%= text_field 'project', 'name', :size => 50, :maxlength => 30 %>
+</div>
+<% if ['new', 'create'].include? params[:action] %>
+    <div class="inputs">
+        <label>Client:</label><br/>
+        <select name="project[client_id]" id="project_client_id">
+            <%= options_for_select({"choose" => ""}) %>
+            <%= options_for_select(Client.find_active.collect {|c| [c.name, c.id]}, @selected['client_id'] || params[:client_id]) %>
+        </select>
+    </div>
+<% end %>
+<div class="inputs">
+    <label for="project_description">Description:</label><br/>
+    <%= text_area 'project', 'description', :cols => 50, :rows => 15 %>
+</div>
+
+<%if (params[:action]=="edit" || params[:action]=="update") %>
+<!-- Allowed only for editing project -->
+<div class="inputs">
+    <%= check_box 'project', 'is_inactive'%>&nbsp;
+    <label for="project_is_inactive">is inactive</label>
+</div>
+<%end%>
+<!-- End of partial form -->

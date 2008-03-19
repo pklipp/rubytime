@@ -1,0 +1,15 @@
+<!-- Form: Add invoice -->
+<%= error_messages_for 'invoice' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>New invoice</legend>
+        
+        <% form_tag({:action => 'create'}) do %>
+            <%= render_partial 'form' %>
+            <p><%= submit_tag "Create" %></p>
+        <% end %>
+        
+    </fieldset>
+</div>
+<%= back_link %>
+<!-- End of form -->

@@ -1,0 +1,33 @@
+
+<div class="fieldsets">
+
+    <!-- Search form -->
+    <fieldset>
+        <legend>Search clients</legend>
+        <% form_remote_tag :update => 'clients_list', :url => {:controller => 'clients', :action => 'search'} do%>
+        <p><label for="search">Name or description:</label></p>
+        <p><%= text_field_tag("search", value = params[:search], :size => 32) %></p>
+        <p><%= submit_tag 'Search'%></p>
+        <% end %>
+    </fieldset>
+    <!-- End of search form -->
+
+    <br/><br/>
+
+    <!-- List of clients -->
+    <%- if !@clients.blank? -%>
+      <div id="clients_list">
+          <%= render :partial => 'list'%>
+      </div>
+    <%- else -%>
+      <p id="errorNotice">No clients found</p>
+      <%- if params[:search].nil? -%>
+        <p><%= link_to 'New client', :action => 'new' %></p>
+      <%- end -%>
+    <%- end -%>
+
+    <!-- End of list -->
+
+<%= back_link %>
+</div>
+

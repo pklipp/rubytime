@@ -1,0 +1,73 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first_activity:
+  id: 1 
+  date: 2006-08-21
+  minutes: 60
+  project_id: 1
+  comments: Andy has a little cat
+  user_id: 1
+another_activity:
+  id: 2
+  date: 2006-08-23
+  minutes: 60
+  project_id: 1
+  comments: Andy has a little dog
+  user_id: 1
+third_activity:
+  id: 3
+  date: 2006-08-19
+  minutes: 60
+  project_id: 1
+  comments: John has a little bike
+  user_id: 1
+fourth_activity:
+  id: 4
+  date: 2006-08-29
+  minutes: 60
+  project_id: 1
+  comments: Plumbing a hole in the sky
+  user_id: 2
+yesterday_one:
+  id: 5
+  date: <%= (1.day.ago).strftime("%Y-%m-%d") %>
+  minutes: 60
+  project_id: 1
+  comments: Yesterday activity one
+  user_id: 1
+yesterday_two:
+  id: 6
+  date: <%= (1.day.ago).strftime("%Y-%m-%d") %>
+  minutes: 80
+  project_id: 1
+  comments: Yesterday activity two
+  user_id: 2
+old_activity:
+  id: 7
+  date: 2000-01-01
+  minutes: 60
+  project_id: 1
+  comments: old activity
+  user_id: 1
+latest_activity:
+  id: 8
+  date: <%= (Time.now + 1.day).strftime("%Y-%m-%d") %>
+  minutes: 80
+  project_id: 1
+  comments: Latest activity
+  user_id: 1
+
+invoiced1:
+  id: 9
+  date: 2004-03-03
+  minutes: 210
+  project_id: 3
+  user_id: 1
+  invoice_id: 1
+
+invoiced2:
+  id: 10
+  date: 2004-03-04
+  minutes: 130
+  project_id: 3
+  user_id: 2
+  invoice_id: 1

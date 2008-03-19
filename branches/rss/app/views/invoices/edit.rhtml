@@ -1,0 +1,19 @@
+<!-- Form: Edit invoice -->
+<%= error_messages_for 'invoice' %>
+
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit invoice</legend>
+
+        <% form_tag({:action => 'update', :id => @invoice}) do %>
+            <%= render :partial => 'form_edit' %>
+            <p><%= submit_tag 'Save' %></p>
+        <% end %>
+    
+    </fieldset>
+</div>
+<p>
+    <%= link_to 'Show', :action => 'show', :id => @invoice  %>  | 
+    <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+</p>
+<!-- End of form -->

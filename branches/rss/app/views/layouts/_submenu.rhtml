@@ -1,0 +1,51 @@
+
+<!-- Submenu. Content depends on user's privileges -->
+<% if (!@current_user.nil? && !@current_user.is_inactive)  %>
+    <ul>
+        <li>&nbsp;</li>
+
+        <% if @current_user.has_permissions_to?("clients", "list") %>
+        <li>
+        <%= link_to("Clients",
+                        {:controller => "clients", :action => "list"}, 
+                        :class=> ( params[:controller]=="clients" ?  "active" : nil) ) %>
+        </li>
+        <% end 
+        if @current_user.has_permissions_to?("projects", "list") %>
+        <li>
+        <%= link_to("Projects",
+                          {:controller => "projects", :action => "list"}, 
+                          :class=> ( params[:controller]=="projects" ?  "active" : nil)) %>
+        </li> 
+        <%end 
+        if @current_user.has_permissions_to?("activities", "list") %>
+        <li>  
+        <%= link_to("Activities",
+                            {:controller => "activities", :action => "list"}, 
+                            :class=> ( params[:controller]=="activities" ?  "active" : nil))  %>
+        </li>  
+        <%end
+        if @current_user.has_permissions_to?("activities", "list") %>
+        <li>  
+        <%= link_to("Invoices",
+                            {:controller => "invoices", :action => "list"}, 
+                            :class=> ( params[:controller]=="invoices" ?  "active" : nil))  %>
+        </li>  
+        <%end  
+        if @current_user.has_permissions_to?("users", "list") %>
+        <li>  
+        <%= link_to("Users",
+                            {:controller => "users", :action => "list"}, 
+                            :class=> ( params[:controller]=="users" ?  "active" : nil)) %>
+        </li>
+        <%end 
+        if @current_user.has_permissions_to?("roles", "list") %>
+        <li>  
+        <%= link_to("Roles",
+                            {:controller => "roles", :action => "list"}, 
+                            :class=> ( params[:controller]=="roles" ?  "active" : nil)) %>
+        </li>  
+        <%end %>
+        </ul>
+<% end %>
+<!-- End of submenu -->

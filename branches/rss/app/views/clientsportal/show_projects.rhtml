@@ -1,0 +1,41 @@
+<div class="fieldsets">
+    <fieldset>
+        <legend>Project of this client:</legend>
+
+        <table class="standard">
+            <tr>
+                <th> Name</th>
+                <th> Description</th>
+                <% unless ['clients', 'clientsportal'].include? params[:controller] -%>
+                    <th>Client</th>
+                <%end-%>
+            </tr>
+
+            <% for project in @projects %>
+                <tr <%if project.is_inactive-%>style="color: gray"<%end-%>>
+                    <td><%= h project.name %></td>
+                    <td><%= h truncate(project.description,20)%></td>
+                    <% unless ['clients', 'clientsportal'].include? params[:controller] -%>
+                        <td><%= h truncate(project.client.name,20) %></td>
+                    <% end -%>
+    
+                    <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),:update => 'show_details',
+                        :url => {:action => 'show_project', :id => project}, :class=>"nobg", 
+                        :before => "$('show_details_loader').show();" , :complete => "$('show_details_loader').hide();" %>
+                    </td>
+                    <td>
+                        <%= link_to image_tag("activities.png", :alt=>"Show activities", :title=>"Show activities"),
+                        {:action => 'show_project_activities', :project_id => project}, :class=>"nobg" %>
+                    </td>
+                </tr>
+            <% end %>
+        </table>
+    </fieldset>
+</div>
+
+<div id="show_details_loader" style="display:none">
+ <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="show_details">
+</div>

@@ -1,0 +1,25 @@
+<%= error_messages_for 'invoice' %>
+
+<!--[form:invoice]-->
+
+<% unless @invoice.is_issued %>
+    <p><label for="invoice_name">Name</label><br/>
+    <%= text_field 'invoice', 'name', :size => 22, :maxlength => 20  %></p>
+    <p><label for="invoice_client_id">Client</label><br/>
+    <%= select("invoice", "client_id", Client.find(:all).collect {|c| [ c.name, c.id ] }, { :include_blank => true }, {:disabled => (@invoice.activities.empty? ? false : true)}) %></p>
+    <p><%= check_box('invoice', 'is_issued', :disabled => (@invoice.activities.empty? ? true : false)) %><label for="invoice_is_issued">Issued</label></p>
+
+<% else -%>
+    <p><b>Name: </b><%= @invoice.name %></p>
+    <p><b>Client: </b><%= @invoice.client.name %></p>
+    <p><b>Issued: </b>YES</p>
+    <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+<% end -%>
+
+<p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
+
+<p><label for="invoice_notes">Notes</label><br/>
+<%= text_area 'invoice', 'notes', :rows => 8, :cols => 30  %></p>
+
+<!--[eoform:invoice]-->
+

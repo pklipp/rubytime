@@ -1,0 +1,26 @@
+<!-- Form: Add project -->
+<%= error_messages_for 'project' %>
+<% unless @clients.blank? %>
+  <div class="fieldsets">
+      <fieldset>
+          <legend>New project</legend>
+        
+          <% form_tag({:action => 'create'}) do %>
+              <%= render :partial => 'form' %>
+              <p><%= submit_tag "Create" %></p>
+          <% end %>
+        
+      </fieldset>
+  </div>
+<% else %>
+  <p class="no_clients_defined notice">
+    No active clients have been found. Please create at least one client first and check him as active. 
+    If you have some client created, make sure he is active.
+    Come back to this page when you are done.
+  </p>
+  <p>
+    Click here to create <%= link_to "new client", :controller => "clients", :action => "new" %>
+  </p>
+<% end %>
+<%= back_link %>
+<!-- End of form -->

@@ -1,0 +1,24 @@
+<!-- Partial form: Add/Edit role -->
+<div class="inputs">
+    <label for="role_name">Name:</label><br/>
+    <%= text_field 'role', 'name', :size => 50, :maxlength  => 30  %>
+</div>
+<div class="inputs">
+    <label for="role_short_name">Short name:</label><br/>
+    <%= text_field 'role', 'short_name', :size => 50, :maxlength  => 4  %>
+</div>
+
+<% if params[:action]=="new" %>
+<div class="inputs">
+   <%= check_box 'role', 'is_admin' %>&nbsp;
+   <label for="role_is_admin">is admin</label>
+</div>
+<% end %>
+<% if ['edit', 'update'].include?(params[:action]) && @role.users.empty? %>
+  <div class="inputs">
+    <%= check_box 'role', 'is_admin' %>&nbsp;
+    <label for="role_is_admin">is admin</label>
+  </div>
+<% end %>
+<!-- End of partial form -->
+
