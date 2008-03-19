@@ -24,6 +24,10 @@
 
 class ApplicationController < ActionController::Base
 
+  protect_from_forgery :secret => '33552ece661a5a356fade27bb90fa02f'
+
+  private
+
   #
   # Checks if +normal user+ is logged in, is active, and has permissions to access requested controller/action
   # This method is present in most before_filters, to authorize users
@@ -77,7 +81,10 @@ class ApplicationController < ActionController::Base
       render :partial => "users/inactive", :layout => "clientportal" and return false        
     end
   end
-  
+
+
+  public
+
   #
   # Sets calendar options choosen by user and saves them into the session
   # 

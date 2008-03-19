@@ -57,6 +57,7 @@ class LoginController < ApplicationController
   # 
   def logout
     session[:user_id] = nil
+    session[:calendar_user_id] = nil
     redirect_to(:action => "login")
   end
   
