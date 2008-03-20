@@ -41,6 +41,16 @@ class RssFeed < ActiveRecord::Base
     def users
       @users ||= find_all {|el| el.project.nil? && el.role.nil? && el.user != nil}.collect(&:user_id)
     end
+
+    def roles_in_project(project)
+      @roles_in_project ||= {}
+      @roles_in_project[project] ||= find_all {|el| el.project == project && el.role != nil && el.user.nil?}.collect(&:role_id)
+    end
+
+    def users_in_project(project)
+      @users_in_project ||= {}
+      @users_in_project[project] ||= find_all {|el| el.project == project && el.role.nil? && el.user != nil}.collect(&:user_id)
+    end
   end
 
   def generate_random_key

@@ -141,4 +141,9 @@ class User < ActiveRecord::Base
     User.find_all_by_is_inactive(false, :order => "name")
   end
 
+  def self.find_involved_in_project(project)
+    User.find :all, :select => 'DISTINCT users.*', :from => 'activities', :joins => 'LEFT JOIN users ON (user_id = users.id)',
+      :conditions => ['project_id = ?', project.id], :order => 'users.name'
+  end
+
 end

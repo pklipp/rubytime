@@ -7,8 +7,9 @@
 
 class ClientsportalController < ApplicationController
     include CalendarHelper
-  
+
     before_filter :authorize_client, :except => ["login", "logout"]
+    before_filter :prepare_data_for_rss_form, :only => ['edit_rss_feed', 'update_rss_feed']
     layout "clientportal"
 
     #
@@ -193,5 +194,58 @@ class ClientsportalController < ApplicationController
       @activity = Activity.find(params[:id])
       render :layout => false
     end
-    
+
+
+
+    def edit_rss_feed
+    end
+
+    def update_rss_feed
+      assert_params_must_have :authentication
+
+      @feed.authentication = params[:authentication] unless params[:authentication].blank?
+      @feed.generate_random_key if @feed.authentication == 'key' && (@feed.secret_key.nil? || params[:regenerate_key] == '1')
+
+      @feed.elements.clear
+      for project in @projects
+        unless params["project_#{project.id}".to_sym].blank?
+          @feed.elements.create(:project => project)
+        else
+          for role in @roles
+            unless params["role_#{project.id}_#{role.id}".to_sym].blank?
+              @feed.elements.create(:project => project, :role => role)
+            else
+              for user in @project_users[project][role]
+                @feed.elements.create(:project => project, :user => user) unless params["user_#{project.id}_#{user.id}".to_sym].blank?
+              end
+            end
+          end
+        end
+      end
+
+      if @feed.save
+        flash[:notice] = 'Your RSS feed has been successfully updated'
+        redirect_to :action => 'edit_rss_feed'
+      else
+        flash[:error] = 'An error occured while updating the feed'
+        render :action => 'edit_rss_feed'
+      end
+    end
+
+    private
+
+    def prepare_data_for_rss_form
+      @feed = @current_client.rss_feed || @current_client.create_rss_feed
+      @projects = Project.find_active_for_client(@current_client)
+      @roles = Role.find :all, :order => 'name'
+      @project_users = {}
+      for project in @projects
+        @project_users[project] = {}
+        users = User.find_involved_in_project(project)
+        for role in @roles
+          @project_users[project][role] = users.find_all {|u| u.role == role}
+        end
+      end
+    end
+
 end
