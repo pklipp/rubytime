@@ -50,12 +50,14 @@
           = link_to(image_tag("invoices.png") + "Invoices", :controller => "clientsportal", :action => "show_invoices")
         %div.menu-icon
           = link_to(image_tag("activities-big.png", :alt => "Activities") + "Activities", :controller => "clientsportal", :action => "show_activities")
+        %div.menu-icon
+          = link_to(image_tag("feed-icon-24x24.png", :size => "24x24", :alt => "RSS Feed", :style => "padding: 4px; padding-right: 9px; width: 24px; height: 24px;") + "Your RSS feed", :controller => "clientsportal", :action => "edit_rss_feed")
         %br
         %hr
         %br
       - unless @current_client.nil?
         %div.menu-icon
-          = link_to([image_tag("logout.png"), " Logout"] ,:controller => "login",:action => "login")
+          = link_to([image_tag("logout.png"), " Logout"], :controller => "login", :action => "logout")
         %br
         %hr
         %br

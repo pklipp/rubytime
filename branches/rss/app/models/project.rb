@@ -40,11 +40,15 @@ class Project < ActiveRecord::Base
     Project.find(:all, :conditions => {:is_inactive => false}, 
       :order => "name")
   end
-  
+
+  def self.find_active_for_client(client)
+    Project.find(:all, :conditions => {:is_inactive => false, :client_id => client.id}, :order => "name")
+  end
+
   def self.search( options={} )
     cond_str = "1 "
     cond_arr = []
-    
+
     unless options[:name].blank?
         cond_str += " AND (projects.name LIKE ?" 
         cond_str += " OR projects.description LIKE ? )"
