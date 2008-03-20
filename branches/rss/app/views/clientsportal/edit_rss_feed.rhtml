@@ -43,22 +43,25 @@ function show_all() {
       <ul class="feed_elements" id="projects" style="padding-left: 0px;">
         <% for project in @projects %>
           <li>
-            <%= image_tag "tree_plus.png", :id => "project_#{project.id}_img", :onclick => "roll(this);" %>
+            <%= image_tag "tree_#{@expand_project[project] ? "minus" : "plus"}.png", :id => "project_#{project.id}_img", :onclick => "roll(this);" %>
             <%= check_box_tag "project_#{project.id}", "1", @feed.elements.projects.include?(project.id), :id => "project_#{project.id}" %>
             <label for="project_<%= project.id %>"><%= h project.name %></label>
 
-            <ul class="feed_elements" id="project_<%= project.id %>_tree" style="display: none;">
+            <ul class="feed_elements" id="project_<%= project.id %>_tree"
+              style="display: <%= @expand_project[project] ? "" : "none" %>;">
               <% for role in @roles %>
                 <li>
                   <% unless @project_users[project][role].empty? %>
-                    <%= image_tag "tree_plus.png", :id => "role_#{project.id}_#{role.id}_img", :onclick => "roll(this);" %>
+                    <%= image_tag "tree_#{@expand_role[project][role] ? "minus" : "plus"}.png", :id => "role_#{project.id}_#{role.id}_img",
+                      :onclick => "roll(this);" %>
                   <% end %>
                   <%= check_box_tag "role_#{project.id}_#{role.id}", "1", @feed.elements.roles_in_project(project).include?(role.id),
                     :id => "role_#{project.id}_#{role.id}", :style => (@project_users[project][role].empty? ? 'margin-left: 18px;' : '') %>
                   <label for="role_<%= "#{project.id}_#{role.id}" %>"><%= h role.name.pluralize %></label>
 
                   <% unless @project_users[project][role].empty? %>
-                    <ul class="feed_elements" id="role_<%= "#{project.id}_#{role.id}" %>_tree" style="display: none;">
+                    <ul class="feed_elements" id="role_<%= "#{project.id}_#{role.id}" %>_tree"
+                      style="display: <%= @expand_role[project][role] ? "" : "none" %>;">
                       <% for user in @project_users[project][role] %>
                         <li>
                           <%= check_box_tag "user_#{project.id}_#{user.id}", "1", @feed.elements.users_in_project(project).include?(user.id),
