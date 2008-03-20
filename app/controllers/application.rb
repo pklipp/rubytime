@@ -82,6 +82,66 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def render_rss_feed(activities)
+    @days = activities.group_by {|act| act.created_at.to_date}
+    @pub_dates = {}
+
+    @days.each do |day, day_activities|
+      projects = day_activities.group_by {|act| act.project}
+      projects.each do |project, project_activities|
+        roles = project_activities.group_by {|act| act.user.role}
+        roles.each do |role, role_activities|
+          users = role_activities.group_by {|act| act.user}
+          roles[role] = users
+        end
+        projects[project] = roles
+      end
+      @pub_dates[day] = day_activities.collect(&:created_at).max
+      @days[day] = projects
+    end
+
+    respond_to do |format|
+      format.html {render :template => 'your_data/rss'}
+      format.rss {render :template => 'your_data/rss', :layout => false}
+    end
+  end
+
+  # generalized authorize_*_to_feed for both client (clientsportal) and project manager (your_data)
+  # required 3 options, each is a block:
+  # :current_user => returns @current_user or @current_client
+  # :authorize => authorize() / authorize_client()
+  # :http_check => function(login, pass) {is login/pass the login/pass of the feed owner?}
+  def authorize_to_feed(options = {})
+    raise ArgumentError if options[:current_user].nil? or options[:authorize].nil? or options[:http_check].nil?
+
+    assert_params_must_have :id
+
+    begin
+      @feed = RssFeed.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render :text => "Feed id not found" and return false
+    end
+
+    if request.format == 'text/html'
+      return false unless options[:authorize].call
+      if @feed.owner != options[:current_user]
+        render :text => "Access to feed denied" and return false
+      end
+    end
+
+    case @feed.authentication
+      when 'key'
+        if params[:key] != @feed.secret_key
+          render :text => "Access to feed denied" and return false
+        else
+          return true
+        end
+      when 'http'
+        authenticate_or_request_with_http_basic(&options[:http_check])
+      else
+        false
+    end
+  end
 
   public
 

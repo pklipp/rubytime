@@ -28,7 +28,7 @@ class YourDataController < ApplicationController
 
   helper :sparklines
   before_filter :authorize, :load_activity, :except => :rss
-  before_filter :authorize_to_feed, :only => :rss
+  before_filter :authorize_user_to_feed, :only => :rss
   layout "main", :except => :graph_xml
 
   # Activity filter provides reusable method prepare_search_dates
@@ -46,36 +46,10 @@ private
     redirect_to :action => :index
   end
 
-  def authorize_to_feed
-    assert_params_must_have :id
-
-    begin
-      @feed = RssFeed.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      render :text => "Feed id not found" and return false
-    end
-
-    if request.format == 'text/html'
-      return false unless authorize
-      if @feed.owner != @current_user
-        render :text => "Access to feed denied" and return false
-      end
-    end
-
-    case @feed.authentication
-      when 'key'
-        if params[:key] != @feed.secret_key
-          render :text => "Access to feed denied" and return false
-        else
-          return true
-        end
-      when 'http'
-        authenticate_or_request_with_http_basic do |login, pass|
-          user = User.authorize(login, pass) and !user.is_inactive? and @feed.owner == user
-        end
-      else
-        false
-    end
+  def authorize_user_to_feed
+    authorize_to_feed :current_user => Proc.new {@current_user},
+      :authorize => Proc.new {authorize},
+      :http_check => Proc.new {|login, pass| user = User.authorize(login, pass) and !user.is_inactive? and @feed.owner == user}
   end
 
 public
@@ -363,34 +337,13 @@ public
   def rss
     activities = Activity.find :all,
       :joins => "INNER JOIN users ON (users.id = activities.user_id) " +
-        "INNER JOIN roles ON (roles.id = users.role_id) " +
         "LEFT JOIN rss_feed_elements AS fp ON (fp.project_id = activities.project_id AND fp.rss_feed_id = #{@feed.id}) " +
         "LEFT JOIN rss_feed_elements AS fu ON (fu.user_id = activities.user_id AND fu.rss_feed_id = #{@feed.id}) " +
-        "LEFT JOIN rss_feed_elements AS fr ON (fr.role_id = roles.id AND fr.rss_feed_id = #{@feed.id}) ",
+        "LEFT JOIN rss_feed_elements AS fr ON (fr.role_id = users.role_id AND fr.rss_feed_id = #{@feed.id}) ",
       :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
           Time.now.midnight - 2.weeks, Time.now.midnight]
 
-    @days = activities.group_by {|act| act.created_at.to_date}
-    @pub_dates = {}
-
-    @days.each do |day, day_activities|
-      projects = day_activities.group_by {|act| act.project}
-      projects.each do |project, project_activities|
-        roles = project_activities.group_by {|act| act.user.role}
-        roles.each do |role, role_activities|
-          users = role_activities.group_by {|act| act.user}
-          roles[role] = users
-        end
-        projects[project] = roles
-      end
-      @pub_dates[day] = day_activities.collect(&:created_at).max
-      @days[day] = projects
-    end
-
-    respond_to do |format|
-      format.html # render html template
-      format.rss {render :layout => false}
-    end
+    render_rss_feed(activities)
   end
 
 end

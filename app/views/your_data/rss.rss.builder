@@ -11,7 +11,6 @@ xml.rss :version => '2.0' do
     @days.sort.reverse.each do |day, day_projects|
       xml.item do
         xml.title "Day #{day}"
-        xml.link url_for(:controller => 'activities', :action => 'show', :only_path => false)
         xml.pubDate @pub_dates[day].rfc822
         xml.guid day
 
