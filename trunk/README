@@ -1,5 +1,11 @@
 Before running the application, you have to:
-- copy config/database.yml.example to config/database.yml, and fill in with your database connection parameters
-- copy config/initializers/local_config.rb.example to config/initializers/local_config.rb, and enter your SMTP server settings
-- if you used GMail or Google Apps email in the file above, uncomment the two lines below "tls support for gmail"
-  and install "tlsmail" gem
+- install Ruby (1.8.6+), Rails (2.0+), Rake, RubyGems
+- create an empty database (MySQL or SQLite)
+- make sure you have access to a SMTP server (for sending password reminder emails)
+- create a file "config/database.yml" using the template file "config/database.yml.example" and fill in with your
+  database connection parameters
+- create a file "config/initializers/local_config.rb" using the template file "config/initializers/local_config.rb.example"
+  and enter your SMTP server settings
+- if you used GMail or Google Apps email in the file above, uncomment the two lines below "tls support for gmail" and
+  install "tlsmail" gem
+- migrate the database ("rake db:migrate")
