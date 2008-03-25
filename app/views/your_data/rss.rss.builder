@@ -12,7 +12,7 @@ xml.rss :version => '2.0' do
       xml.item do
         xml.title "Day #{day}"
         xml.pubDate @pub_dates[day].rfc822
-        xml.guid day
+        xml.guid day, :isPermaLink => false
 
         text = ""
 
