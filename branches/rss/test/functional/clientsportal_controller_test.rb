@@ -65,7 +65,7 @@ class ClientsportalControllerTest < Test::Unit::TestCase
   end
   
   def test_show_projects
-    _test_show_projects "client1", "pass-client1", 5
+    _test_show_projects "client1", "pass-client1", 6
     _test_show_projects "client2", "pass-client2", 1
   end
   

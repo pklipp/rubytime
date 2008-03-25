@@ -28,7 +28,7 @@ class ActivityTest < Test::Unit::TestCase
 
   def test_editable_by_admin
     admin = users(:pm)
-    assert_equal 8, Activity.find(:all).find_all {|act| act.editable_by?(admin)}.size
+    assert_equal 9, Activity.find(:all).find_all {|act| act.editable_by?(admin)}.size
   end
 
   def test_editable_by_dev

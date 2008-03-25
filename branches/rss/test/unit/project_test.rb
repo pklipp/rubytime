@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProjectTest < Test::Unit::TestCase
-  fixtures :projects
+  fixtures :projects, :clients
 
   def setup
     @project = Project.find :first
@@ -20,6 +20,13 @@ class ProjectTest < Test::Unit::TestCase
     ps.each{|p| assert !p.is_inactive}
   end
 
+  def test_find_active_for_client
+    client = clients(:first_client)
+    projects = Project.find_active_for_client(client)
+    assert_equal projects.size, 5
+    assert projects.all? {|p| !p.is_inactive?}
+  end
+
   def test_client_id_is_protected
     @project.update_attributes({:name => "newname", :description => "newdesc", :client_id => 2})
     assert_equal "newname", @project.name
@@ -28,7 +35,7 @@ class ProjectTest < Test::Unit::TestCase
   end
 
   def test_search
-    assert_equal 5, Project.search({:client_id => 1}).size
+    assert_equal 6, Project.search({:client_id => 1}).size
     assert_equal 3, Project.search({:name => "cool"}).size
     assert_equal 2, Project.search({:name => "t2"}).size
     assert_equal 1, Project.search({:name => "t2", :client_id => 1}).size
