@@ -13,3 +13,18 @@ elem3:
 elem4:
   rss_feed_id: 1
   role_id: 2
+
+
+elem5:
+  rss_feed_id: 3
+  project_id: 3
+
+elem6:
+  rss_feed_id: 3
+  project_id: 1
+  user_id: 2
+
+elem7:
+  rss_feed_id: 3
+  project_id: 1
+  role_id: 3
