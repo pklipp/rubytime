@@ -43,13 +43,16 @@
           %br
           = link_to(@current_user.name.titleize,:controller => "your_data", :action => "edit_profile")
         %div.menu-icon
-          = link_to([ image_tag("activities-big.png", :size => "32x32", :alt => "Your Data"), " Your activities"] ,:controller => "your_data", :action => "activities_list")
+          = link_to([image_tag("activities-big.png", :size => "32x32", :alt => "Your Data"), " Your activities"] ,:controller => "your_data", :action => "activities_list")
         %div.menu-icon
           = link_to([image_tag("calendar.png", :size => "32x32", :alt => "Calendar"), " Calendar"], :controller => "your_data", :action => "activities_calendar")
         %div.menu-icon
           = link_to([image_tag("new-activity.png", :size => "32x32", :alt => "New activity" ), " Enter activity"] ,:controller => "your_data", :action => "new_activity")
         %div.menu-icon
-          = link_to([ image_tag("profile.png", :size => "32x32", :alt => "Profile" ), " Your profile"] ,:controller => "your_data", :action => "edit_profile")
+          = link_to([image_tag("profile.png", :size => "32x32", :alt => "Profile" ), " Your profile"] ,:controller => "your_data", :action => "edit_profile")
+        - if @current_user.is_admin?
+          %div.menu-icon
+            = link_to([image_tag("feed-icon-24x24.png", :size => "24x24", :alt => "RSS Feed", :style => "padding: 4px; padding-right: 9px; width: 24px; height: 24px;"), " Your RSS feed"], :controller => "your_data", :action => "edit_rss_feed")
         %br
         %hr
         %br
@@ -59,7 +62,7 @@
           %div.menu-icon
             = link_to [image_tag("go-previous.png", :size => "32x32", :alt => "Previous day" ), " Previous day"], :controller => "admin",:action => "previous_day" 
         %div.menu-icon
-          = link_to([image_tag("logout.png", :size => "32x32", :alt => "Logout" ), " Logout"] ,:controller => "login",:action => "login")
+          = link_to([image_tag("logout.png", :size => "32x32", :alt => "Logout" ), " Logout"] ,:controller => "login", :action => "logout")
         %br
         %hr
         %br

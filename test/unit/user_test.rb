@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
-  fixtures :users
+  fixtures :users, :projects
 
   def setup
     @user = User.find :first
@@ -56,6 +56,11 @@ class UserTest < Test::Unit::TestCase
     assert_equal 2, found.size
     assert found.include?(users(:kate))
     assert found.include?(users(:brown))
+  end
+
+  def test_find_involved_in_project
+    assert_equal [1, 2], User.find_involved_in_project(projects(:first_project)).collect(&:id).sort
+    assert_equal [1, 2, 4], User.find_involved_in_project(projects(:project1)).collect(&:id).sort
   end
 
   private

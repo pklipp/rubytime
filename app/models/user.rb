@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   
   has_many :activities, :dependent => :destroy
   has_many :projects, :through => :activities, :group => "project_id"
-#  has_one :rss_feed, :as => :owner, :dependent => :destroy
+  has_one :rss_feed, :as => :owner, :dependent => :destroy
 
   belongs_to :role
 
@@ -89,7 +89,10 @@ class User < ActiveRecord::Base
   #
   def has_permissions_to?(controller, action)
     return true if self.is_admin?
-    
+
+    # only PMs and clients have rss feeds
+    return false if controller == "your_data" and action =~ /rss/ and !self.is_admin?
+
     case controller # those controllers are not allowed by default
       when "your_data", "login", "sparklines"
         true
@@ -136,6 +139,11 @@ class User < ActiveRecord::Base
   #
   def User.find_active
     User.find_all_by_is_inactive(false, :order => "name")
+  end
+
+  def self.find_involved_in_project(project)
+    User.find :all, :select => 'DISTINCT users.*', :from => 'activities', :joins => 'LEFT JOIN users ON (user_id = users.id)',
+      :conditions => ['project_id = ?', project.id], :order => 'users.name'
   end
 
 end

@@ -27,7 +27,7 @@ class ActivitiesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'list'
     assert_not_nil assigns(:activities)
-    assert_equal 10, assigns(:activities).length
+    assert_equal 11, assigns(:activities).length
     
     #chronological order
     assert descending?(assigns(:activities), :date) 

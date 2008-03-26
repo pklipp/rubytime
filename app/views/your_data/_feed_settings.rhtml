@@ -1,0 +1,24 @@
+<fieldset>
+  <legend>Feed settings</legend>
+  <p>
+    <%= link_to [image_tag('feed-icon-16x16.png', :size => '16x16', :alt => 'RSS icon', :class => 'linkwithimg'), " Link to your RSS feed"],
+      {:action => 'rss', :id => @feed.id, :format => 'rss'}.update(@feed.authentication == 'key' ? {:key => @feed.secret_key} : {}),
+      :class => 'linkwithimg' %> |
+    <%= link_to "Preview feed", {:action => 'rss', :id => @feed.id, :format => 'html'}, :class => 'linkwithimg' %>
+  </p>
+  <div class="inputs">
+    <p>
+      Authentication method:
+      <%= radio_button_tag 'authentication', 'http', @feed.authentication == 'http', :id => 'http_authentication',
+        :onclick => "$('regenerate_key').disabled = true" %>
+      <label for="http_authentication">HTTP</label>
+      <%= radio_button_tag 'authentication', 'key', @feed.authentication == 'key', :id => 'key_authentication',
+        :onclick => "$('regenerate_key').disabled = false" %>
+      <label for="key_authentication">Secret key</label>
+    </p>
+    <p>
+      <%= check_box_tag 'regenerate_key', '1', false, :disabled => (@feed.authentication != 'key') %>
+      <label for="regenerate_key">Generate a new key when this form is submitted</label>
+    </p>
+  </div>
+</fieldset>

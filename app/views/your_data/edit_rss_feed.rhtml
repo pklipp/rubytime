@@ -1,0 +1,41 @@
+<div class="fieldsets">
+  <% form_tag :action => 'update_rss_feed', :feed_id => @feed do %>
+
+    <%= render :partial => 'feed_settings' %>
+
+    <fieldset>
+      <legend>Projects</legend>
+      <p>Select projects below to include all activities of these projects in your feed:</p>
+      <ul class="feed_elements">
+        <% for project in Project.find_active %>
+          <li><%= check_box_tag "project_#{project.id}", "1", @feed.elements.projects.include?(project.id), :id => "project_#{project.id}" %>
+          <label for="project_<%= project.id %>"><%= h project.name %></label></li>
+        <% end %>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Roles</legend>
+      <p>Select user roles below to include all activities of all users with these roles in your feed:</p>
+      <ul class="feed_elements">
+        <% for role in Role.find(:all, :order => 'name') %>
+          <li><%= check_box_tag "role_#{role.id}", "1", @feed.elements.roles.include?(role.id), :id => "role_#{role.id}" %>
+          <label for="role_<%= role.id %>"><%= h role.name %></label></li>
+        <% end %>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Users</legend>
+      <p>Select users below to include all their activities in your feed:</p>
+      <ul class="feed_elements">
+        <% for user in User.find_active %>
+          <li><%= check_box_tag "user_#{user.id}", "1", @feed.elements.users.include?(user.id), :id => "user_#{user.id}" %>
+          <label for="user_<%= user.id %>"><%= h user.name %></label></li>
+        <% end %>
+      </ul>
+    </fieldset>
+
+    <p><%= submit_tag 'Save changes', :style => 'margin: 10px; margin-left: 30px;' %></p>
+  <% end %>
+</div>
