@@ -1,0 +1,44 @@
+<div class="fieldsets">
+  <fieldset>
+    <legend>Report by role</legend>
+    <div style="margin-left: auto; margin-right: auto;">
+      <h1><%= @project.name %></h1>
+      <% unless (params[:from_date].blank? and params[:to_date].blank?) %>
+        <h4>from <%= params[:from_date].blank? ? "the beginning" : params[:from_date] %>
+            <%= params[:to_date].blank? ? "" : "to #{params[:to_date]}" %></h4>
+      <% end %>
+      <% if @reports.empty? %>
+        <p>No activities found in the specified time range.</p>
+      <% else %>
+        <table class="standard">
+          <tr>
+            <th>Role name</th>
+            <th>Name</th>
+            <th>Time spent</th>
+          </tr>
+          <% for entry in @reports %>
+            <tr>
+            <% if entry.is_a? Integer %>
+              <td><br /></td>
+              <th style="text-align: right">Sum:</th>
+              <th><%= hour_format(entry) %></th>
+            <% else %>
+              <td><%= entry.user.role.name %></td>
+              <td><%= entry.user.name %></td>
+              <td><%= hour_format(entry.minutes) %></td>
+              <td><%= link_to_remote image_tag("show.png", :alt=>"Show", :title=>"Show"),
+                      :update => 'comments', :url => {:controller => :activities, :action => :show_activity_data, :id => entry.id} %></td>
+            <% end %>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </fieldset>
+</div>
+
+<div id="comments">
+
+</div>
+
+<%= back_link %>

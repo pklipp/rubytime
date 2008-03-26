@@ -1,0 +1,21 @@
+<!-- Form: Edit user -->
+<%= error_messages_for 'user' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit user</legend>
+        
+        <p class="p_new">
+            <%= link_to 'Change password', :action => 'edit_password', :id => @user %>
+        </p>
+        <hr/>
+        <% form_tag({:action => 'update', :id => @user}) do %>
+            <%= render :partial => 'form' %>
+            <p><%= submit_tag 'Save' %></p>
+        <% end %> 
+    </fieldset>   
+    <p>
+        <%= link_to 'Show', :action => 'show', :id => @user %> |
+        <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER'] %>
+    </p>
+</div>
+<!-- End of form -->

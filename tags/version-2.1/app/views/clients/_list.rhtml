@@ -1,0 +1,36 @@
+  <fieldset>
+      <legend>
+      <%- if params[:search].nil? -%>
+	  List of clients
+      <%- else -%>
+	  List of clients: Search result
+      <%- end -%>
+      </legend>
+      
+      <p class="p_new">
+      <%= link_to [image_tag("add.png", :class=>"newitem", :alt=>"New client", :title=>"New client"), 'New client'], {:action => 'new'}, :class=>"newitem" %>
+      </p>
+      <hr/>       
+      <table class="standard">
+      <tr>
+          <th>Name:</th>
+          <th>Description:</th>
+          <th>Inactive:</th>
+
+      </tr>
+      
+      <% for client in @clients %>
+      <tr <%if client.is_inactive-%>style="color: gray"<%end-%>>
+          <td><%=h(truncate(client.name,20)) %></td>
+          <td><%=h(truncate(client.description,20)) %></td>
+          <td style="text-align: center"><%if client.is_inactive-%>X<%end-%></td>
+          <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:action => 'show', :id => client}, :class=>"nobg"%></td>
+          <td><%= link_to image_tag("edit.png", :alt=>"Edit", :title=>"Edit"), {:action => 'edit', :id => client}, :class=>"nobg"%></td>
+          <td><%= link_to image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), { :controller => 'clients', :action => 'confirm_destroy', :id => client},
+	      :confirm => 'Are you sure?', :class=>"nobg"%></td>
+      </tr>
+      <% end %>
+      </table>
+      <%= paginate_me @clients %>
+
+  </fieldset>

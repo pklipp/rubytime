@@ -1,0 +1,37 @@
+<div class="fieldsets">
+    <fieldset>
+        <legend>
+            List of issued invoices
+        </legend>
+
+        <table class="standard">
+            <tr>
+                <th>Name</th>
+                <th>Date of issue</th>
+            </tr>
+
+            <% for invoice in @invoices %>
+              <tr>
+                <td><%=h invoice.name %></td>
+                <td align="center"><%= invoice.issued_at ? h(invoice.issued_at.strftime("%d/%m/%y")) : "-" %></td>
+                <td><%= link_to_remote image_tag("show.png", :alt => "Show", :title => "Show"),
+                    :url => {:action => 'show_invoice', :id => invoice, :embed => true}, :class => "nobg",
+                    :update => 'single_invoice', :before => "$('show_invoices_loader').show();",
+                    :complete => "$('show_invoices_loader').hide();" %>
+                </td>
+              </tr>
+            <% end %>
+        </table>
+
+        <%= paginate_me @invoices %>
+    </fieldset>
+</div>
+
+
+<div id="show_invoices_loader" style="display:none">
+   <%= image_tag("indicator.gif" , :alt => "Loading...") %> 
+</div>
+
+<div id="single_invoice">
+  
+</div>

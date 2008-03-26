@@ -1,0 +1,26 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first_client:
+  id: 1  
+  name: client1-name
+  description: Client nr 1
+another_client:
+  id: 2
+  name: client2-name
+  description: Client nr 2
+  is_inactive: false
+inactive_client:
+  id: 3  
+  name: client3-name
+  description: Client nr 3
+  is_inactive: true
+
+big:
+  id: 4
+  name: Big Company
+  description: Our best client
+
+test:
+  id: 5
+  name: Test client
+  description: Just for testing
+  is_inactive: true

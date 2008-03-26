@@ -1,0 +1,23 @@
+<table class="standard">
+    <tr>
+        <th> Name</th>
+        <th> Description</th>
+        <% if params[:controller]!='clients' -%><th>Client</th><%end-%>
+        <th> Inactive</th>
+    </tr>
+    
+    <% for project in @projects %>
+    <tr <%if project.is_inactive-%>style="color: gray"<%end-%>>
+        <td><%= h project.name %></td>
+        <td><%= h truncate(project.description,20)%></td>
+        <% if params[:controller]!='clients' -%>
+        <td><%= h truncate(project.client.name,20) %></td><%end-%>
+        <td style="text-align: center"><%if project.is_inactive-%>X<%end-%></td>
+        
+        <td><%= link_to image_tag("show.png", :alt=>"Show", :title=>"Show"), {:controller => 'projects', :action => 'show', :id => project}, :class=>"nobg" %></td>
+        <td><%= link_to image_tag("edit.png", :alt=>"Edit", :title=>"Edit"), {:controller => 'projects', :action => 'edit', :id => project}, :class=>"nobg"  %></td>
+        <td><%= link_to image_tag("remove.png", :alt=>"Remove", :title=>"Remove"), { :controller => 'projects', :action => 'confirm_destroy', :id => project},
+        :confirm => 'Are you sure?', :class=>"nobg" %></td>
+    </tr>
+    <% end %>
+</table>

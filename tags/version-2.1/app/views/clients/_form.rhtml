@@ -1,0 +1,23 @@
+<!-- Partial form: Add/Edit client-->
+<div class="inputs">
+  <label for="client_name">Name:</label>
+  <br/>
+  <%= text_field 'client', 'name', :size => 50, :maxlength => 50 %>
+</div>
+
+<br/>
+
+<div class="inputs">
+  <label for="client_description">Description:</label>
+  <br/>
+  <%= text_area 'client', 'description', :cols => 50, :rows => 15 %>
+</div>
+
+<% if ['edit', 'update'].include? params[:action] %>
+  <!-- Allowed only for editing project -->
+  <div class="inputs">
+    <%= check_box 'client', 'is_inactive'%>
+    <label for="client_is_inactive">is inactive</label>
+  </div>
+<% end %>
+<!-- End of partial form-->

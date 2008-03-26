@@ -1,0 +1,18 @@
+<!-- Form: Edit user -->
+<%= error_messages_for 'role' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit role</legend>
+
+        <% form_tag({:action => 'update', :id => @role}) do %>
+        <%= render :partial => 'form' %>
+        <p><%= submit_tag 'Save' %></p>
+        <% end %>
+
+    </fieldset>
+</div>
+<p>
+<%= link_to 'Show', :action => 'show', :id => @role %> |
+<%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+</p>
+<!-- End of form -->

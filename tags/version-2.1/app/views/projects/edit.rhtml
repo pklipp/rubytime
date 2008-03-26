@@ -1,0 +1,17 @@
+<!-- Form: Edit user -->
+<%= error_messages_for 'project' %>
+<div class="fieldsets">
+    <fieldset>
+        <legend>Edit project</legend>
+
+        <% form_tag({:action => 'update', :id => @project}) do %>
+            <%= render :partial => 'form' %>
+            <p> <%= submit_tag 'Save' %> </p>
+        <% end %>
+    </fieldset>
+    <p>
+    <%= link_to 'Show', :action => 'show', :id => @project %>  | 
+    <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+    </p>
+</div>
+<!-- End of form -->

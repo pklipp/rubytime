@@ -1,0 +1,39 @@
+<!-- Graph -->
+<div class="fieldsets">
+
+    <h2><%= @project.name%></h2>
+
+    <%= render :partial => '/your_data/activities_calendar' %>
+
+    <br/><br/>
+
+    <fieldset>
+        <legend>Activities list</legend>
+        <table class="standard">
+            <thead style="text-align: center">
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Person</th>
+                    <th>Role</th>
+                    <th>Is invoiced</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for activity in @activities %>
+                <tr>
+                    <td style="text-align: right"><%= activity.date %></td>
+                    <td style="text-align: right"><%= hour_format(activity.minutes) %></td>
+                    <td style="text-align: right"><%= activity.user.name %></td>
+                    <td style="text-align: right"><%= activity.role.name %></td>
+                    <td style="text-align: right"><%= activity.invoice_id.blank? ? "NO" : "YES"%></td>
+                    <td><%= link_to image_tag("show.png", :alt => "Show", :title => "Show"),
+                        {:action => "show_activity", :id => activity}, :class => "nobg" %>
+                    </td>
+                </tr>
+                <%end%>
+            </tbody>
+        </table>
+    </fieldset>
+
+</div>

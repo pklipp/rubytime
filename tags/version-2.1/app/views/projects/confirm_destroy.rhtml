@@ -1,0 +1,16 @@
+<div class="fieldsets">
+    <fieldset>
+        <legend>
+            Delete project: <%= @project.name %>
+        </legend>
+        
+        <p><b>All tasks associated with this project will be deleted!</b><br/>
+            If you are sure you want to delete this project
+            please type the project's name in the field below:</p>
+        <% form_tag({:action => "destroy", :id => @project}) do %>
+        <p><label>Project's name: </label><%= text_field_tag "name_confirmation" %></p>
+        <p><%= submit_tag 'Destroy' %> or <%= link_to "Cancel", :action => "list" %></p>
+        <% end %> 
+        
+    </fieldset>
+</div>

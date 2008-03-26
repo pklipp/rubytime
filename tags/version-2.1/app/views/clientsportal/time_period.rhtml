@@ -1,0 +1,20 @@
+<fieldset>
+  <legend>Time period:</legend>
+  <% form_remote_tag(:update => :time_period, :url => {:action => 'report_by_role'}, :method => :get,
+      :complete => "$('time_period_loader').hide();", :before => "$('time_period_loader').show();") do %>
+
+    <%= hidden_field_tag 'id', params[:id] %>
+
+    <p>From: <%= calendar_date_select_tag "from_date", Date.today.beginning_of_month.strftime("%Y-%m-%d") %>
+        <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></p>
+    <p>To:   <%= calendar_date_select_tag "to_date", Date.today.strftime("%Y-%m-%d") %>
+        <%= image_tag "mini-help.png", :alt => "Date format is YYYY-MM-DD", :title => "Date format is YYYY-MM-DD" %></p>
+
+    <p><%= submit_tag "Show report by role" %></p>
+  <% end %>
+
+  <p id="activity_links">
+    <%= activities_in_last 7 %>
+    <%= activities_in_last 30 %>
+  </p>
+</fieldset>

@@ -1,0 +1,50 @@
+<!-- List of details of chosen project -->
+<div class="fieldsets">
+    <fieldset>
+        <legend>Project</legend>
+        
+        <p><strong>Name:</strong><%= @project.name %></p>
+        
+        <p><strong>Description:</strong></p>
+        <%= simple_format @project.description %>
+        
+        <p><b>Active: </b><%= @project.active_text %></p>
+        
+        <p class="p_edit_back">
+            <%= link_to 'Show activities', :controller => 'activities', 
+            :action => 'graph', 'search[project_id]' => @project.id %> |
+            <%= link_to 'Edit', :action => 'edit', :id => @project %> |
+            <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+        </p>
+    </fieldset>
+    
+    <br/>
+    
+    <fieldset>
+        <legend>Reports</legend>
+        <% form_tag({:action => 'report_by_role'}, :method => :get) do %>    
+        <input type="hidden" name="id" value="<%= @project.id %>" />
+        <table>
+            <tr>
+                <td>From (YYYY:MM:DD):</td>
+                <td>
+                   <%= calendar_date_select_tag "from_date",DateTime.new(Time::now().year,Time::now().mon,1).strftime("%Y-%m-%d") %>     
+                </td>
+            </tr>
+            <tr>                
+                <td>To (YYYY:MM:DD):</td>
+                <td><%= calendar_date_select_tag "to_date",Date.today.strftime("%Y-%m-%d") %> </td>
+            </tr>
+        </table>        
+        
+         <p><%= submit_tag "Show report by role" %></p>
+        <% end %>
+        
+    </fieldset>    
+</div>
+<!-- End of list -->
+
+
+
+
+

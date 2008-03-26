@@ -1,0 +1,8 @@
+page.replace_html 'invoices_list', :partial => '/activities/invoices_list'
+if @success
+  page.remove 'add_invoice_form'
+  page.remove 'add_new_invoice'
+  page.insert_html :bottom, 'invoices_list', '<p class="flashNotice2">Invoice has been added</p>'
+else
+  page.replace_html 'add_invoice_form', :partial => '/invoices/add_new'
+end
