@@ -56,18 +56,16 @@ class LoginController < ApplicationController
   # Logs out current user by setting session[:user_id] to nil
   # 
   def logout
-    session[:user_id] = nil
-    session[:calendar_user_id] = nil
-    redirect_to(:action => "login")
+    reset_session
+    redirect_to :action => "login"
   end
-  
+
   #
   # Shows credits page
   #
   def credits
     render :template => "layouts/credits"
   end
-
 
   def change_password
     @pass_change_user = User.find(:first, :conditions => ["password_code = ?", params[:code]])
