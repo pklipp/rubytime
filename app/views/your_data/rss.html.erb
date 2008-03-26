@@ -2,7 +2,7 @@
   <h3>Day <%= day %></h3>
   <ul class="feed_preview">
     <% day_projects.sort_by {|k, v| k.name}.each do |project, project_roles| %>
-      <%= render :partial => 'project_in_rss', :object => project, :locals => {:roles => project_roles, :project_tag => '<li>'} %>
+      <%= render :partial => '/your_data/project_in_rss', :object => project, :locals => {:roles => project_roles, :project_tag => '<li>'} %>
     <% end %>
   </ul>
 <% end %>

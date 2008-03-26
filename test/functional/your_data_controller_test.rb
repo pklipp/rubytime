@@ -81,11 +81,24 @@ class YourDataControllerTest < Test::Unit::TestCase
   def test_create_activity
     num_activities = Activity.count
 
-    post :create_activity, :activity => {:comments => "Some comment", :project_id => 1, :minutes => "1", :date => Time.new }
+    post :create_activity, :activity => {:comments => "Some comment", :project_id => 1, :minutes => "1",
+      'date(1i)' => '2001', 'date(2i)' => '02', 'date(3i)' => '03'}
 
     assert_response :redirect
     assert_redirected_to :action => 'activities_list'
 
+    assert_equal num_activities + 1, Activity.count
+  end
+
+  def test_create_activity_doesnt_allow_duplicate_date
+    num_activities = Activity.count
+    post :create_activity, :activity => {:comments => "First", :project_id => 1, :minutes => '2',
+      'date(1i)' => '2001', 'date(2i)' => '02', 'date(3i)' => '03'}
+    post :create_activity, :activity => {:comments => "Second", :project_id => 1, :minutes => '3',
+      'date(1i)' => '2001', 'date(2i)' => '02', 'date(3i)' => '03'}
+    assert_response :success
+    assert_template 'new_activity'
+    assert_match /already have activity/i, flash[:warning]
     assert_equal num_activities + 1, Activity.count
   end
 
