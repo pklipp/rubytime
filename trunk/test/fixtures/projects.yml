@@ -29,3 +29,10 @@ client_2_project:
   name: client2_p_name
   description: client2_p_desc
   client_id: 2
+
+inactive_project:
+  id: 7
+  name: inactive
+  description: inactive
+  client_id: 1
+  is_inactive: true

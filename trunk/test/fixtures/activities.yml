@@ -71,3 +71,10 @@ invoiced2:
   project_id: 3
   user_id: 2
   invoice_id: 1
+
+act11:
+  id: 11
+  date: 2008-03-25
+  minutes: 120
+  project_id: 3
+  user_id: 4

@@ -388,8 +388,10 @@ div.progressBar div.background {
 	padding-left: 10px;
 	border: 1px solid #e8b36d;
 }
-.menu-icon img{
+
+.menu-icon img {
   vertical-align: middle;
+  padding-right: 5px;
   width: 32px;
   height: 32px;
 }
@@ -518,4 +520,26 @@ td.client_login_password {
     margin-right: 10px; float: right;
 }
 
+/* rss feeds */
 
+ul.feed_elements li {
+  list-style-type: none;
+  padding: 4px;
+}
+
+ul.feed_preview li {
+  list-style-type: none;
+  font-size: 11pt;
+  font-weight: bold;
+}
+
+ul.feed_preview li li {
+  margin-top: 5px;
+  list-style-type: disc;
+  font-weight: normal;
+  font-size: 10pt;
+}
+
+ul.feed_preview li li li {
+  list-style-type: circle;
+}

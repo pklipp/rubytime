@@ -1,0 +1,90 @@
+<script type="text/javascript">
+function to_minus(img) {
+  img.src = img.src.sub('_plus', '_minus');
+}
+
+function to_plus(img) {
+  img.src = img.src.sub('_minus', '_plus');
+}
+
+function roll(img) {
+  tree = $(img.id.sub('_img', '_tree'));
+  if (img.src.search('tree_plus.png') != -1) {
+    to_minus(img);
+    tree.show();
+  } else {
+    to_plus(img);
+    tree.hide();
+  }
+}
+
+function hide_all() {
+  $$('ul.feed_elements').each(function(ul) {if (ul.id != 'projects') ul.hide();});
+  $$('ul.feed_elements li img').each(to_plus);
+}
+
+function show_all() {
+  $$('ul.feed_elements').each(function(ul) {if (ul.id != 'projects') ul.show();});
+  $$('ul.feed_elements li img').each(to_minus);
+}
+</script>
+
+<div class="fieldsets">
+  <% form_tag :action => 'update_rss_feed', :feed_id => @feed do %>
+
+    <%= render :partial => '/your_data/feed_settings' %>
+
+    <fieldset>
+      <legend>Activity selection</legend>
+      <p>Select projects, roles, or users below to include all their activities in your feed:</p>
+
+      <p><%= link_to_function "Expand all", "show_all()" %> | <%= link_to_function "Collapse all", "hide_all()" %></p>
+
+      <ul class="feed_elements" id="projects" style="padding-left: 0px;">
+        <% for project in @projects %>
+          <li>
+            <% exp = @expand_project[project] %>
+            <%= image_tag "tree_#{exp ? "minus" : "plus"}.png", :id => "project_#{project.id}_img", :onclick => "roll(this);" %>
+            <%= check_box_tag "project_#{project.id}", "1", @feed.elements.projects.include?(project.id), :id => "project_#{project.id}" %>
+            <label for="project_<%= project.id %>"><%= h project.name %></label>
+
+            <ul class="feed_elements" id="project_<%= project.id %>_tree" style="display: <%= exp ? "" : "none" %>;">
+              <% for role in @roles %>
+                <li>
+
+                  <% exp_r = @expand_role[project][role]
+                     has_users = !@project_users[project][role].empty?
+                     pr_id = "#{project.id}_#{role.id}" %>
+
+                  <% if has_users %>
+                    <%= image_tag "tree_#{exp_r ? "minus" : "plus"}.png", :id => "role_#{pr_id}_img", :onclick => "roll(this);" %>
+                  <% end %>
+                  <%= check_box_tag "role_#{pr_id}", "1", @feed.elements.roles_in_project(project).include?(role.id),
+                    :id => "role_#{pr_id}", :style => (has_users ? 'margin-left: 18px;' : '') %>
+                  <label for="role_<%= pr_id %>"><%= h role.name.pluralize %></label>
+
+                  <% if has_users %>
+                    <ul class="feed_elements" id="role_<%= pr_id %>_tree" style="display: <%= exp_r ? "" : "none" %>;">
+                      <% for user in @project_users[project][role] %>
+                        <li>
+                          <% pu_id = "#{project.id}_#{user.id}" %>
+                          <%= check_box_tag "user_#{pu_id}", "1", @feed.elements.users_in_project(project).include?(user.id),
+                            :id => "user_#{pu_id}" %>
+                          <label for="user_<%= pu_id %>"><%= h user.name %></label>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% end %>
+
+                </li>
+              <% end %>
+            </ul>
+
+          </li>
+        <% end %>
+      </ul>
+    </fieldset>
+
+    <p><%= submit_tag 'Save changes', :style => 'margin: 10px; margin-left: 30px;' %></p>
+  <% end %>
+</div>

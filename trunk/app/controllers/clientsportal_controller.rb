@@ -7,9 +7,12 @@
 
 class ClientsportalController < ApplicationController
     include CalendarHelper
-  
-    before_filter :authorize_client, :except => ["login", "logout"]
+
+    before_filter :authorize_client, :except => ["login", "logout", "rss"]
+    before_filter :prepare_data_for_rss_form, :only => ['edit_rss_feed', 'update_rss_feed']
+    before_filter :authorize_client_to_feed, :only => :rss
     layout "clientportal"
+
 
     #
     # Displays welcome screen.
@@ -193,5 +196,84 @@ class ClientsportalController < ApplicationController
       @activity = Activity.find(params[:id])
       render :layout => false
     end
-    
+
+
+
+    def edit_rss_feed
+    end
+
+    def update_rss_feed
+      assert_params_must_have :authentication
+
+      @feed.authentication = params[:authentication] unless params[:authentication].blank?
+      @feed.generate_random_key if @feed.authentication == 'key' && (@feed.secret_key.nil? || params[:regenerate_key] == '1')
+
+      @feed.elements.clear
+      for project in @projects
+        unless params["project_#{project.id}".to_sym].blank?
+          @feed.elements.create(:project => project)
+        else
+          for role in @roles
+            unless params["role_#{project.id}_#{role.id}".to_sym].blank?
+              @feed.elements.create(:project => project, :role => role)
+            else
+              for user in @project_users[project][role]
+                @feed.elements.create(:project => project, :user => user) unless params["user_#{project.id}_#{user.id}".to_sym].blank?
+              end
+            end
+          end
+        end
+      end
+
+      if @feed.save
+        flash[:notice] = 'Your RSS feed has been successfully updated'
+        redirect_to :action => 'edit_rss_feed'
+      else
+        flash[:error] = 'An error occured while updating the feed'
+        render :action => 'edit_rss_feed'
+      end
+    end
+
+    def rss
+      activities = Activity.find :all,
+        :joins => "INNER JOIN users ON (users.id = activities.user_id)
+          LEFT JOIN rss_feed_elements AS fp ON
+            (fp.project_id = activities.project_id AND fp.rss_feed_id = #{@feed.id} AND fp.user_id IS NULL AND fp.role_id IS NULL)
+          LEFT JOIN rss_feed_elements AS fu ON
+            (fu.project_id = activities.project_id AND fu.user_id = activities.user_id AND fu.rss_feed_id = #{@feed.id} AND fu.role_id IS NULL)
+          LEFT JOIN rss_feed_elements AS fr ON
+            (fr.project_id = activities.project_id AND fr.role_id = users.role_id AND fr.rss_feed_id = #{@feed.id} AND fr.user_id IS NULL)",
+        :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
+            Time.now.midnight - 2.weeks, Time.now.midnight]
+
+      render_rss_feed(activities)
+    end
+
+    private
+
+    def prepare_data_for_rss_form
+      @feed = @current_client.rss_feed || @current_client.create_rss_feed
+      @projects = Project.find_active_for_client(@current_client)
+      @roles = Role.find :all, :order => 'name'
+      @project_users = {}
+      @expand_project = {}
+      @expand_role = {}
+      for project in @projects
+        @project_users[project] = {}
+        @expand_role[project] = {}
+        users = User.find_involved_in_project(project)
+        @expand_project[project] = !@feed.elements.users_in_project(project).empty? || !@feed.elements.roles_in_project(project).empty?
+        for role in @roles
+          @project_users[project][role] = users.find_all {|u| u.role == role}
+          @expand_role[project][role] = @project_users[project][role].any? {|u| @feed.elements.users_in_project(project).include?(u.id)}
+        end
+      end
+    end
+
+    def authorize_client_to_feed
+      authorize_to_feed :current_user => Proc.new {@current_client},
+        :authorize => Proc.new {authorize_client},
+        :http_check => Proc.new {|login, pass| client = ClientsLogin.authorize(login, pass) and !client.is_inactive? and @feed.owner == client}
+    end
+
 end

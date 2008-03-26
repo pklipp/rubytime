@@ -46,20 +46,12 @@ class Test::Unit::TestCase
   end
   
   def login_as(user = "admin", password="admin" )
-    case user.class.to_s
-    when "String"
-          login(user, password)
-    when "Symbol"
-      case user
-        when :pm
-          pm = users(:pm)
-          login(pm.login, "admin")
-        when :dev
-          dev = users(:dev)
-          login(dev.login, "dev")
-        else
-          raise "No user defined :" + user.to_s
-      end
+    case user
+      when String then login(user, password)
+      when :pm then login(users(:pm).login, "admin")
+      when :dev then login(users(:dev).login, "dev")
+      when :admin2 then login(users(:admin2).login, "zxczxczxc")
+      else raise "No user defined: #{user}"
     end
   end
   
@@ -79,5 +71,9 @@ class Test::Unit::TestCase
   def descending?(array, object_method)
     1.upto(array.size-1) { |i| return false unless array[i].send(object_method) <= array[i-1].send(object_method) }
   end
-  
+
+  def http_authorize(login, pass)
+    @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64.encode64("#{login}:#{pass}")}"
+  end
+
 end
