@@ -2,10 +2,10 @@
 =RubyTime change log=
 
 *2.1* (26 March, 2008), author: Paul Klipp
-  *The latest release features greatly enhanced Client views
-  *RSS feeds for projects and team members
-  *Improved calendar functionality for for better tracking of workers' time
-  *various bug fixes and code performance and maintenance enchancements
+  * The latest release features greatly enhanced Client views
+  * Rails updated to version 2.0.2
+  * Improved calendar functionality for for better tracking of workers' time
+  * various bug fixes and code performance and maintenance enchancements
 
 *1.3* (5 July, 2007), author: Wiktor Gworek
 
