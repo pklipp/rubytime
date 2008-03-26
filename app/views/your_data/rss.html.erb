@@ -2,23 +2,7 @@
   <h3>Day <%= day %></h3>
   <ul class="feed_preview">
     <% day_projects.sort_by {|k, v| k.name}.each do |project, project_roles| %>
-      <li>Project <%= project.name %>
-        <ul>
-          <% project_roles.sort_by {|k, v| k.name}.each do |role, role_users| %>
-            <li><%= role.name.pluralize %> (<%= hour_format(role_users.keys.sum {|u| role_users[u][0].minutes}) %>)
-              <ul>
-                <% role_users.sort_by {|k, v| k.name}.each do |user, activities| %>
-                  <li><%= user.name %> &minus; <%= hour_format(activities[0].minutes) %>
-                    <% if activities[0].created_at.to_date != activities[0].date %>
-                      (<%= activities[0].date %>)
-                    <% end %>
-                  </li>
-                <% end %>
-              </ul>
-            </li>
-          <% end %>
-        </ul>
-      </li>
+      <%= render :partial => 'project_in_rss', :object => project, :locals => {:roles => project_roles, :project_tag => '<li>'} %>
     <% end %>
   </ul>
 <% end %>
