@@ -135,18 +135,16 @@ public
     @activity         = Activity.new(params[:activity])
     @activity.user_id = @current_user.id
     @projects         = Project.find_active
-    
+
     date = params[:activity]["date(1i)"].to_i.to_s \
           + "-" + params[:activity]["date(2i)"].to_i.to_s \
           + "-" + params[:activity]["date(3i)"].to_i.to_s
-          
 
     # Warn user if he already has activity on the same project/date pair
-    if @current_user.activities.find_by_date_and_project_id( date, params[:activity][:project_id] )
-      flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make mistake."
-    end
-
-    if @activity.save
+    if @current_user.activities.find_by_date_and_project_id(date, params[:activity][:project_id])
+      flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make a mistake."
+      render :action => 'new_activity'
+    elsif @activity.save
       flash[:notice] = 'Activity has been successfully created'
       redirect_to :action => 'activities_list'
     else

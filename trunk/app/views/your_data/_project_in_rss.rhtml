@@ -1,0 +1,19 @@
+<%= project_tag %>Project <%= project_in_rss.name %><%= project_tag == '<h4>' ? '</h4>' : '' %>
+  <ul>
+    <% roles.sort_by {|k, v| k.name}.each do |role, role_users| %>
+      <li><%= role.name.pluralize %> (<%= hour_format(role_users.keys.sum {|u| role_users[u].sum(&:minutes)}) %>)
+        <ul>
+          <% role_users.sort_by {|k, v| k.name}.each do |user, activities| %>
+            <% activities.each do |activity| %>
+              <li><%= user.name %> &minus; <%= hour_format(activity.minutes) %>
+                <% if activity.created_at.to_date != activity.date %>
+                  (<%= activity.date %>)
+                <% end %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+<%= project_tag == '<li>' ? '</li>' : '' %>
