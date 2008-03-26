@@ -16,7 +16,7 @@ xml.rss :version => '2.0' do
 
         text = ""
         day_projects.sort_by {|k, v| k.name}.each do |project, project_roles|
-          text << render(:partial => 'project_in_rss', :object => project, :locals => {:roles => project_roles, :project_tag => '<h4>'})
+          text << render(:partial => '/your_data/project_in_rss', :object => project, :locals => {:roles => project_roles, :project_tag => '<h4>'})
         end
         xml.description text
       end
