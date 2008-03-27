@@ -66,6 +66,5 @@ end
 #Config for Calendar plugin
 CalendarDateSelect.format = :hyphen_ampm
 
-RUBYTIME_VERSION = 2.1
+RUBYTIME_VERSION = 2.2
 require 'extensions.rb'
-

@@ -40,4 +40,10 @@ module ApplicationHelper
   def back_link(tag_type = :p)
     content_tag(tag_type, link_to('Back', request.env['HTTP_REFERER'])) if request.env['HTTP_REFERER']
   end
+
+  def rss_feed_url(feed, options = {})
+    params = {:action => 'rss', :id => feed.id, :format => options[:format] || 'rss'}
+    params[:key] = feed.secret_key if feed.authentication == 'key'
+    url_for params
+  end
 end

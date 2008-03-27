@@ -2,9 +2,8 @@
   <legend>Feed settings</legend>
   <p>
     <%= link_to [image_tag('feed-icon-16x16.png', :size => '16x16', :alt => 'RSS icon', :class => 'linkwithimg'), " Link to your RSS feed"],
-      {:action => 'rss', :id => @feed.id, :format => 'rss'}.update(@feed.authentication == 'key' ? {:key => @feed.secret_key} : {}),
-      :class => 'linkwithimg' %> |
-    <%= link_to "Preview feed", {:action => 'rss', :id => @feed.id, :format => 'html'}, :class => 'linkwithimg' %>
+      rss_feed_url(@feed), :class => 'linkwithimg' %> |
+    <%= link_to "Preview feed", rss_feed_url(@feed, :format => 'html'), :class => 'linkwithimg' %>
   </p>
   <div class="inputs">
     <p>
