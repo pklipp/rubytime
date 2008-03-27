@@ -44,33 +44,32 @@ function show_all() {
         <% for project in @projects %>
           <li>
             <% exp = @expand_project[project] %>
-            <%= image_tag "tree_#{exp ? "minus" : "plus"}.png", :id => "project_#{project.id}_img", :onclick => "roll(this);" %>
-            <%= check_box_tag "project_#{project.id}", "1", @feed.elements.projects.include?(project.id), :id => "project_#{project.id}" %>
-            <label for="project_<%= project.id %>"><%= h project.name %></label>
+            <%= image_tag "tree_#{exp ? "minus" : "plus"}.png", :id => dom_id(project) + "_img", :onclick => "roll(this);" %>
+            <%= check_box_tag dom_id(project), "1", @feed.elements.projects.include?(project.id) %>
+            <label for="<%= dom_id(project) %>"><%= h project.name %></label>
 
-            <ul class="feed_elements" id="project_<%= project.id %>_tree" style="display: <%= exp ? "" : "none" %>;">
+            <ul class="feed_elements" id="<%= dom_id(project) %>_tree" style="<%= exp ? "" : "display: none;" %>">
               <% for role in @roles %>
                 <li>
 
                   <% exp_r = @expand_role[project][role]
                      has_users = !@project_users[project][role].empty?
-                     pr_id = "#{project.id}_#{role.id}" %>
+                     role_id = "role_#{project.id}_#{role.id}" %>
 
                   <% if has_users %>
-                    <%= image_tag "tree_#{exp_r ? "minus" : "plus"}.png", :id => "role_#{pr_id}_img", :onclick => "roll(this);" %>
+                    <%= image_tag "tree_#{exp_r ? "minus" : "plus"}.png", :id => "#{role_id}_img", :onclick => "roll(this);" %>
                   <% end %>
-                  <%= check_box_tag "role_#{pr_id}", "1", @feed.elements.roles_in_project(project).include?(role.id),
-                    :id => "role_#{pr_id}", :style => (has_users ? 'margin-left: 18px;' : '') %>
-                  <label for="role_<%= pr_id %>"><%= h role.name.pluralize %></label>
+                  <%= check_box_tag role_id, "1", @feed.elements.roles_in_project(project).include?(role.id),
+                    :style => (has_users ? 'margin-left: 18px;' : '') %>
+                  <label for="<%= role_id %>"><%= h role.name.pluralize %></label>
 
                   <% if has_users %>
-                    <ul class="feed_elements" id="role_<%= pr_id %>_tree" style="display: <%= exp_r ? "" : "none" %>;">
+                    <ul class="feed_elements" id="<%= role_id %>_tree" style="display: <%= exp_r ? "" : "none" %>;">
                       <% for user in @project_users[project][role] %>
                         <li>
-                          <% pu_id = "#{project.id}_#{user.id}" %>
-                          <%= check_box_tag "user_#{pu_id}", "1", @feed.elements.users_in_project(project).include?(user.id),
-                            :id => "user_#{pu_id}" %>
-                          <label for="user_<%= pu_id %>"><%= h user.name %></label>
+                          <% user_id = "user_#{project.id}_#{user.id}" %>
+                          <%= check_box_tag user_id, "1", @feed.elements.users_in_project(project).include?(user.id) %>
+                          <label for="<%= user_id %>"><%= h user.name %></label>
                         </li>
                       <% end %>
                     </ul>
