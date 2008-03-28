@@ -26,9 +26,17 @@
 
 class Role < ActiveRecord::Base
   has_many :users
-  
+
   # validators
   validates_presence_of :name, :short_name
   validates_uniqueness_of :name, :short_name
+
+  def name_with_code
+    "#{name} (#{short_name.upcase})"
+  end
+
+  def is_admin_text
+    is_admin?.to_english
+  end
 
 end

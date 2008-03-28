@@ -16,6 +16,4 @@
     Email paul@llp.pl with any questions regarding the status of RubyTime or your participation in the project.
 </p>
 
-<p class="p_edit_back">    
-    <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
-</p>
+<p class="p_edit_back"><%= back_link(nil) %></p>

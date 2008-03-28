@@ -115,7 +115,7 @@ class Project < ActiveRecord::Base
   # * -YES- if project is active
   # * -NO- if project is not active
   def active_text
-    is_inactive? ? "NO" : "YES"
+    (!is_inactive?).to_english
   end
 
 end

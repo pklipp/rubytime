@@ -26,8 +26,13 @@
 
 class User < ActiveRecord::Base
   require 'digest/sha1' # needed for password hashing
-  
-  has_many :activities, :dependent => :destroy
+
+  has_many :activities, :dependent => :destroy do
+    def find_recent
+      find :first, :order => 'created_at DESC'
+    end
+  end
+
   has_many :projects, :through => :activities, :group => "project_id"
   has_one :rss_feed, :as => :owner, :dependent => :destroy
 
@@ -144,6 +149,10 @@ class User < ActiveRecord::Base
   def self.find_involved_in_project(project)
     User.find :all, :select => 'DISTINCT users.*', :from => 'activities', :joins => 'LEFT JOIN users ON (user_id = users.id)',
       :conditions => ['project_id = ?', project.id], :order => 'users.name'
+  end
+
+  def active_text
+    (!is_inactive?).to_english
   end
 
 end

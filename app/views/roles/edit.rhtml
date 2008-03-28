@@ -11,8 +11,5 @@
 
     </fieldset>
 </div>
-<p>
-<%= link_to 'Show', :action => 'show', :id => @role %> |
-<%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
-</p>
+<p><%= link_to 'Show', :action => 'show', :id => @role %> | <%= back_link(nil) %></p>
 <!-- End of form -->

@@ -1,67 +1,75 @@
-xml.chart {
-    xml.axis_category("size"=>"10", "alpha" => "75", "color"=>"ffffff", "orientation" => 'diagonal_up', "skip" => @skip_level )
-    xml.axis_ticks("value_ticks"=>'true', "category_ticks"=>"true", "major_thickness"=>"2", "minor_thickness"=>"1", "minor_count"=>"1", "major_color"=>"000000", "minor_color"=>"222222", "position"=>"outside")
-    xml.axis_value("font"=>'arial', "bold"=>'true', "size"=>'10', "color"=>"ffffff", "alpha"=>'75', "steps"=>'10', "suffix" => ' min', "show_min"=>'true', "separator" => '', "orientation" => 'diagonal_up')
-    xml.chart_border("top_thickness" => '0', "bottom_thickness" => '1', "left_thickness" => '2', "right_thickness" => '0', "color" => '000000')
-    if @activities.length>1
-        xml.chart_data(){
-            xml.row {
-                xml.null()
-                for week in @weeks
-                    (week.minweek.to_i).upto(week.maxweek.to_i) do |i|
-                        xml.string("Year:" + week.year.to_s + ",Week:" + i.to_s)
-                    end
-                end
-            }
+xml.chart do
+  xml.axis_category :size => 10, :alpha => 75, :color => "ffffff", :orientation => 'diagonal_up', :skip => @skip_level
+  xml.axis_ticks :value_ticks => true, :category_ticks => true, :major_thickness => 2, :minor_thickness => 1,
+    :minor_count => 1, :major_color => "000000", :minor_color => "222222", :position => "outside"
+  xml.axis_value :font => 'arial', :bold => true, :size => 10, :color => "ffffff", :alpha => 75, :steps => 10, :suffix => ' min',
+    :show_min => true, :separator => '', :orientation => 'diagonal_up'
+  xml.chart_border :top_thickness => 0, :bottom_thickness => 1, :left_thickness => 2, :right_thickness => 0, :color => '000000'
 
+  case @activities.length
+    when 0
+      xml.chart_data do
+        xml.row do
+          xml.null
+          xml.string "0"
+        end
+        xml.row do
+          xml.string "No activities found"
+          xml.number 0
+        end
+      end
 
-            xml.row {
-                xml.string("Your activities")
-                for i in @t
-                    for j in i
-                        xml.number(j.to_s)
-                    end
-                end
-            }
-        }
-    elsif @activities.length==1
-        xml.chart_data(){
-            xml.row {
-                xml.null()
-                xml.string("week: " + @weeks[0].minweek)
-                xml.string("week: " + @weeks[0].minweek)
-            }
-            xml.row {
-                xml.string("Your activities")
-                xml.number(@activities[0].minutes)
-                xml.number(@activities[0].minutes)
-            }
-        }
+    when 1
+      xml.chart_data do
+        xml.row do
+          xml.null
+          xml.string "week: " + @weeks[0].minweek
+          xml.string "week: " + @weeks[0].minweek
+        end
+        xml.row do
+          xml.string "Your activities"
+          xml.number @activities[0].minutes
+          xml.number @activities[0].minutes
+        end
+      end
+
     else
-        xml.chart_data(){
-            xml.row {
-                xml.null()
-                xml.string("0")
-            }
-            xml.row {
-                xml.string("No activities found")
-                xml.number(0)
-            }
-        }
-    end
-    xml.chart_grid_h("alpha"=>'30', "color"=>'000000', "thickness"=>'1', "type"=>"solid")
-    xml.chart_grid_v("alpha"=>'20', "color"=>'000000', "thickness"=>'1', "type"=>"dashed")
-    xml.chart_pref("line_thickness"=>"2", "point_shape"=>"none", "fill_shape"=>'false')
-    xml.chart_rect("x"=>'60', "y"=>'45', "width"=>'520', "height"=>'320', "positive_color"=>'000000', "positive_alpha"=>'20', "negative_color"=>'ff0000', "negative_alpha"=>'10')
-    xml.chart_type("Line")
-    xml.chart_value("position"=>'cursor', "size"=>'12', "color"=>'ffffff', "alpha"=>'75')
-    xml.chart_transition("type" => 'scale', "delay" => '0', "duration" => '1', "order" => 'series')
-    xml.chart_value("suffix" => ' min' )
-    xml.legend_label("size" => '10', "bullet" => 'circle')
-    xml.legend_rect("x"=>'60', "y"=>'10', "width"=>'400', "height"=>'10', "margin"=>'5')
-    xml.series_color{
-        xml.color("cc5511")
-        xml.color("77bb11")
-        xml.color("1155cc")
-    }
-}
+      xml.chart_data do
+        xml.row do
+          xml.null
+          for week in @weeks
+            (week.minweek.to_i).upto(week.maxweek.to_i) do |i|
+              xml.string "Year:#{week.year},Week:#{i}"
+            end
+          end
+        end
+        xml.row do
+          xml.string "Your activities"
+          for i in @t
+            for j in i
+              xml.number j
+            end
+          end
+        end
+      end
+
+  end
+
+  xml.chart_grid_h :alpha => 30, :color => '000000', :thickness => 1, :type => "solid"
+
+  xml.chart_grid_v :alpha => 20, :color => '000000', :thickness => 1, :type => "dashed"
+  xml.chart_pref :line_thickness => 2, :point_shape => "none", :fill_shape => false
+  xml.chart_rect :x => 60, :y => 45, :width => 520, :height => 320,
+    :positive_color => '000000', :positive_alpha => 20, :negative_color => 'ff0000', :negative_alpha => 10
+  xml.chart_type 'Line'
+  xml.chart_value :position => "cursor", :size => 12, :color => 'ffffff', :alpha => 75
+  xml.chart_transition :type => 'scale', :delay => 0, :duration => 1, :order => 'series'
+  xml.chart_value :suffix => ' min'
+  xml.legend_label :size => 10, :bullet => 'circle'
+  xml.legend_rect :x => 60, :y => 10, :width => 400, :height => 10, :margin => 5
+  xml.series_color do
+    xml.color 'cc5511'
+    xml.color '77bb11'
+    xml.color '1155cc'
+  end
+end
