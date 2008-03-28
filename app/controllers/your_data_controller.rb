@@ -304,12 +304,9 @@ public
 
     elements = params.reject {|k, v| v.blank?}.keys.collect(&:to_s)
     @feed.elements.clear
-    for el in elements
-      element_type, element_id = el.split(/_/)
+    for elem in elements
       begin
-        model_class = Kernel.const_get(element_type.capitalize)
-        record = model_class.find(element_id.to_i)
-        @feed.elements.create(element_type.to_sym => record)
+        @feed.elements << RssFeedElement.new_by_id(elem)
       rescue
         # either the class name or element id was incorrect - this shouldn't normally happen
       end
@@ -325,15 +322,7 @@ public
   end
 
   def rss
-    activities = Activity.find :all,
-      :joins => "INNER JOIN users ON (users.id = activities.user_id) " +
-        "LEFT JOIN rss_feed_elements AS fp ON (fp.project_id = activities.project_id AND fp.rss_feed_id = #{@feed.id}) " +
-        "LEFT JOIN rss_feed_elements AS fu ON (fu.user_id = activities.user_id AND fu.rss_feed_id = #{@feed.id}) " +
-        "LEFT JOIN rss_feed_elements AS fr ON (fr.role_id = users.role_id AND fr.rss_feed_id = #{@feed.id}) ",
-      :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
-          Time.now.midnight - 2.weeks, Time.now.midnight]
-
-    render_rss_feed(activities)
+    render_rss_feed(Activity.find_for_managers_feed(@feed))
   end
 
 end

@@ -227,4 +227,27 @@ public
     viewable_by?(other_user) and not invoiced?
   end
 
+  def self.find_for_managers_feed(feed)
+    self.find :all,
+      :joins => "INNER JOIN users ON (users.id = activities.user_id) " +
+        "LEFT JOIN rss_feed_elements AS fp ON (fp.project_id = activities.project_id AND fp.rss_feed_id = #{feed.id}) " +
+        "LEFT JOIN rss_feed_elements AS fu ON (fu.user_id = activities.user_id AND fu.rss_feed_id = #{feed.id}) " +
+        "LEFT JOIN rss_feed_elements AS fr ON (fr.role_id = users.role_id AND fr.rss_feed_id = #{feed.id}) ",
+      :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
+          Time.now.midnight - 2.weeks, Time.now.midnight]
+  end
+
+  def self.find_for_clients_feed(feed)
+    self.find :all,
+      :joins => "INNER JOIN users ON (users.id = activities.user_id)
+        LEFT JOIN rss_feed_elements AS fp ON
+          (fp.project_id = activities.project_id AND fp.rss_feed_id = #{feed.id} AND fp.user_id IS NULL AND fp.role_id IS NULL)
+        LEFT JOIN rss_feed_elements AS fu ON
+          (fu.project_id = activities.project_id AND fu.user_id = activities.user_id AND fu.rss_feed_id = #{feed.id} AND fu.role_id IS NULL)
+        LEFT JOIN rss_feed_elements AS fr ON
+          (fr.project_id = activities.project_id AND fr.role_id = users.role_id AND fr.rss_feed_id = #{feed.id} AND fr.user_id IS NULL)",
+      :conditions => ["(fp.id IS NOT NULL OR fu.id IS NOT NULL OR fr.id IS NOT NULL) AND activities.created_at >= ? AND activities.created_at < ?",
+          Time.now.midnight - 2.weeks, Time.now.midnight]
+  end
+
 end
