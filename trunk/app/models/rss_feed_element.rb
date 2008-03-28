@@ -29,4 +29,14 @@ class RssFeedElement < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
   belongs_to :role
+
+  # expects: 'project_5', 'role_6' etc.
+  # returns: RssFeedElement.new(:project => Project.find(5)) etc.
+  def self.new_by_id(name)
+    element_type, element_id = name.split(/_/)
+    model_class = Kernel.const_get(element_type.capitalize)
+    record = model_class.find(element_id.to_i)
+    self.new(element_type.to_sym => record)
+  end
+
 end
