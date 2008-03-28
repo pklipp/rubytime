@@ -140,10 +140,14 @@ class ActivitiesController < ApplicationController
   #
   def graph
     prepare_search_dates
-    @activities = Activity.for_graph( params[:search] )[:activities]
+    @activities = Activity.for_graph(params[:search])[:activities]
     session[:graph] = params[:search]
+
+    @searched_role = Role.find(params[:search][:role_id]) rescue nil if params[:search][:role_id]
+    @searched_user = User.find(params[:search][:user_id]) rescue nil if params[:search][:user_id]
+    @searched_project = Project.find(params[:search][:project_id]) rescue nil if params[:search][:project_id]
   end
-  
+
   #
   # Generates XML data for a graph
   #

@@ -11,10 +11,8 @@
         <p><b>Active: </b><%= @project.active_text %></p>
         
         <p class="p_edit_back">
-            <%= link_to 'Show activities', :controller => 'activities', 
-            :action => 'graph', 'search[project_id]' => @project.id %> |
-            <%= link_to 'Edit', :action => 'edit', :id => @project %> |
-            <%= link_to 'Back', request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']%>
+          <%= link_to 'Show activities', :controller => 'activities', :action => 'graph', 'search[project_id]' => @project.id %> |
+          <%= link_to 'Edit', :action => 'edit', :id => @project %> | <%= back_link(nil) %>
         </p>
     </fieldset>
     

@@ -6,7 +6,7 @@
         <p><b>Name: </b><%= @invoice.name %></p>
         <p><b>Client: </b><%= link_to @invoice.client.name, :controller => 'clients', :action => 'show', :id => @invoice.client_id %></p>
         <p><b>Created: </b><%= @invoice.created_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
-        <p><b>Issued: </b><%= @invoice.is_issued ? "YES" : "NO" %></p>
+        <p><b>Issued: </b><%= @invoice.is_issued.to_english %></p>
         <% if @invoice.is_issued -%>
             <p><b>Issued date: </b><%= @invoice.issued_at.strftime("%a, %d %b %y, %I:%M %p") %></p>
         <% end -%>

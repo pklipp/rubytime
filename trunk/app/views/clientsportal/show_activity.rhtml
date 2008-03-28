@@ -9,7 +9,7 @@
   <p><b>Comment: </b> <%= simple_format(h(@activity.comments)) %></p>
 
   <% if request.env['HTTP_REFERER'] and not params[:embed] %>
-    <p class="p_edit_back"><%= link_to 'Back', request.env['HTTP_REFERER'] %></p>
+    <p class="p_edit_back"><%= back_link(nil) %></p>
   <% end %>
 </fieldset>
 <!-- End of list -->

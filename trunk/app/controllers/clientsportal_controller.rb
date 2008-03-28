@@ -12,7 +12,7 @@ class ClientsportalController < ApplicationController
     before_filter :prepare_data_for_rss_form, :only => ['edit_rss_feed', 'update_rss_feed']
     before_filter :authorize_client_to_feed, :only => :rss
     layout "clientportal"
-
+    helper :your_data
 
     #
     # Displays welcome screen.
@@ -86,7 +86,7 @@ class ClientsportalController < ApplicationController
     def show_project
       @project = @current_client.projects.find( params[:id] )
       @activities = @project.activities
-      render :layout => false     
+      render :layout => false
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such project"
       redirect_to :action => "index"
@@ -97,15 +97,14 @@ class ClientsportalController < ApplicationController
     # of other client's projects.
     #
     def show_project_activities
-      @project =  @current_client.projects.find( params[:project_id] )
-      session[:year] = Time.now.year.to_s unless !session[:year].nil?
-      session[:month] = Time.now.month.to_s unless !session[:month].nil?
+      @project = @current_client.projects.find(params[:project_id])
+      session[:year] ||= Time.now.year.to_s
+      session[:month] ||= Time.now.month.to_s
 
-      @activities = Activity.project_activities( @project.id, session[:month], session[:year] )
-      
+      @activities = Activity.project_activities(@project.id, session[:month], session[:year])
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "No such project"
-      redirect_to :action => "index"        
+      redirect_to :action => "index"
     end
 
     #

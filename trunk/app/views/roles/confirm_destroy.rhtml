@@ -1,15 +1,10 @@
 <div class="fieldsets">
-  <fieldset>
-    <legend>
-      Delete role: <%= @role.name %> (<%= @role.short_name %>)
-    </legend>
-
+  <% field_set_tag "Delete role: #{@role.name_with_code}" do %>
     <p>If you are sure you want to delete this role, please type the role's name in the field below:</p>
 
     <% form_tag :action => "destroy", :id => @role do %>
       <p><label for="name_confirmation">Role's name:</label><%= text_field_tag "name_confirmation" %></p>
       <p><%= submit_tag 'Destroy' %> or <%= link_to "Cancel", :action => "list" %></p>
     <% end %>
-
-  </fieldset>
+  <% end %>
 </div>

@@ -24,21 +24,24 @@
 
 
 module ApplicationHelper
-    
+
   # Changes minutes as an integer to hour format hh:mm
   def hour_format(minutes)
-    array=minutes.divmod(60);
-    return_string = array[0].to_s + ":" + (100+array[1]).to_s.slice(1,2);
+    array = minutes.divmod(60)
+    array[0].to_s + ":" + (100 + array[1]).to_s.slice(1, 2)
   end
-  
+
   def paginate_me(collection)
-     will_paginate collection 
+     will_paginate collection
   rescue NoMethodError
      return nil
   end
-  
+
   def back_link(tag_type = :p)
-    content_tag(tag_type, link_to('Back', request.env['HTTP_REFERER'])) if request.env['HTTP_REFERER']
+    if request.env['HTTP_REFERER']
+      link = link_to('Back', request.env['HTTP_REFERER'])
+      tag_type.nil? ? link : content_tag(tag_type, link)
+    end
   end
 
   def rss_feed_url(feed, options = {})
@@ -46,4 +49,5 @@ module ApplicationHelper
     params[:key] = feed.secret_key if feed.authentication == 'key'
     url_for params
   end
+
 end

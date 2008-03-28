@@ -52,6 +52,13 @@ private
       :http_check => Proc.new {|login, pass| user = User.authorize(login, pass) and !user.is_inactive? and @feed.owner == user}
   end
 
+  def update_calendar_user_id
+    session[:calendar_user_id] = params[:user_id].to_i if params[:user_id]
+    session[:calendar_user_id] = @current_user.id unless @current_user.is_admin?
+    session[:calendar_user_id] ||= @current_user.id
+    @calendar_user_id = session[:calendar_user_id]
+  end
+
 public
   #
   # Default action. Shows activities calendar.
@@ -66,16 +73,12 @@ public
   # with data specified by search conditions
   #
   def search
-    case params[:commit]
-      when "Search"
-        activities_list
-        render :action => 'activities_list'
-      when "Generate graph"
-        graph
-        render :action => 'graph'
-      else
-        activities_list
-        render :action => 'activities_list'
+    if params[:commit] == "Generate graph"
+      graph
+      render :action => 'graph'
+    else
+      activities_list
+      render :action => 'activities_list'
     end
   end
 
@@ -83,14 +86,9 @@ public
   # Shows list of current user's activities, all or filtered by search conditions
   #
   def activities_list
-    session[:calendar_user_id] = params[:user_id].to_i if params[:user_id]
-    session[:calendar_user_id] = @current_user.id unless @current_user.is_admin?
-    session[:calendar_user_id] ||= @current_user.id
-
-    @calendar_user_id = session[:calendar_user_id]
-
+    update_calendar_user_id
     if params[:search].nil? and session[:month].nil? and session[:year].nil?
-      @activities = Activity.list( {:user_id => @calendar_user_id}, {:page => params[:page], :per_page => 10})
+      @activities = Activity.list({:user_id => @calendar_user_id}, {:page => params[:page], :per_page => 10})
     else
       prepare_search_dates
       params[:search][:user_id] = @calendar_user_id
@@ -102,9 +100,10 @@ public
   # Shows activities grid for choosen year & month (like calendar)
   #
   def activities_calendar
+    update_calendar_user_id
     session[:year] ||= Time.now.year.to_s
     session[:month] ||= Time.now.month.to_s
-    activities_list
+    @activities = Activity.list :default_month => session[:month], :default_year => session[:year], :user_id => @calendar_user_id
   end
 
   #
@@ -120,9 +119,12 @@ public
   #
   def new_activity
     @activity = Activity.new
-    @activity.date = !params[:date].nil? ? Date.parse(params[:date]) : Date.today
+
+    # use date from params[:date] if the action is called from the calendar
+    @activity.date = params[:date].nil? ? Date.today : Date.parse(params[:date])
+
     @projects = Project.find_active
-    @activity.project_id = @current_user.activities.find(:first, :order => "id DESC").project_id unless @current_user.activities.empty?
+    @activity.project_id = @current_user.activities.find_recent.project_id unless @current_user.activities.empty?
   end
 
   #
@@ -130,18 +132,14 @@ public
   #
   def create_activity
     # Convert duration of activity to unified format
-    params[:activity]['minutes']  = Activity.convert_duration(params[:activity]['minutes'])
+    params[:activity]['minutes'] = Activity.convert_duration(params[:activity]['minutes'])
 
-    @activity         = Activity.new(params[:activity])
-    @activity.user_id = @current_user.id
-    @projects         = Project.find_active
-
-    date = params[:activity]["date(1i)"].to_i.to_s \
-          + "-" + params[:activity]["date(2i)"].to_i.to_s \
-          + "-" + params[:activity]["date(3i)"].to_i.to_s
+    @activity = Activity.new(params[:activity])
+    @activity.user = @current_user
+    @projects = Project.find_active
 
     # Warn user if he already has activity on the same project/date pair
-    if @current_user.activities.find_by_date_and_project_id(date, params[:activity][:project_id])
+    if @current_user.activities.find_by_date_and_project_id(@activity.date, @activity.project_id)
       flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make a mistake."
       render :action => 'new_activity'
     elsif @activity.save
@@ -157,16 +155,15 @@ public
   # AJAX call
   #
   def recent_activity_js
-    @recent_activity = @current_user.activities.find(:first, :order => "id DESC") unless @current_user.activities.empty?
-    unless @recent_activity.nil?
-      @recent_comments  = escape_javascript(@recent_activity.comments)
-      @recent_time      = hour_format(@recent_activity.minutes)
+    recent_activity = @current_user.activities.find_recent
+    unless recent_activity.nil?
+      recent_comments = escape_javascript(recent_activity.comments)
+      recent_time = hour_format(recent_activity.minutes)
     end
 
-    render :update do 
-      |page|
-      page<< "$('activity_comments').value = '#{@recent_comments}'"
-      page<< "$('activity_minutes').value = '#{@recent_time}'"
+    render :update do |page|
+      page['activity_comments'].value = recent_comments
+      page['activity_minutes'].value = recent_time
     end
   end
 
@@ -212,12 +209,12 @@ public
   #
   def update_profile
     @current_user.password_confirmation = @current_user.password
-    if (@current_user.update_attributes(:name => params[:user][:name], :email => params[:user][:email]))
-        flash[:notice] = 'Profile has been successfully updated'
-        redirect_to :action => 'index'
+    if @current_user.update_attributes(:name => params[:user][:name], :email => params[:user][:email])
+      flash[:notice] = 'Profile has been successfully updated'
+      redirect_to :action => 'index'
     else
-        @user = @current_user
-        render :action => 'edit_profile'
+      @user = @current_user
+      render :action => 'edit_profile'
     end
   end
 
@@ -225,9 +222,9 @@ public
   # Shows form for updating password
   #
   def edit_password # user data form
-      @user = @current_user
-      @user.password=nil
-      @user.password_confirmation=nil
+    @user = @current_user
+    @user.password = nil
+    @user.password_confirmation = nil
   end
 
   #
@@ -237,7 +234,7 @@ public
     assert_params_must_have :old_password
 
     # Check if old password matches
-    unless @current_user.password_equals?( params[:old_password] )
+    unless @current_user.password_equals?(params[:old_password])
       @current_user.errors.add(:current_password, "is typed incorrectly")
       @user = @current_user
       render :action => 'edit_password' and return
@@ -254,8 +251,7 @@ public
       redirect_to :action => 'index'
     else
       flash[:notice] = 'Updating error'
-      @user.password = nil
-      @user.password_confirmation=nil
+      edit_password
       render :action => 'edit_password'
     end
   end
@@ -275,27 +271,23 @@ public
   def graph_xml
     params[:search] = session[:graph]
     session[:graph] = nil
-    
+
     prepare_search_dates
-    query_results = Activity.for_graph( params[:search].merge({:user_id=> @current_user.id, :is_invoiced=> nil}) )    
+    query_results = Activity.for_graph(params[:search].merge({:user_id => @current_user.id, :is_invoiced => nil}))
+    @activities, @weeks, @years = query_results.values_at(:activities, :weeks, :years)
 
-    @activities     = query_results[:activities] 
-    @weeks          = query_results[:weeks]
-    @years          = query_results[:years]
-
-    @t = Array.new
-    duration = 0
+    @t = []
     for week in @weeks
-        duration = week.maxweek.to_i - week.minweek.to_i
-        @t<< Array.new(duration+1, 0)
+      @t << [0] * (week.maxweek.to_i - week.minweek.to_i + 1)
     end
 
-    @skip_level=(@t.flatten.length/10)-3
-    @skip_level=0 if @skip_level<0
+    @skip_level = @t.flatten.length / 10 - 3
+    @skip_level = [0, @skip_level].max
 
+    start_year = @years[0].minyear.to_i
     for act in @activities
-        minyear_id = act.year.to_i - @years[0].minyear.to_i
-        @t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
+      min_year = act.year.to_i - start_year
+      @t[min_year][act.week.to_i - @weeks[min_year].minweek.to_i] = act.minutes.to_i
     end
   end
 

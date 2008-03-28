@@ -1,35 +1,13 @@
-   <!-- Form: Filter activities by date -->
-    <fieldset>
-        <legend>Calendar view</legend>
-        <%= render :partial => '/activities/calendar_without_unselect' %>
-    </fieldset>
+<!-- Form: Filter activities by date -->
+<fieldset>
+  <legend>Calendar view</legend>
+  <%= render :partial => '/activities/calendar_without_unselect' %>
+</fieldset>
 
-    <% if @current_user && @current_user.is_admin? %>
-        <%= render :partial => 'user_selection' %>
-    <% end %>
+<% if @current_user && @current_user.is_admin? %>
+  <%= render :partial => 'user_selection' %>
+<% end %>
 
-    <br/><br/>
+<br/><br/>
 
-<%= calendar(:year => session[:year].to_i, :month => session[:month].to_i, :first_day_of_week => 1, :table_class=>"calendarView") do |d|
-       cell_text = "<div class='day-inside'>#{d.mday}</div>"
-       cell_attrs = {:class => 'day'}
-       total_day_minutes = 0
-       @activities.each do |e|          
-          if e.date == d
-             cell_text << "<b>" << hour_format(e.minutes) << "</b> "
-             cell_text << truncate(h(e.comments), 20)
-             cell_text << link_to(' &raquo;', {:action => 'show_activity', :id => e.id}, :class => 'item-more') << '<br />'
-             total_day_minutes += e.minutes
-          end
-       end
-       if (total_day_minutes > 0)
-          cell_text << "<br/><i>total: </i><b>" << hour_format(total_day_minutes) << "</b>"
-       else
-          cell_attrs = {:class => 'empty-day'}
-          if params[:action] != "show_project_activities"
-            cell_text << "<a href='/your_data/new_activity?date=" << session[:year] << "-" << session[:month] << "-" << d.mday.to_s << "'>+</a>"   
-          end
-       end          
-       [cell_text, cell_attrs]
-    end
-%>
+<%= activity_calendar session[:year], session[:month] %>

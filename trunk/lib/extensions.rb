@@ -19,3 +19,21 @@ class String
     s
   end
 end
+
+class TrueClass
+  def to_english
+    "YES"
+  end
+end
+
+class FalseClass
+  def to_english
+    "NO"
+  end
+end
+
+class NilClass
+  def to_english
+    "NO"
+  end
+end

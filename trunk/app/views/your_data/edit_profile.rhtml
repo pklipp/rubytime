@@ -2,27 +2,26 @@
 <%= error_messages_for 'user' %>
 
 <div class="fieldsets">
-    <fieldset>
-        <legend>Edit your profile</legend>
-        
-        <p class="p_new">
-        <%= link_to 'Change password', :action => 'edit_password', :id => @current_user %>
-        </p>
-        <hr/>
-        <% form_tag :action => 'update_profile', :id => @current_user do -%>
-        <div class="inputs">
-	        <label>Login: </label><b><%= @current_user.login %></b>
-        </div>
-        <div class="inputs">
-	        <label for="user_name">Name</label><br/>
-	        <%= text_field 'user', 'name'  %>
-        </div>
-        <div class="inputs">
-	        <label for="user_email">e-mail</label>
-	        <br/><%= text_field 'user', 'email'  %>
-        </div>
-        <p><%= submit_tag 'Save' %></p>
-        <% end %>
-   </fieldset>   
+  <% field_set_tag 'Edit your profile' do %>
+    <p class="p_new">
+      <%= link_to 'Change password', :action => 'edit_password' %>
+    </p>
+    <hr/>
+    <% form_tag :action => 'update_profile' do %>
+      <div class="inputs">
+        <label>Login:</label>
+        <b><%= @current_user.login %></b>
+      </div>
+      <div class="inputs">
+        <%= label 'user', 'name' %><br/>
+        <%= text_field 'user', 'name' %>
+      </div>
+      <div class="inputs">
+        <label for="user_email">E-mail</label><br/>
+        <%= text_field 'user', 'email' %>
+      </div>
+      <p><%= submit_tag 'Save' %></p>
+    <% end %>
+  <% end %>
 </div>
 <!-- End of form -->
