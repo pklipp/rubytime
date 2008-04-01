@@ -106,6 +106,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def prepare_graph_xml(options = {})
+    params[:search] = session[:graph]
+    session[:graph] = nil
+
+    prepare_search_dates
+    query_results = Activity.for_graph(params[:search].merge(options))
+    @activities, @grouped_roles, @weeks, @years = query_results.values_at(:activities, :grouped_roles, :weeks, :years)
+  end
+
   # generalized authorize_*_to_feed for both client (clientsportal) and project manager (your_data)
   # required 3 options, each is a block:
   # :current_user => returns @current_user or @current_client

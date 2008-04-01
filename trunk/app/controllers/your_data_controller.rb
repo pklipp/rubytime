@@ -57,6 +57,7 @@ private
     session[:calendar_user_id] = @current_user.id unless @current_user.is_admin?
     session[:calendar_user_id] ||= @current_user.id
     @calendar_user_id = session[:calendar_user_id]
+    @calendar_user = User.find(@calendar_user_id)
   end
 
 public
@@ -261,20 +262,16 @@ public
   #
   def graph
     prepare_search_dates
-    @activities = Activity.for_graph( params[:search].merge({:user_id=> @current_user.id}) )[:activities]
+    @activities = Activity.for_graph(params[:search].merge({:user_id => @current_user.id}))[:activities]
     session[:graph] = params[:search]
+    @searched_project = Project.find(params[:search][:project_id]) rescue nil if params[:search][:project_id]
   end
 
   #
   # Generates XML data to for a flash graph
   #
   def graph_xml
-    params[:search] = session[:graph]
-    session[:graph] = nil
-
-    prepare_search_dates
-    query_results = Activity.for_graph(params[:search].merge({:user_id => @current_user.id, :is_invoiced => nil}))
-    @activities, @weeks, @years = query_results.values_at(:activities, :weeks, :years)
+    prepare_graph_xml(:user_id => @current_user.id, :is_invoiced => nil)
 
     @t = []
     for week in @weeks

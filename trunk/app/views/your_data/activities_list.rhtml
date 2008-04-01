@@ -37,13 +37,10 @@
 <% if !@activities.blank? %>
     <fieldset>
         <legend>
-        <% if params[:search].nil? %>
-        Your Activities
-        <% else %>
-        Your Activities: Search result
-        <% end %>
+          <%= (@calendar_user == @current_user) ? "Your" : @calendar_user.name + "'s" %> Activities
+          <%= (params[:search].nil?) ? "" : ": Search result" %>
         </legend>
-        
+
         <table class="standard">
         <tr>
             <th>Project</th>

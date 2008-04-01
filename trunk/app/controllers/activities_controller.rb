@@ -152,19 +152,12 @@ class ActivitiesController < ApplicationController
   # Generates XML data for a graph
   #
   def graph_xml
-    params[:search] = session[:graph]
-    session[:graph] = nil
-    
-    prepare_search_dates
-    query_results = Activity.for_graph( params[:search] )    
-    
-    @activities     = query_results[:activities]
-    @grouped_roles  = query_results[:grouped_roles] 
-    @weeks          = query_results[:weeks]
-    @years          = query_results[:years]
-
+    prepare_graph_xml
+    @skip_level = @activities.length / 10 - 2
+    @activity_view = true
+    render :template => '/your_data/graph_xml'
   end
-  
+
   #
   # Exports all selected activities to CSV file
   # Export is done in-memory basing on conditions in params[:search]

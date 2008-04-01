@@ -1,0 +1,28 @@
+<% unless @activities.empty? %>
+  <table class="standard">
+    <thead style="text-align: center">
+      <tr>
+        <th>Date(end of the week)</th>
+        <th>Week of year</th>
+        <% if local_assigns[:show_role] %>
+          <th>Role</th>
+        <% end %>
+        <th>No of minutes</th>
+        <th>Hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for activity_sum in @activities %>
+        <tr>
+          <td style="text-align: center"><%= activity_sum.maxdate %></td>
+          <td style="text-align: center"><%= activity_sum.week %></td>
+          <% if local_assigns[:show_role] %>
+            <td style="text-align: center"><%= activity_sum.role.short_name.upcase %></td>
+          <% end %>
+          <td style="text-align: right"><%= activity_sum.minutes %></td>
+          <td style="text-align: right"><%= hour_format(activity_sum.minutes) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

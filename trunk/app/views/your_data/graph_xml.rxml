@@ -1,3 +1,5 @@
+xml.instruct! :xml, :version => "1.0"
+
 xml.chart do
   xml.axis_category :size => 10, :alpha => 75, :color => "ffffff", :orientation => 'diagonal_up', :skip => @skip_level
   xml.axis_ticks :value_ticks => true, :category_ticks => true, :major_thickness => 2, :minor_thickness => 1,
@@ -27,7 +29,7 @@ xml.chart do
           xml.string "week: " + @weeks[0].minweek
         end
         xml.row do
-          xml.string "Your activities"
+          xml.string(@activity_view ? @grouped_roles[0].short_name : "Your activities")
           xml.number @activities[0].minutes
           xml.number @activities[0].minutes
         end
@@ -43,11 +45,39 @@ xml.chart do
             end
           end
         end
-        xml.row do
-          xml.string "Your activities"
-          for i in @t
-            for j in i
-              xml.number j
+
+        if @activity_view
+          for roles in @grouped_roles
+            t = []
+            for week in @weeks
+              t << [0] * (week.maxweek.to_i - week.minweek.to_i + 1)
+            end
+  
+            start_year = @years[0].minyear.to_i
+            for act in @activities
+              if act.role_id == roles.role_id
+                minyear_id = act.year.to_i - start_year
+                t[minyear_id][act.week.to_i - @weeks[minyear_id].minweek.to_i] = act.minutes.to_i
+              end
+            end
+  
+            xml.row do
+              label = roles.role.short_name.to_s
+              xml.string label
+              for i in t
+                for j in i
+                  xml.number j
+                end
+              end
+            end
+          end
+        else
+          xml.row do
+            xml.string "Your activities"
+            for i in @t
+              for j in i
+                xml.number j
+              end
             end
           end
         end
@@ -59,7 +89,7 @@ xml.chart do
 
   xml.chart_grid_v :alpha => 20, :color => '000000', :thickness => 1, :type => "dashed"
   xml.chart_pref :line_thickness => 2, :point_shape => "none", :fill_shape => false
-  xml.chart_rect :x => 60, :y => 45, :width => 520, :height => 320,
+  xml.chart_rect :x => 60, :y => 45, :width => 520, :height => @activity_view ? 340 : 320,
     :positive_color => '000000', :positive_alpha => 20, :negative_color => 'ff0000', :negative_alpha => 10
   xml.chart_type 'Line'
   xml.chart_value :position => "cursor", :size => 12, :color => 'ffffff', :alpha => 75
@@ -68,8 +98,16 @@ xml.chart do
   xml.legend_label :size => 10, :bullet => 'circle'
   xml.legend_rect :x => 60, :y => 10, :width => 400, :height => 10, :margin => 5
   xml.series_color do
-    xml.color 'cc5511'
-    xml.color '77bb11'
-    xml.color '1155cc'
+    if @activity_view
+      xml.color 'cc5511'
+      xml.color '77bb11'
+      xml.color 'F0F030'
+      xml.color '1155cc'
+      xml.color 'D100D1'
+    else
+      xml.color 'cc5511'
+      xml.color '77bb11'
+      xml.color '1155cc'
+    end
   end
 end

@@ -27,41 +27,11 @@
         <% end %>
       <% end %>
     <% end %>
-    <p id="graph">
-      <object type="application/x-shockwave-flash" width="600" height="480"
-          data="/charts.swf?library_path=../charts_library&amp;xml_source=/activities/graph_xml">
-        <param name="movie" value="/charts.swf?library_path=../charts_library&amp;xml_source=/activities/graph_xml" />
-        <param name="quality" value="high" />
-        <param name="bgcolor" value="#32541f" />
-        Please install flash plug-in for your browser
-      </object>
-    </p>
+
+    <%= render :partial => '/your_data/graph_flash', :locals => {:data_url => '/activities/graph_xml'} %>
 
     <!-- Showing statistics -->
-    <% unless @activities.empty? %>
-      <table class="standard">
-        <thead style="text-align: center">
-          <tr>
-            <th>Date(end of the week)</th>
-            <th>Week of year</th>
-            <th>Role</th>
-            <th>No of minutes</th>
-            <th>Hours</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for activity_sum in @activities %>
-            <tr>
-              <td style="text-align: center"><%= activity_sum.maxdate %></td>
-              <td style="text-align: center"><%= activity_sum.week %></td>
-              <td style="text-align: center"><%= activity_sum.role.short_name.upcase %></td>
-              <td style="text-align: right"><%= activity_sum.minutes %></td>
-              <td style="text-align: right"><%= hour_format(activity_sum.minutes) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% end %>
+    <%= render :partial => '/your_data/graph_statistics', :locals => {:show_role => true} %>
 
   </fieldset>
   <!-- End of graph -->
