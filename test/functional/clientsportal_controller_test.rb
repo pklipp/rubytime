@@ -160,7 +160,7 @@ class ClientsportalControllerTest < Test::Unit::TestCase
     login_as_client
     get :show_activities
     assert_response :success  
-    assert_tag :tag => "legend", :content => /Your activities:/, :ancestor => {:tag => "fieldset"}
+    assert_tag :tag => "legend", :content => /Activities in your projects:/, :ancestor => {:tag => "fieldset"}
   end
   
   def test_time_period
