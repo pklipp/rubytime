@@ -458,14 +458,17 @@ table.standard th, table.calendar td.selected, table.calendar th {
     font-size: 14px;
     font-weight: bold;   
 }
-.fieldsets input , textarea, select {
+
+.fieldsets input, textarea, select {
     color: black;
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
 }
-.fieldsets input:focus , textarea:focus , select:focus {
+
+.fieldsets input:focus, textarea:focus, select:focus {
     color: inherit;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
 }
+
 .fieldsets hr{
     background-color: black;
     border-width:0;
