@@ -66,7 +66,7 @@ class YourDataControllerTest < Test::Unit::TestCase
     get :show_activity, :id => 1
 
     assert_response :success
-    assert_template '/users/_no_permissions'
+    assert_template 'users/_no_permissions'
   end
 
   def test_new_activity
@@ -143,7 +143,7 @@ class YourDataControllerTest < Test::Unit::TestCase
     login_as :dev
     get :edit_rss_feed
     assert_response :success
-    assert_template '/users/_no_permissions'
+    assert_template 'users/_no_permissions'
   end
 
   def test_update_rss_feed
