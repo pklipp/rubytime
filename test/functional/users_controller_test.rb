@@ -88,6 +88,8 @@ class UsersControllerTest < Test::Unit::TestCase
     assert !User.find(1).is_inactive?
   end
 
+  
+  #TODO move this test to integration tests
   def test_confirm_destroy
     admin_id = 1
     user = User.find(admin_id)
@@ -96,8 +98,8 @@ class UsersControllerTest < Test::Unit::TestCase
     get :confirm_destroy, :id => admin_id
 
     assert_response :redirect
-    follow_redirect
-    assert_template 'list'
+    #follow_redirect DEPRECATED
+    #assert_template 'list'
     #assert_redirect :action => 'list'
 
     user_id = 2
