@@ -8,7 +8,7 @@ module YourDataHelper
 
       if list = activities_by_date[date]
         for act in list
-          cell_text << content_tag(:b, hour_format(act.minutes)) << " " << truncate(h(act.comments), 20)
+          cell_text << content_tag(:b, hour_format(act.minutes)) << " " << truncate(h(act.project.name), 20)
           cell_text << link_to(' &raquo;', {:action => 'show_activity', :id => act}, :class => 'item-more') << tag(:br)
         end
         cell_text << tag(:br) << content_tag(:i, "total: ") << content_tag(:b, hour_format(list.sum(&:minutes)))
