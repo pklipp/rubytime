@@ -142,8 +142,8 @@ public
     # Warn user if he already has activity on the same project/date pair
     if @current_user.activities.find_by_date_and_project_id(@activity.date, @activity.project_id)
       flash[:warning] = "You already have activity on selected project and date. Make sure that you didn't make a mistake."
-      render :action => 'new_activity'
-    elsif @activity.save
+    end
+    if @activity.save
       flash[:notice] = 'Activity has been successfully created'
       redirect_to :action => 'activities_list'
     else
