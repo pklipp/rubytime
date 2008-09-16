@@ -212,7 +212,8 @@ public
       + " AND #{SqlFunction.get_month_equation('date', month)} " \
       + "ORDER BY date"
 
-    Activity.find_by_sql( [query, project_id, year] )
+    as = Activity.find_by_sql( [query, project_id, year] ).each{|a| a.project_id = project_id}
+    as
   end
 
   def invoiced?
