@@ -1,0 +1,16 @@
+#User Stories for Merb version of Rubytime
+
+= Roles =
+
+  *User
+  *Project Manager/Admin
+  *Client
+
+
+= Themes =
+
+  *Add Entry
+  *Manage Users
+  *Manage Clients and Projects
+  *Create reports
+  *Invoices
