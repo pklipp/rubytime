@@ -11,13 +11,12 @@ module YourDataHelper
           cell_text << content_tag(:b, hour_format(act.minutes)) << " " << truncate(h(act.project.name), 20)
           cell_text << link_to(' &raquo;', {:action => 'show_activity', :id => act}, :class => 'item-more') << tag(:br)
         end
-        cell_text << tag(:br) << content_tag(:i, "total: ") << content_tag(:b, hour_format(list.sum(&:minutes)))
+        cell_text << tag(:br) << content_tag(:i, "total: ") << content_tag(:b, hour_format(list.sum(&:minutes))) << "&nbsp;"
         cell_attrs = {:class => 'day'}
       else
-        cell_text << link_to("+", :controller => 'your_data', :action => 'new_activity', :date => date) if params[:controller] != "clientsportal"
         cell_attrs = {:class => 'empty-day'}
       end
-
+      cell_text << link_to("+", :controller => 'your_data', :action => 'new_activity', :date => date) unless params[:controller] == "clientsportal" 
       [cell_text, cell_attrs]
     end
   end
