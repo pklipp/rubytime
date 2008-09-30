@@ -2,7 +2,7 @@
 
 = Roles =
 
-  * User
+  * user
   * Project Manager/Admin
   * Client
 
