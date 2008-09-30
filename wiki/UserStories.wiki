@@ -2,19 +2,19 @@
 
 = Roles =
 
-  *User
-  *Project Manager/Admin
-  *Client
+  * User
+  * Project Manager/Admin
+  * Client
 
 
 = Themes =
 
-  *Manage Activities
-  *Manage Users
-  *Manage Clients and Projects
-  *Create reports
-  *Invoices
-  *Remote services - Jabber, RSS, APIs
+  * Manage Activities
+  * Manage Users
+  * Manage Clients and Projects
+  * Create reports
+  * Invoices
+  * Remote services - Jabber, RSS, APIs
 
 = Activities and Reporting =
 
@@ -33,5 +33,3 @@ As a Project Manager I can
 As a client I can
   * list activities for my project with the same sort and filter options as a PM
   * export any list as a csv file
-
-
