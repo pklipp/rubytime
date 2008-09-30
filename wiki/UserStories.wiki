@@ -9,8 +9,29 @@
 
 = Themes =
 
-  *Add Entry
+  *Manage Activities
   *Manage Users
   *Manage Clients and Projects
   *Create reports
   *Invoices
+  *Remote services - Jabber, RSS, APIs
+
+= Activities and Reporting =
+
+As a user I can
+  * enter an activity
+  * see my activities on a calendar
+  * edit one of my activities (unless it is already invoiced)
+  * delete one of my activities (unless it is already invoiced)
+As a Project Manager I can
+  * view a user's activities on a calendar
+  * list activities filtered by date range, user(s), project(s), client(s), and role(s)
+  * edit any activity (unless it's invoiced)
+  * delete any activity (unless it's invoiced)
+  * create an activity for any user
+  * export any activity list as a csv file
+As a client I can
+  * list activities for my project with the same sort and filter options as a PM
+  * export any list as a csv file
+
+
