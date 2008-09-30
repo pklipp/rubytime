@@ -33,3 +33,10 @@ As a Project Manager I can
 As a client I can
   * list activities for my project with the same sort and filter options as a PM
   * export any list as a csv file
+
+= Invoicing =
+
+As a Project Manager I can
+  * Define an invoice
+  * Assign activities to an invoice
+  * Mark an invoice as issued which locks down the activities so they can't be changed.
