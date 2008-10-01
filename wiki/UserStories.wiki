@@ -30,6 +30,7 @@ As a Project Manager I can
   * delete any activity (unless it's invoiced)
   * create an activity for any user
   * export any activity list as a csv file
+  * register my use of rubytime and sign in to newsletter
 As a client I can
   * list activities for my project with the same sort and filter options as a PM
   * export any list as a csv file
