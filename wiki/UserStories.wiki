@@ -40,3 +40,14 @@ As a Project Manager I can
   * Define an invoice
   * Assign activities to an invoice
   * Mark an invoice as issued which locks down the activities so they can't be changed.
+
+= Manage Users, Clients, and Projects =
+
+As a Project Manager I can
+  * Create a new user
+  * Change a user's password
+  * Edit a user's role
+  * Create a new client
+  * Create a new project
+  * Mark a project as inactive
+  * delete a client or project (unless there is a related invoice or activities)
