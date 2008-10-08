@@ -6,7 +6,6 @@
   * Project Manager/Admin
   * Client
 
-
 = Themes =
 
   * Manage Activities
@@ -44,7 +43,7 @@ As a Project Manager I can
 
 = Manage Users, Clients, and Projects =
 
-As a Project Manager I can
+As an Administrator I can
   * Create a new user
   * Change a user's password
   * Edit a user's role
@@ -52,3 +51,6 @@ As a Project Manager I can
   * Create a new project
   * Mark a project as inactive
   * delete a client or project (unless there is a related invoice or activities)
+
+As a user I can 
+  * request a new password if I've forgotten mine.
