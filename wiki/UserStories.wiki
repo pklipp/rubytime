@@ -18,7 +18,7 @@
 = Activities and Reporting =
 
 As a user I can
-  * enter an activity
+  * enter an activity - done
   * see my activities on a calendar
   * edit one of my activities (unless it is already invoiced)
   * delete one of my activities (unless it is already invoiced)
@@ -44,13 +44,37 @@ As a Project Manager I can
 = Manage Users, Clients, and Projects =
 
 As an Administrator I can
-  * Create a new user
+  * Create a new user - done
   * Change a user's password
   * Edit a user's role
-  * Create a new client
-  * Create a new project
-  * Mark a project as inactive
-  * delete a client or project (unless there is a related invoice or activities)
+  * Create a new client - done
+  * Create a new project - done
+  * Mark a project as inactive - done
+  * delete a client or project (unless there is a related invoice or activities) - done
 
 As a user I can 
-  * request a new password if I've forgotten mine.
+  * request a new password if I've forgotten mine. 
+
+
+
+== Iteration Two ==
+
+As a user I can see my activities on a calendar - 3
+
+As a project manager I can view any user's activities on a calendar - 1
+
+As a project manager I can list activities filtered by date range, user(s), project(s), client(s), and role(s) - 5
+
+As a project manager I can edit any activity (unless it's invoiced) - 1
+
+As a project manager I can delete any activity (unless it's invoiced) - 1
+
+As a project manager I can create an activity for any user - .5
+
+As a project manager I can export any activity list as a csv file - 2
+
+As a client I can list activities for my project with the same sort and filter options as a PM - .5
+
+As a client I can export any list as a csv file - 0
+
+Total: 14
