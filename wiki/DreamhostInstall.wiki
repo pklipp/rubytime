@@ -22,5 +22,10 @@ make sure that  you have your email account for the site notifier eg "noerply@my
 run " rake db:migrate "
  
 ===type "chmod u+x dispatch.fcgi" for 'fast cgi'===
+
+=== First login ===
+
+Default username is admin and password admin
+Remember to change this password later.
  
 ===have fun===
